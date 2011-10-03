@@ -1,15 +1,16 @@
-#include "mainwindow.h"
+#include "gui/mainwindow.h"
 
-GUI::MainWindow::MainWindow(QWidget *parent) :
+gui::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    setupGUI(this);
+    setupGui(this);
 }
 
-GUI::MainWindow::~MainWindow()
+gui::MainWindow::~MainWindow()
 {
-    // delete the whole GUI
+    // delete the whole gui
     // delete filesystem view
+    delete fileSystemModel;
     delete fileSystemView;
     delete importButton;
     // delete tabs
@@ -39,7 +40,7 @@ GUI::MainWindow::~MainWindow()
 }
 
 // SETUP: core setup handler
-void GUI::MainWindow::setupGUI(QMainWindow* mainWindow)
+void gui::MainWindow::setupGui(QMainWindow* mainWindow)
 {
     if (mainWindow->objectName().isEmpty())
 	mainWindow->setObjectName(QString::fromUtf8("MainWindow"));
@@ -75,12 +76,18 @@ void GUI::MainWindow::setupGUI(QMainWindow* mainWindow)
 
     mainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0, QApplication::UnicodeUTF8));
 
+    // at the beginning we disable all kinds of buttons, menus, ...
+    // to enable them later on, when we create a project
+    enableGui(false);
+} // setupgui
 
-    QMetaObject::connectSlotsByName(mainWindow);
-} // setupGUI
+void gui::MainWindow::enableGui(bool state)
+{
+    importButton->setEnabled(state);
+}
 
 // SETUP: sets menus
-void GUI::MainWindow::setupMenu(QMainWindow* mainWindow)
+void gui::MainWindow::setupMenu(QMainWindow* mainWindow)
 {
     menuBar = new QMenuBar(mainWindow);
     menuBar->setObjectName(QString::fromUtf8("menuBar"));
@@ -109,34 +116,45 @@ void GUI::MainWindow::setupMenu(QMainWindow* mainWindow)
     menuView->setTitle(QApplication::translate("MainWindow", "View", 0, QApplication::UnicodeUTF8));
     menuHelp->setTitle(QApplication::translate("MainWindow", "Help", 0, QApplication::UnicodeUTF8));
     menuImage->setTitle(QApplication::translate("MainWindow", "Image", 0, QApplication::UnicodeUTF8));
-} // ENDOF GUI::MainWindow::setupMenu
+} // ENDOF gui::MainWindow::setupMenu
 
 // SETUP: sets file system view tree
-void GUI::MainWindow::setupFileSystemView(QGridLayout* layout)
+void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
 {
     // init
     fileSystemView = new QTreeView(gridLayoutWidget);
-    QFileSystemModel* model = new QFileSystemModel;
-    model->setRootPath(QDir::currentPath());
+    QFileSystemModel* fileSystemModel = new QFileSystemModel;
+    fileSystemModel->setRootPath(QDir::currentPath());
 
     // name filters
     QStringList nameFilters;
     nameFilters << "*.jpg" << "*.jpeg" << "*.png" << "*.tiff" << "*.tif";
-    model->setNameFilters(nameFilters);
+    fileSystemModel->setNameFilters(nameFilters);
 
     // connects Filesystem model to treeview and adds to layout
-    fileSystemView->setModel(model);
+    fileSystemView->setModel(fileSystemModel);
     layout->addWidget(fileSystemView, 2, 0, 1, 1);
 
     // import button
     importButton = new QPushButton(gridLayoutWidget);
     importButton->setObjectName(QString::fromUtf8("importButton"));
-    importButton->setText(QApplication::translate("MainWindow", "Import", 0, QApplication::UnicodeUTF8));
+    importButton->setText(QApplication::translate("MainWindow", "Import", 0, QApplication::UnicodeUTF8));    
     layout->addWidget(importButton, 3, 0, 1, 1);
-} // ENDOF GUI::MainWindow::setupFileSystemView
+
+    // set signals and slots
+    // import button imports a photo
+    connect(importButton, SIGNAL(clicked()), this, SLOT(importPhoto()));
+} // ENDOF gui::MainWindow::setupFileSystemView
+
+void gui::MainWindow::importPhoto()
+{
+    core::MPhoto* photo = new core::MPhoto();
+
+    activeGallery->add(photo);
+}
 
 // SETUP: sets tabs
-void GUI::MainWindow::setupTabs(QGridLayout* layout)
+void gui::MainWindow::setupTabs(QGridLayout* layout)
 {
     tabWidget = new QTabWidget(gridLayoutWidget);
     tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
@@ -153,9 +171,9 @@ void GUI::MainWindow::setupTabs(QGridLayout* layout)
     pushButton_2->setText(QApplication::translate("MainWindow", "Import", 0, QApplication::UnicodeUTF8));
     tabWidget->setCurrentIndex(1);
 
-} // ENDOF GUI::MainWindow::setupTabs
+} // ENDOF gui::MainWindow::setupTabs
 
-void GUI::MainWindow::setupProjectTab(QTabWidget* tab)
+void gui::MainWindow::setupProjectTab(QTabWidget* tab)
 {
     projectViewWidget = new QWidget();
     projectViewWidget->setObjectName(QString::fromUtf8("projectViewWidget"));
@@ -166,13 +184,13 @@ void GUI::MainWindow::setupProjectTab(QTabWidget* tab)
 
     tab->addTab(projectViewWidget, QString());
     tab->setTabText(tab->indexOf(projectViewWidget), QApplication::translate("MainWindow", "Project", 0, QApplication::UnicodeUTF8));
-} // ENDOF GUI::MainWindow::setupProjectTab
+} // ENDOF gui::MainWindow::setupProjectTab
 
-void GUI::MainWindow::setupDetailsTab(QTabWidget* tab)
+void gui::MainWindow::setupDetailsTab(QTabWidget* tab)
 {
     detailsWidget = new QWidget();
     detailsWidget->setObjectName(QString::fromUtf8("detailsWidget"));
 
     tab->addTab(detailsWidget, QString());
     tab->setTabText(tab->indexOf(detailsWidget), QApplication::translate("MainWindow", "Details", 0, QApplication::UnicodeUTF8));
-} // ENDOF GUI::MainWindow::setupDetailsTab
+} // ENDOF gui::MainWindow::setupDetailsTab

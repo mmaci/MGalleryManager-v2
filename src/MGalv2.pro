@@ -10,9 +10,13 @@ TARGET = MGalv2
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp
+SOURCES += main.cpp\        
+    gui/mainwindow.cpp \
+    core/mdatabase.cpp \
+    core/mgallery.cpp \
+    core/mphoto.cpp
 
-HEADERS  += mainwindow.h
-
-FORMS    +=
+HEADERS  += gui/mainwindow.h \
+    core/mdatabase.h \
+    core/mgallery.h \
+    core/mphoto.h

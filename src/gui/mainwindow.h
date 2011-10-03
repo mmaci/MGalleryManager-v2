@@ -21,7 +21,11 @@
 #include <QtGui/QWidget>
 #include <QFileSystemModel>
 
-namespace GUI
+#include <core/mphoto.h>
+#include <core/mdatabase.h>
+#include <core/mgallery.h>
+
+namespace gui
 {
     class MainWindow : public QMainWindow
     {
@@ -31,13 +35,20 @@ namespace GUI
 	    MainWindow(QWidget* parent = 0);
 	    ~MainWindow();
 
+	signals:
+
+	public slots:
+	    void importPhoto();
+
 	private:
-	    void setupGUI(QMainWindow* mainWindow);
+	    void setupGui(QMainWindow* mainWindow);
 	    void setupFileSystemView(QGridLayout* layout);
 	    void setupMenu(QMainWindow* mainWindow);
 	    void setupTabs(QGridLayout* layout);
 	    void setupDetailsTab(QTabWidget* tab);
 	    void setupProjectTab(QTabWidget* tab);
+
+	    void enableGui(bool state);
 
 	    // central widgets
 	    QWidget* centralWidget;
@@ -45,6 +56,7 @@ namespace GUI
 	    QGridLayout* gridLayout;
 
 	    // filesystem tree view
+	    QFileSystemModel* fileSystemModel;
 	    QTreeView* fileSystemView;
 	    QPushButton* importButton;
 
@@ -67,6 +79,9 @@ namespace GUI
 	    QMenu* menuImage;
 	    QToolBar* mainToolBar;
 	    QStatusBar* statusBar;
+
+	    core::MDatabase* activeDatabase;
+	    core::MGallery* activeGallery;
     };
 }
 
