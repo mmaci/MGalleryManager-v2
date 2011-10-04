@@ -1,16 +1,13 @@
 #ifndef MGALLERY_H
 #define MGALLERY_H
 
-#include <map>
-
-#include <core/mphoto.h>
-#include <core/mdatabase.h>
+#include <core/mobject.h>
 
 namespace core
 {
     class MDatabase;
-
-    class MGallery
+    class MPhoto;
+    class MGallery : MObject
     {
 	public:
 	    MGallery();
@@ -19,15 +16,16 @@ namespace core
 	    ~MGallery();
 
 	    void add(MGallery* gallery);
-	    void add(MPhoto* photo);
+	    void add(unsigned int id, MPhoto* photo);
 
-	    MDatabase* const getParentDatabase(){ return parentDatabase; }
+	    MDatabase* const getParentDatabase(){ return _parentDatabase; }
+	    MGallery* const getParentGallery(){ return _parentGallery; }
 
 	private:
-	    std::map<unsigned int, MGallery*> galleries;
-	    std::map<unsigned int, MPhoto*> photos;
-	    MDatabase* parentDatabase;
-	    MGallery* parentGallery;
+	    std::map<unsigned int, MGallery*> _galleries;
+	    std::map<unsigned int, MPhoto*> _photos;
+	    MDatabase* _parentDatabase;
+	    MGallery* _parentGallery;
 
 	    unsigned int count;
     };

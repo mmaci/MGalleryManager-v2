@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <iostream>
+
 #include <QMainWindow>
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
@@ -21,9 +23,7 @@
 #include <QtGui/QWidget>
 #include <QFileSystemModel>
 
-#include <core/mphoto.h>
 #include <core/mdatabase.h>
-#include <core/mgallery.h>
 
 namespace gui
 {
@@ -38,7 +38,8 @@ namespace gui
 	signals:
 
 	public slots:
-	    void importPhoto();
+	    void importPhotos();
+	    void selectFileInView(const QModelIndex& index);
 
 	private:
 	    void setupGui(QMainWindow* mainWindow);
@@ -65,10 +66,10 @@ namespace gui
 	    QWidget* detailsWidget;
 
 	    QPushButton* pushButton;
-	    QPushButton* pushButton_2;	    
+	    QPushButton* _removeButton;
 
 
-	    QTreeView* projectView;
+	    QTreeWidget* _projectWidget;
 
 	    QTableWidget* tableWidget;
 	    QMenuBar* menuBar;
@@ -80,8 +81,8 @@ namespace gui
 	    QToolBar* mainToolBar;
 	    QStatusBar* statusBar;
 
-	    core::MDatabase* activeDatabase;
-	    core::MGallery* activeGallery;
+	    core::MDatabase* _activeDatabase;
+	    core::MGallery* _activeGallery;
     };
 }
 

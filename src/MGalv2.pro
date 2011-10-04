@@ -14,9 +14,13 @@ SOURCES += main.cpp\
     gui/mainwindow.cpp \
     core/mdatabase.cpp \
     core/mgallery.cpp \
-    core/mphoto.cpp
+    core/mphoto.cpp \
+    gui/mtreewidget.cpp \
+    core/mobject.cpp
 
 HEADERS  += gui/mainwindow.h \
     core/mdatabase.h \
     core/mgallery.h \
-    core/mphoto.h
+    core/mphoto.h \
+    gui/mtreewidget.h \
+    core/mobject.h

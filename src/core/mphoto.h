@@ -1,12 +1,21 @@
 #ifndef MPHOTO_H
 #define MPHOTO_H
 
+#include <QFileInfo>
+
+#include <core/mobject.h>
+
 namespace core
 {    
-    class MPhoto
+    class MPhoto : public MObject
     {
 	public:
 	    MPhoto();
+	    MPhoto(QFileInfo fileInfo);
+	    QFileInfo fileInfo(){ return _fileInfo; }
+
+	private:
+	    QFileInfo _fileInfo;
     };
 }
 

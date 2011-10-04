@@ -3,6 +3,8 @@
 gui::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    _activeDatabase = new core::MDatabase();
+    _activeGallery = new core::MGallery();
     setupGui(this);
 }
 
@@ -15,7 +17,7 @@ gui::MainWindow::~MainWindow()
     delete importButton;
     // delete tabs
     // delete project tab
-    delete projectView;
+    delete _projectWidget;
     delete projectViewWidget;
     // delete details tab
     delete detailsWidget;
@@ -28,7 +30,7 @@ gui::MainWindow::~MainWindow()
     delete menuImage;
     delete menuBar;
 
-    delete pushButton_2;
+    delete _removeButton;
     delete statusBar;
     delete mainToolBar;
 
@@ -78,8 +80,8 @@ void gui::MainWindow::setupGui(QMainWindow* mainWindow)
 
     // at the beginning we disable all kinds of buttons, menus, ...
     // to enable them later on, when we create a project
-    enableGui(false);
-} // setupgui
+    // enableGui(false);
+} // ENDOF gui::MainWindow::setupGui(QMainWindow* mainWindow)
 
 void gui::MainWindow::enableGui(bool state)
 {
@@ -123,7 +125,7 @@ void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
 {
     // init
     fileSystemView = new QTreeView(gridLayoutWidget);
-    QFileSystemModel* fileSystemModel = new QFileSystemModel;
+    fileSystemModel = new QFileSystemModel;
     fileSystemModel->setRootPath(QDir::currentPath());
 
     // name filters
@@ -133,6 +135,7 @@ void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
 
     // connects Filesystem model to treeview and adds to layout
     fileSystemView->setModel(fileSystemModel);
+    fileSystemView->setSelectionMode(QAbstractItemView::MultiSelection);
     layout->addWidget(fileSystemView, 2, 0, 1, 1);
 
     // import button
@@ -143,14 +146,37 @@ void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
 
     // set signals and slots
     // import button imports a photo
-    connect(importButton, SIGNAL(clicked()), this, SLOT(importPhoto()));
+    connect(importButton, SIGNAL(clicked()), this, SLOT(importPhotos()));
+    // connect(fileSystemView, SIGNAL(clicked(const QModelIndex&)), this, SLOT(selectFileInView(const QModelIndex&)));
+
 } // ENDOF gui::MainWindow::setupFileSystemView
 
-void gui::MainWindow::importPhoto()
+void gui::MainWindow::selectFileInView(const QModelIndex& index)
 {
-    core::MPhoto* photo = new core::MPhoto();
+}
 
-    activeGallery->add(photo);
+void gui::MainWindow::importPhotos()
+{
+    std::list<QModelIndex> selectedList = fileSystemView->selectionModel()->selectedRows().toStdList();
+    std::list<QModelIndex>::iterator it;
+
+    core::MPhoto* photo;
+    for (it = selectedList.begin(); it != selectedList.end(); ++it)
+    {
+	QFileInfo fileInfo = fileSystemModel->fileInfo(*it);
+
+	// check to find duplicates
+	if (_activeDatabase->find(fileInfo))
+	    continue;
+
+	// add to core database
+	unsigned int id = _activeDatabase->generatePhotoId();
+
+	// here we need to insert data into the database and also into the widget
+
+	// _projectWidget->insert();
+	// _activeDatabase->insert(id, photo);
+    }
 }
 
 // SETUP: sets tabs
@@ -162,13 +188,14 @@ void gui::MainWindow::setupTabs(QGridLayout* layout)
     setupProjectTab(tabWidget);
     setupDetailsTab(tabWidget);
 
-    pushButton_2 = new QPushButton(gridLayoutWidget);
-    pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
+    _removeButton = new QPushButton(gridLayoutWidget);
+    _removeButton->setObjectName(QString::fromUtf8("pushButton_2"));
+    _removeButton->setText(QApplication::translate("MainWindow", "Remove", 0, QApplication::UnicodeUTF8));
 
-    layout->addWidget(pushButton_2, 5, 0, 1, 1);
     layout->addWidget(tabWidget, 4, 0, 1, 1);
+    layout->addWidget(_removeButton, 5, 0, 1, 1);
 
-    pushButton_2->setText(QApplication::translate("MainWindow", "Import", 0, QApplication::UnicodeUTF8));
+
     tabWidget->setCurrentIndex(1);
 
 } // ENDOF gui::MainWindow::setupTabs
@@ -178,9 +205,10 @@ void gui::MainWindow::setupProjectTab(QTabWidget* tab)
     projectViewWidget = new QWidget();
     projectViewWidget->setObjectName(QString::fromUtf8("projectViewWidget"));
 
-    projectView = new QTreeView(projectViewWidget);
-    projectView->setObjectName(QString::fromUtf8("projectView"));
-    projectView->setGeometry(QRect(0, 0, 261, 221));
+    _projectWidget = new QTreeWidget(projectViewWidget);
+    _projectWidget->setObjectName(QString::fromUtf8("projectWidget"));
+    _projectWidget->setGeometry(QRect(0, 0, 261, 221));
+    _projectWidget->setColumnCount(1);
 
     tab->addTab(projectViewWidget, QString());
     tab->setTabText(tab->indexOf(projectViewWidget), QApplication::translate("MainWindow", "Project", 0, QApplication::UnicodeUTF8));
