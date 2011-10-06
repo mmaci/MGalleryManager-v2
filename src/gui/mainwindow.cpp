@@ -14,7 +14,8 @@ gui::MainWindow::~MainWindow()
     // delete filesystem view
     delete fileSystemModel;
     delete fileSystemView;
-    delete importButton;
+    delete _importButton;
+    delete _createGalleryButton;
     // delete tabs
     // delete project tab
     delete _projectWidget;
@@ -85,7 +86,7 @@ void gui::MainWindow::setupGui(QMainWindow* mainWindow)
 
 void gui::MainWindow::enableGui(bool state)
 {
-    importButton->setEnabled(state);
+    _importButton->setEnabled(state);
 }
 
 // SETUP: sets menus
@@ -139,14 +140,14 @@ void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
     layout->addWidget(fileSystemView, 2, 0, 1, 1);
 
     // import button
-    importButton = new QPushButton(gridLayoutWidget);
-    importButton->setObjectName(QString::fromUtf8("importButton"));
-    importButton->setText(QApplication::translate("MainWindow", "Import", 0, QApplication::UnicodeUTF8));    
-    layout->addWidget(importButton, 3, 0, 1, 1);
+    _importButton = new QPushButton(gridLayoutWidget);
+    _importButton->setObjectName(QString::fromUtf8("importButton"));
+    _importButton->setText(QApplication::translate("MainWindow", "Import", 0, QApplication::UnicodeUTF8));
+    layout->addWidget(_importButton, 3, 0, 1, 1);
 
     // set signals and slots
     // import button imports a photo
-    connect(importButton, SIGNAL(clicked()), this, SLOT(importPhotos()));    
+    connect(_importButton, SIGNAL(clicked()), this, SLOT(importPhotos()));
 
 } // ENDOF gui::MainWindow::setupFileSystemView
 
@@ -173,8 +174,8 @@ void gui::MainWindow::importPhotos()
 	if (_activeDatabase->find(fileInfo))
 	    continue;
 
-	photo = new core::MPhoto();
-	photo->setName(fileInfo.baseName().toStdString());
+	photo = new core::MPhoto(fileInfo, _activeDatabase);
+	    photo->setName(fileInfo.baseName().toStdString());
 
 	// add to core database and widget
 	_activeDatabase->insert(photo);
@@ -183,8 +184,17 @@ void gui::MainWindow::importPhotos()
 }
 
 void gui::MainWindow::removeItemFromProject()
+{   
+    _projectWidget->remove(); // removes currently selected item
+}
+
+void gui::MainWindow::createGallery()
 {
-    _projectWidget->remove();
+    core::MGallery* gallery = new core::MGallery();
+	gallery->setName("test");
+
+    _activeDatabase->insert(gallery);
+    _projectWidget->insert(gallery);
 }
 
 // SETUP: sets tabs
@@ -197,16 +207,21 @@ void gui::MainWindow::setupTabs(QGridLayout* layout)
     setupDetailsTab(tabWidget);
 
     _removeButton = new QPushButton(gridLayoutWidget);
-    _removeButton->setObjectName(QString::fromUtf8("pushButton_2"));
+    _removeButton->setObjectName(QString::fromUtf8("removeButton"));
     _removeButton->setText(QApplication::translate("MainWindow", "Remove", 0, QApplication::UnicodeUTF8));
 
     layout->addWidget(tabWidget, 4, 0, 1, 1);
     layout->addWidget(_removeButton, 5, 0, 1, 1);
 
+    _createGalleryButton = new QPushButton(gridLayoutWidget);
+    _createGalleryButton->setObjectName(QString::fromUtf8("removeButton"));
+    _createGalleryButton->setText(QApplication::translate("MainWindow", "Create Gallery", 0, QApplication::UnicodeUTF8));
+    layout->addWidget(_createGalleryButton, 6, 0, 1, 1);
 
     tabWidget->setCurrentIndex(1);
 
     connect(_removeButton, SIGNAL(clicked()), this, SLOT(removeItemFromProject()));
+    connect(_createGalleryButton, SIGNAL(clicked()), this, SLOT(createGallery()));
 
 } // ENDOF gui::MainWindow::setupTabs
 

@@ -24,6 +24,7 @@
 #include <QFileSystemModel>
 
 #include <core/mdatabase.h>
+#include <core/mgallery.h>
 #include <gui/mtreewidget.h>
 
 namespace gui
@@ -42,6 +43,7 @@ namespace gui
 	    void importPhotos();
 	    void selectFileInView(const QModelIndex& index);
 	    void removeItemFromProject();
+	    void createGallery();
 
 	private:
 	    void setupGui(QMainWindow* mainWindow);
@@ -61,7 +63,8 @@ namespace gui
 	    // filesystem tree view
 	    QFileSystemModel* fileSystemModel;
 	    QTreeView* fileSystemView;
-	    QPushButton* importButton;
+	    QPushButton* _importButton;
+	    QPushButton* _createGalleryButton;
 
 	    QTabWidget* tabWidget;
 	    QWidget* projectViewWidget;

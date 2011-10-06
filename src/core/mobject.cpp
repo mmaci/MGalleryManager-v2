@@ -2,15 +2,16 @@
 #include "mgallery.h"
 #include "mdatabase.h"
 
-core::MObject::MObject(core::MGallery* parent)
+core::MObject::MObject(std::string name, core::MDatabase* database, core::MGallery* gallery)
 {
-    _parentGallery = parent;
-    if (parent)
-	_parentDatabase = parent->getParentDatabase();
+    _name = name;
+    _parentDatabase = database ? database : 0;
+    _parentGallery = gallery ? gallery : 0;
 }
 
 core::MObject::~MObject()
-{
+{    
+
     if (_parentGallery)
 	_parentGallery->remove(this);
 

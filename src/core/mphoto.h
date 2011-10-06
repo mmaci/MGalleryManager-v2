@@ -9,9 +9,8 @@ namespace core
 {    
     class MPhoto : public MObject
     {
-	public:
-	    MPhoto();
-	    MPhoto(QFileInfo fileInfo);
+	public:	    
+	    MPhoto(QFileInfo fileInfo, MDatabase* database = 0, MGallery* gallery = 0);
 	    QFileInfo fileInfo(){ return _fileInfo; }
 
 	private:

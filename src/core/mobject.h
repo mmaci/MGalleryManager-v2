@@ -10,7 +10,7 @@ namespace core
     class MObject
     {
 	public:
-	    MObject(MGallery* parent = 0);
+	    MObject(std::string name, MDatabase* database = 0, MGallery* gallery = 0);
 	    ~MObject();
 	    std::string name(){ return _name; }
 	    void setName(std::string name){ _name = name; }

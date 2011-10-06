@@ -5,6 +5,8 @@
 #include <QTreeWidgetItem>
 
 #include <core/mobject.h>
+#include <iostream>
+#include <string>
 
 namespace gui
 {
@@ -24,15 +26,8 @@ namespace gui
     class MTreeWidgetItem : public QTreeWidgetItem
     {
 	public:
-	    MTreeWidgetItem(core::MObject* obj)
-	    {
-		_obj = obj;
-	    }
-
-	    ~MTreeWidgetItem()
-	    {
-		delete _obj;
-	    }
+	    MTreeWidgetItem(core::MObject* obj = 0);
+	    ~MTreeWidgetItem(){ delete _obj; } // also removes from MDatabase and MGallery
 
 	private:	    
 	    core::MObject* _obj;
