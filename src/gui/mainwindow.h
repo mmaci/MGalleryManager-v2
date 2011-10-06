@@ -24,6 +24,7 @@
 #include <QFileSystemModel>
 
 #include <core/mdatabase.h>
+#include <gui/mtreewidget.h>
 
 namespace gui
 {
@@ -40,6 +41,7 @@ namespace gui
 	public slots:
 	    void importPhotos();
 	    void selectFileInView(const QModelIndex& index);
+	    void removeItemFromProject();
 
 	private:
 	    void setupGui(QMainWindow* mainWindow);
@@ -69,7 +71,7 @@ namespace gui
 	    QPushButton* _removeButton;
 
 
-	    QTreeWidget* _projectWidget;
+	    MTreeWidget* _projectWidget;
 
 	    QTableWidget* tableWidget;
 	    QMenuBar* menuBar;

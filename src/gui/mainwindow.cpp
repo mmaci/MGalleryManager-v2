@@ -146,8 +146,7 @@ void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
 
     // set signals and slots
     // import button imports a photo
-    connect(importButton, SIGNAL(clicked()), this, SLOT(importPhotos()));
-    // connect(fileSystemView, SIGNAL(clicked(const QModelIndex&)), this, SLOT(selectFileInView(const QModelIndex&)));
+    connect(importButton, SIGNAL(clicked()), this, SLOT(importPhotos()));    
 
 } // ENDOF gui::MainWindow::setupFileSystemView
 
@@ -157,6 +156,7 @@ void gui::MainWindow::selectFileInView(const QModelIndex& index)
 
 void gui::MainWindow::importPhotos()
 {
+    // selected list of files
     std::list<QModelIndex> selectedList = fileSystemView->selectionModel()->selectedRows().toStdList();
     std::list<QModelIndex>::iterator it;
 
@@ -165,18 +165,26 @@ void gui::MainWindow::importPhotos()
     {
 	QFileInfo fileInfo = fileSystemModel->fileInfo(*it);
 
+	// only add files
+	if (fileInfo.isDir())
+	    continue;
+
 	// check to find duplicates
 	if (_activeDatabase->find(fileInfo))
 	    continue;
 
-	// add to core database
-	unsigned int id = _activeDatabase->generatePhotoId();
+	photo = new core::MPhoto();
+	photo->setName(fileInfo.baseName().toStdString());
 
-	// here we need to insert data into the database and also into the widget
-
-	// _projectWidget->insert();
-	// _activeDatabase->insert(id, photo);
+	// add to core database and widget
+	_activeDatabase->insert(photo);
+	_projectWidget->insert(photo);
     }
+}
+
+void gui::MainWindow::removeItemFromProject()
+{
+    _projectWidget->remove();
 }
 
 // SETUP: sets tabs
@@ -198,6 +206,8 @@ void gui::MainWindow::setupTabs(QGridLayout* layout)
 
     tabWidget->setCurrentIndex(1);
 
+    connect(_removeButton, SIGNAL(clicked()), this, SLOT(removeItemFromProject()));
+
 } // ENDOF gui::MainWindow::setupTabs
 
 void gui::MainWindow::setupProjectTab(QTabWidget* tab)
@@ -205,7 +215,7 @@ void gui::MainWindow::setupProjectTab(QTabWidget* tab)
     projectViewWidget = new QWidget();
     projectViewWidget->setObjectName(QString::fromUtf8("projectViewWidget"));
 
-    _projectWidget = new QTreeWidget(projectViewWidget);
+    _projectWidget = new gui::MTreeWidget(projectViewWidget);
     _projectWidget->setObjectName(QString::fromUtf8("projectWidget"));
     _projectWidget->setGeometry(QRect(0, 0, 261, 221));
     _projectWidget->setColumnCount(1);

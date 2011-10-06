@@ -11,21 +11,30 @@ namespace gui
 
     class MTreeWidget : public QTreeWidget
     {
+	Q_OBJECT
+
 	public:
-	    MTreeWidget();
+	    MTreeWidget(QWidget* parent = 0);
+	    void insert(core::MObject* obj);	    
+
+	public slots:
+	    void remove();
     };
 
     class MTreeWidgetItem : public QTreeWidgetItem
     {
 	public:
-	    MTreeWidgetItem(MTreeWidget* parent, MTreeWidgetItem* preceding, core::MObject* obj)
+	    MTreeWidgetItem(core::MObject* obj)
 	    {
-		_widgetItem = new QTreeWidgetItem();
 		_obj = obj;
 	    }
 
-	private:
-	    QTreeWidgetItem* _widgetItem;
+	    ~MTreeWidgetItem()
+	    {
+		delete _obj;
+	    }
+
+	private:	    
 	    core::MObject* _obj;
     };
 }

@@ -2,6 +2,7 @@
 
 core::MDatabase::MDatabase()
 {
+    _maxid = 0;
 }
 
 /**
@@ -10,24 +11,13 @@ core::MDatabase::MDatabase()
 core::MDatabase::~MDatabase()
 {
     // delete all photos
-    std::map<unsigned int, MPhoto*>::iterator it_photo;
-    while(!_photos.empty())
+    std::set<core::MObject*>::iterator it;
+    while(!_content.empty())
     {
-	it_photo = _photos.begin();
-	delete it_photo->second;
+	it = _content.begin();
+	delete *it;
 
-	_photos.erase(it_photo);
-
-    }
-
-    // delete all galleries
-    std::map<unsigned int, MGallery*>::iterator it_gal;
-    while (!_galleries.empty())
-    {
-	it_gal = _galleries.begin();
-	delete it_gal->second;
-
-	_galleries.erase(it_gal);
+	_content.erase(it);
     }
 }
 
@@ -35,28 +25,29 @@ core::MDatabase::~MDatabase()
  * @brief generates a unique photo id
  * rbegin contains the last photo in the map (ordered by id), which is then incremented by 1
  */
-unsigned int const core::MDatabase::generatePhotoId()
+unsigned int const core::MDatabase::generateId()
 {
-    if (_photos.empty())
+    if (_content.empty())
 	return 0;
 
-    return ((_photos.rbegin())->first)+1;
+    return ++_maxid;
 }
 
-void core::MDatabase::add(unsigned int id, core::MPhoto *photo)
+void core::MDatabase::insert(core::MObject* obj)
 {
-    _photos.insert(std::make_pair(id, photo));
+    _content.insert(obj);
 }
 
 core::MPhoto* core::MDatabase::find(QFileInfo fileInfo)
 {
-    std::map<unsigned int, core::MPhoto*>::iterator it;
-    core::MPhoto* photo;
-    for (it = _photos.begin(); it != _photos.end(); ++it)
+    std::set<core::MObject*>::iterator it;
+    for (it = _content.begin(); it != _content.end(); ++it)
     {
-	photo = it->second;
-	if (photo->fileInfo() == fileInfo)
-	    return photo;
+	if (core::MPhoto* photo = static_cast<core::MPhoto*>(*it))
+	{
+	    if (photo->fileInfo() == fileInfo)
+		return photo;
+	}
     }
     return NULL;
 }
