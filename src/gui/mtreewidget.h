@@ -5,11 +5,15 @@
 #include <QTreeWidgetItem>
 
 #include <core/mobject.h>
+#include <core/mgallery.h>
+#include <core/mphoto.h>
 #include <iostream>
 #include <string>
 
 namespace gui
 {
+
+    class MTreeWidgetItem;
 
     class MTreeWidget : public QTreeWidget
     {
@@ -17,7 +21,9 @@ namespace gui
 
 	public:
 	    MTreeWidget(QWidget* parent = 0);
-	    void insert(core::MObject* obj);	    
+	    void insert(core::MGallery* gallery);
+	    void insert(core::MPhoto* photo);
+	    MTreeWidgetItem* selected();
 
 	public slots:
 	    void remove();
@@ -26,8 +32,12 @@ namespace gui
     class MTreeWidgetItem : public QTreeWidgetItem
     {
 	public:
-	    MTreeWidgetItem(core::MObject* obj = 0);
+	    MTreeWidgetItem(core::MGallery* gallery);
+	    MTreeWidgetItem(core::MPhoto* photo);
 	    ~MTreeWidgetItem(){ delete _obj; } // also removes from MDatabase and MGallery
+	    QTreeWidgetItem* toQWidgetItem(){ return dynamic_cast<QTreeWidgetItem*>(this); }
+
+	    core::MObject* object(){ return _obj; }
 
 	private:	    
 	    core::MObject* _obj;

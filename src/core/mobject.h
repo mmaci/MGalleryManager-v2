@@ -2,23 +2,28 @@
 #define MOBJECT_H
 
 #include <string>
+#include <QFileInfo>
 
 namespace core
 {
+
     class MGallery;
     class MDatabase;
+    class MPhoto;
+
     class MObject
     {
 	public:
-	    MObject(std::string name, MDatabase* database = 0, MGallery* gallery = 0);
+	    MObject(MGallery* parent = NULL);
 	    ~MObject();
-	    std::string name(){ return _name; }
-	    void setName(std::string name){ _name = name; }
 
-	private:
-	    std::string _name;
-	    MDatabase* _parentDatabase;
-	    MGallery* _parentGallery;
+	    // conversions
+	    MGallery* toGallery();
+	    MPhoto* toPhoto();
+	    MObject* toObject();
+
+	private:	    	   
+	    MGallery* _parent;
     };
 }
 

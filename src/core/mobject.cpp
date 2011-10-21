@@ -1,20 +1,21 @@
 #include "mobject.h"
 #include "mgallery.h"
+#include "mphoto.h"
 #include "mdatabase.h"
 
-core::MObject::MObject(std::string name, core::MDatabase* database, core::MGallery* gallery)
+core::MObject::MObject(core::MGallery* gallery)
 {
-    _name = name;
-    _parentDatabase = database ? database : 0;
-    _parentGallery = gallery ? gallery : 0;
+    _parent = gallery;
 }
+
+// conversions
+core::MGallery* core::MObject::toGallery(){ return static_cast<core::MGallery*>(this); }
+core::MPhoto* core::MObject::toPhoto(){ return static_cast<core::MPhoto*>(this); }
+core::MObject* core::MObject::toObject(){ return dynamic_cast<core::MObject*>(this); }
 
 core::MObject::~MObject()
 {    
 
-    if (_parentGallery)
-	_parentGallery->remove(this);
-
-    if (_parentDatabase)
-	_parentDatabase->remove(this);
+    if (_parent)
+	_parent->remove(this);
 }

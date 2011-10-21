@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <iostream>
+#include <string>
 
 #include <QMainWindow>
 #include <QtCore/QVariant>
@@ -22,6 +23,7 @@
 #include <QtGui/QTreeWidget>
 #include <QtGui/QWidget>
 #include <QFileSystemModel>
+#include <QInputDialog>
 
 #include <core/mdatabase.h>
 #include <core/mgallery.h>
@@ -37,12 +39,15 @@ namespace gui
 	    MainWindow(QWidget* parent = 0);
 	    ~MainWindow();
 
+	    void createGallery(std::string name);
+	    void importPhotos(std::list<QModelIndex>* list);
+
 	signals:
 
 	public slots:
 	    void importPhotos();
-	    void selectFileInView(const QModelIndex& index);
-	    void removeItemFromProject();
+	    void selectFileInView(const QModelIndex& index);	    
+	    void removeItemFromProject();	    
 	    void createGallery();
 
 	private:
@@ -86,8 +91,7 @@ namespace gui
 	    QToolBar* mainToolBar;
 	    QStatusBar* statusBar;
 
-	    core::MDatabase* _activeDatabase;
-	    core::MGallery* _activeGallery;
+	    core::MDatabase* _database;
     };
 }
 

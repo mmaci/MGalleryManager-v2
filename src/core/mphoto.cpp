@@ -1,9 +1,7 @@
-#include <iostream>
-
 #include "core/mphoto.h"
 
-core::MPhoto::MPhoto(QFileInfo fileInfo, core::MDatabase* database, core::MGallery* gallery) :
-    core::MObject(fileInfo.baseName().toStdString(), database, gallery)
+core::MPhoto::MPhoto(core::MPhotoInfo info, core::MGallery* parent) :
+    core::MObject(parent)
 {
-    _fileInfo = fileInfo;    
+    _info = info;
 }

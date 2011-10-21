@@ -43,9 +43,9 @@ core::MPhoto* core::MDatabase::find(QFileInfo fileInfo)
     std::set<core::MObject*>::iterator it;
     for (it = _content.begin(); it != _content.end(); ++it)
     {
-	if (core::MPhoto* photo = static_cast<core::MPhoto*>(*it))
+	if (core::MPhoto* photo = (*it)->toPhoto())
 	{
-	    if (photo->fileInfo() == fileInfo)
+	    if (photo->info().fileInfo() == fileInfo)
 		return photo;
 	}
     }

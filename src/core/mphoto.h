@@ -7,14 +7,26 @@
 
 namespace core
 {    
-    class MPhoto : public MObject
+    struct MPhotoInfo
     {
-	public:	    
-	    MPhoto(QFileInfo fileInfo, MDatabase* database = 0, MGallery* gallery = 0);
+	public:
+	    MPhotoInfo(){ };
+	    MPhotoInfo(QFileInfo fileInfo){ _fileInfo = fileInfo; }
 	    QFileInfo fileInfo(){ return _fileInfo; }
 
 	private:
 	    QFileInfo _fileInfo;
+
+    };
+
+    class MPhoto : public MObject
+    {
+	public:	    
+	    MPhoto(MPhotoInfo info, MGallery* parent /* = NULL */); // defaulty must have a parent gallery !
+	    MPhotoInfo info(){ return _info; }
+
+	private:
+	    MPhotoInfo _info;
     };
 }
 

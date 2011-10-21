@@ -3,8 +3,8 @@
 gui::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    _activeDatabase = new core::MDatabase();
-    _activeGallery = new core::MGallery();
+    _database = new core::MDatabase();
+
     setupGui(this);
 }
 
@@ -155,46 +155,94 @@ void gui::MainWindow::selectFileInView(const QModelIndex& index)
 {
 }
 
-void gui::MainWindow::importPhotos()
-{
-    // selected list of files
-    std::list<QModelIndex> selectedList = fileSystemView->selectionModel()->selectedRows().toStdList();
-    std::list<QModelIndex>::iterator it;
-
-    core::MPhoto* photo;
-    for (it = selectedList.begin(); it != selectedList.end(); ++it)
-    {
-	QFileInfo fileInfo = fileSystemModel->fileInfo(*it);
-
-	// only add files
-	if (fileInfo.isDir())
-	    continue;
-
-	// check to find duplicates
-	if (_activeDatabase->find(fileInfo))
-	    continue;
-
-	photo = new core::MPhoto(fileInfo, _activeDatabase);
-	    photo->setName(fileInfo.baseName().toStdString());
-
-	// add to core database and widget
-	_activeDatabase->insert(photo);
-	_projectWidget->insert(photo);
-    }
-}
 
 void gui::MainWindow::removeItemFromProject()
 {   
     _projectWidget->remove(); // removes currently selected item
 }
 
+// ================ PHOTOS ================
+
+void gui::MainWindow::importPhotos()
+{
+    // selected list of files
+    std::list<QModelIndex> selectedList = fileSystemView->selectionModel()->selectedRows().toStdList();
+    importPhotos(&selectedList); // reference is enough
+}
+
+void gui::MainWindow::importPhotos(std::list<QModelIndex>* list)
+{
+    gui::MTreeWidgetItem* item =_projectWidget->selected();
+    if (!item) // must have a selected item
+	return;
+
+    core::MGallery* parent = item->object()->toGallery();
+    if (!parent) // selected item must be a gallery
+	return;
+
+    // import
+    std::list<QModelIndex>::iterator it;
+    for (it = list->begin(); it != list->end(); ++it)
+    {
+	QFileInfo fileInfo = fileSystemModel->fileInfo(*it);
+
+	// only add files
+	if (fileInfo.isDir())
+	    continue;
+	// check to find duplicates
+	if (_database->find(fileInfo))
+	    continue;
+
+	core::MPhotoInfo info(fileInfo);
+	// calls a constructor of a new gallery based on its info
+	if (core::MPhoto* photo = parent->insert(info))
+	    _projectWidget->insert(photo);
+    }
+}
+
+// ================ GALLERIES ================
+
+/**
+ * basic slot for creating galleries
+ * invokes a dialog window and sends its content
+ */
 void gui::MainWindow::createGallery()
 {
-    core::MGallery* gallery = new core::MGallery();
-	gallery->setName("test");
+    // reads an input dialog
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("User name:"), QLineEdit::Normal, QDir::home().dirName(), &ok);
 
-    _activeDatabase->insert(gallery);
-    _projectWidget->insert(gallery);
+    // input text handling
+    if (ok)
+	createGallery(text.toStdString());
+}
+
+/**
+ * calls gallery creation handlers on both the gui and the core level
+ * must have a selected gallery otherwise it ends here
+ * @param name gallery name from input dialog
+ */
+void gui::MainWindow::createGallery(std::string name)
+{
+    core::MGalleryInfo info(name);
+    // we have a selected gallery
+    if (gui::MTreeWidgetItem* item =_projectWidget->selected())
+    {
+	// selected object can be a photo or a gallery, we must ensure it's a gallery
+	if (core::MGallery* parent = item->object()->toGallery())
+	{
+	    // calls a constructor of a new gallery based on its info
+	    if (core::MGallery* gallery = parent->insert(info))
+		_projectWidget->insert(gallery);
+	}
+    }
+    // no gallery selected, create gallery on the base level
+    else
+    {
+	core::MGallery* gallery = new core::MGallery(info);
+	_database->insert(gallery);
+	_projectWidget->insert(gallery);
+    }
 }
 
 // SETUP: sets tabs
@@ -218,7 +266,7 @@ void gui::MainWindow::setupTabs(QGridLayout* layout)
     _createGalleryButton->setText(QApplication::translate("MainWindow", "Create Gallery", 0, QApplication::UnicodeUTF8));
     layout->addWidget(_createGalleryButton, 6, 0, 1, 1);
 
-    tabWidget->setCurrentIndex(1);
+    tabWidget->setCurrentIndex(0); // makes Project Tab active
 
     connect(_removeButton, SIGNAL(clicked()), this, SLOT(removeItemFromProject()));
     connect(_createGalleryButton, SIGNAL(clicked()), this, SLOT(createGallery()));

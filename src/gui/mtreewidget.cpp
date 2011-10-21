@@ -7,14 +7,29 @@ gui::MTreeWidget::MTreeWidget(QWidget *parent) :
 {
 }
 
-void gui::MTreeWidget::insert(core::MObject* obj)
+void gui::MTreeWidget::insert(core::MGallery* gallery)
 {
-    gui::MTreeWidgetItem* item = new gui::MTreeWidgetItem(obj);	
+    gui::MTreeWidgetItem* item = new gui::MTreeWidgetItem(gallery);
 
     if (currentItem())
-	insertTopLevelItem(indexOfTopLevelItem(currentItem()), dynamic_cast<QTreeWidgetItem*>(item));
+	insertTopLevelItem(indexOfTopLevelItem(currentItem()), item->toQWidgetItem());
     else
-	insertTopLevelItem(0, dynamic_cast<QTreeWidgetItem*>(item));
+	insertTopLevelItem(0, item->toQWidgetItem());
+}
+
+void gui::MTreeWidget::insert(core::MPhoto* photo)
+{
+    gui::MTreeWidgetItem* item = new gui::MTreeWidgetItem(photo);
+
+    if (currentItem())
+	insertTopLevelItem(indexOfTopLevelItem(currentItem()), item->toQWidgetItem());
+    else
+	insertTopLevelItem(0, item->toQWidgetItem());
+}
+
+gui::MTreeWidgetItem* gui::MTreeWidget::selected()
+{
+    return static_cast<gui::MTreeWidgetItem*>(currentItem());
 }
 
 void gui::MTreeWidget::remove()
@@ -26,8 +41,15 @@ void gui::MTreeWidget::remove()
     delete item;
 }
 
-gui::MTreeWidgetItem::MTreeWidgetItem(core::MObject* obj)
+
+gui::MTreeWidgetItem::MTreeWidgetItem(core::MGallery* gallery)
 {
-    _obj = obj;
-    setText(0, QString(obj->name().c_str()));
+    _obj = gallery->toObject();
+    setText(0, QString(gallery->info().name().c_str()));
+}
+
+gui::MTreeWidgetItem::MTreeWidgetItem(core::MPhoto* photo)
+{
+    _obj = photo->toObject();
+    setText(0, QString(photo->info().fileInfo().baseName()));
 }

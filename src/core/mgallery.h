@@ -2,27 +2,51 @@
 #define MGALLERY_H
 
 #include <set>
+#include <string>
 
 #include <core/mobject.h>
+#include <core/mphoto.h>
 
 namespace core
 {
+    struct MGalleryInfo
+    {
+	public:
+	    MGalleryInfo(){ };
+	    MGalleryInfo(std::string name){ _name = name; }
+
+	    void setName(std::string name){ _name = name; }
+
+	    std::string name(){ return _name; }
+
+	private:
+	    std::string _name;
+    };
+
     class MDatabase;
-    class MPhoto;    
+
     class MGallery : public MObject
     {
 	public:
-	    MGallery(std::string name = "", MDatabase* database = 0, MGallery* gallery = 0);
-	    ~MGallery();
+	    MGallery();
+	    MGallery(MGalleryInfo info, MGallery* parent = NULL);
 
-	    void add(MGallery* gallery);
-	    void add(unsigned int id, MPhoto* photo);
+	    MGallery* insert(MGalleryInfo info);
+	    MPhoto* insert(MPhotoInfo info);
+
+	    void insert(MGallery* gallery);
+	    void insert(MPhoto* photo);
+	    void insert(unsigned int id, MPhoto* photo);
 	    void remove(MObject* obj){ _content.erase(obj); }
+
+	    std::string name(){ return _info.name(); }
+	    MGalleryInfo info(){ return _info; }
 
 	private:
 	    std::set<MObject*> _content;
 
 	    unsigned int _size;
+	    MGalleryInfo _info;
     };
 }
 
