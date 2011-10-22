@@ -35,9 +35,6 @@ namespace core
 	    MGallery* insert(MGalleryInfo info);
 	    MPhoto* insert(MPhotoInfo info);
 
-	    void insert(MGallery* gallery);
-	    void insert(MPhoto* photo);
-	    void insert(unsigned int id, MPhoto* photo);
 	    void remove(MObject* obj){ _content.erase(obj); }
 
 	    std::string name(){ return _info.name(); }
@@ -46,7 +43,6 @@ namespace core
 	private:
 	    std::set<MObject*> _content;
 
-	    unsigned int _size;
 	    MGalleryInfo _info;
     };
 }

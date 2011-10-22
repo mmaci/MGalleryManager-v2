@@ -163,6 +163,10 @@ void gui::MainWindow::removeItemFromProject()
 
 // ================ PHOTOS ================
 
+/**
+ * basic slot for importing multiple photos
+ * passes on a reference to a list of selected items
+ */
 void gui::MainWindow::importPhotos()
 {
     // selected list of files
@@ -170,13 +174,17 @@ void gui::MainWindow::importPhotos()
     importPhotos(&selectedList); // reference is enough
 }
 
+/**
+ * handles multiple file import
+ * @param list list of items to import, checks only for files
+ */
 void gui::MainWindow::importPhotos(std::list<QModelIndex>* list)
 {
-    gui::MTreeWidgetItem* item =_projectWidget->selected();
-    if (!item) // must have a selected item
+    gui::MTreeWidgetItem* parentItem =_projectWidget->selected();
+    if (!parentItem) // must have a selected item
 	return;
 
-    core::MGallery* parent = item->object()->toGallery();
+    core::MGallery* parent = parentItem->object()->toGallery();
     if (!parent) // selected item must be a gallery
 	return;
 
@@ -194,9 +202,10 @@ void gui::MainWindow::importPhotos(std::list<QModelIndex>* list)
 	    continue;
 
 	core::MPhotoInfo info(fileInfo);
-	// calls a constructor of a new gallery based on its info
+	// if insert into core structures succeeds we may also create an entry in list
+	// constructor called in insert(MPhotoInfo)
 	if (core::MPhoto* photo = parent->insert(info))
-	    _projectWidget->insert(photo);
+	    _projectWidget->insert(photo, parentItem);
     }
 }
 
@@ -226,14 +235,14 @@ void gui::MainWindow::createGallery(std::string name)
 {
     core::MGalleryInfo info(name);
     // we have a selected gallery
-    if (gui::MTreeWidgetItem* parentWidget =_projectWidget->selected())
+    if (gui::MTreeWidgetItem* parentItem =_projectWidget->selected())
     {
 	// selected object can be a photo or a gallery, we must ensure it's a gallery
-	if (core::MGallery* parent = parentWidget->object()->toGallery())
+	if (core::MGallery* parent = parentItem->object()->toGallery())
 	{
 	    // calls a constructor of a new gallery based on its info
 	    if (core::MGallery* gallery = parent->insert(info))
-		_projectWidget->insert(gallery, parentWidget);
+		_projectWidget->insert(gallery, parentItem);
 	}
     }
     // no gallery selected, create gallery on the base level

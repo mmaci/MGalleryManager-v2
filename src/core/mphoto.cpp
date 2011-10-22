@@ -4,4 +4,5 @@ core::MPhoto::MPhoto(core::MPhotoInfo info, core::MGallery* parent) :
     core::MObject(parent)
 {
     _info = info;
+    _typeId = TYPEID_PHOTO;
 }

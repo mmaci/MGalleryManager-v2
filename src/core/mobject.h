@@ -4,6 +4,13 @@
 #include <string>
 #include <QFileInfo>
 
+enum TypeIds
+{
+    TYPEID_OBJECT,
+    TYPEID_GALLERY,
+    TYPEID_PHOTO
+};
+
 namespace core
 {
 
@@ -22,8 +29,13 @@ namespace core
 	    MPhoto* toPhoto();
 	    MObject* toObject();
 
+	    char typeId(){ return _typeId; }
+
+	protected:
+	    char _typeId;
+
 	private:	    	   
-	    MGallery* _parent;
+	    MGallery* _parent;	    
     };
 }
 

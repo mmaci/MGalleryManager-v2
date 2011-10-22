@@ -22,7 +22,7 @@ namespace gui
 	public:
 	    MTreeWidget(QWidget* parent = 0);
 	    void insert(core::MGallery* gallery, MTreeWidgetItem* parent = NULL);
-	    void insert(core::MPhoto* photo);
+	    void insert(core::MPhoto* photo, MTreeWidgetItem* parent /* = NULL */); // default value isn't set, because it should never happen
 	    MTreeWidgetItem* selected();
 
 	public slots:
