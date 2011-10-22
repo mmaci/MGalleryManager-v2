@@ -226,14 +226,14 @@ void gui::MainWindow::createGallery(std::string name)
 {
     core::MGalleryInfo info(name);
     // we have a selected gallery
-    if (gui::MTreeWidgetItem* item =_projectWidget->selected())
+    if (gui::MTreeWidgetItem* parentWidget =_projectWidget->selected())
     {
 	// selected object can be a photo or a gallery, we must ensure it's a gallery
-	if (core::MGallery* parent = item->object()->toGallery())
+	if (core::MGallery* parent = parentWidget->object()->toGallery())
 	{
 	    // calls a constructor of a new gallery based on its info
 	    if (core::MGallery* gallery = parent->insert(info))
-		_projectWidget->insert(gallery);
+		_projectWidget->insert(gallery, parentWidget);
 	}
     }
     // no gallery selected, create gallery on the base level

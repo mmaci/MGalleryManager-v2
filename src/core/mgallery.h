@@ -30,6 +30,7 @@ namespace core
 	public:
 	    MGallery();
 	    MGallery(MGalleryInfo info, MGallery* parent = NULL);
+	    ~MGallery();
 
 	    MGallery* insert(MGalleryInfo info);
 	    MPhoto* insert(MPhotoInfo info);

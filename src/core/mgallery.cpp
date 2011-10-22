@@ -15,6 +15,16 @@ core::MGallery* core::MGallery::insert(core::MGalleryInfo info)
     return gallery;
 }
 
+core::MGallery::~MGallery()
+{
+    std::set<core::MObject*>::iterator it;
+    while(!_content.empty())
+    {
+	it = _content.begin();
+	_content.erase(it);
+    }
+}
+
 void core::MGallery::insert(core::MGallery* gallery)
 {
     _content.insert(gallery);

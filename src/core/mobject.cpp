@@ -16,6 +16,4 @@ core::MObject* core::MObject::toObject(){ return dynamic_cast<core::MObject*>(th
 core::MObject::~MObject()
 {    
 
-    if (_parent)
-	_parent->remove(this);
 }

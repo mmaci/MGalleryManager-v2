@@ -5,16 +5,21 @@
 gui::MTreeWidget::MTreeWidget(QWidget *parent) :
     QTreeWidget(parent)
 {
+    clear();
 }
 
-void gui::MTreeWidget::insert(core::MGallery* gallery)
+/**
+ * inserts an item into Tree Widget
+ * @param gallery gallery we are inserting, needed to create widget data
+ * @param parent parent widget to which we are adding, default NULL
+ */
+void gui::MTreeWidget::insert(core::MGallery* gallery, gui::MTreeWidgetItem* parent)
 {
+    // creates a new widget item based on gallery data
     gui::MTreeWidgetItem* item = new gui::MTreeWidgetItem(gallery);
+    parent ? parent->addChild(item) : insertTopLevelItem(0, item);
 
-    if (currentItem())
-	insertTopLevelItem(indexOfTopLevelItem(currentItem()), item->toQWidgetItem());
-    else
-	insertTopLevelItem(0, item->toQWidgetItem());
+    sortItems(0, Qt::AscendingOrder); // sort in alphabetical order
 }
 
 void gui::MTreeWidget::insert(core::MPhoto* photo)
