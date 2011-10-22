@@ -21,6 +21,7 @@ core::MGallery::~MGallery()
     while(!_content.empty())
     {
 	it = _content.begin();
+	delete *it;
 	_content.erase(it);
     }
 }
