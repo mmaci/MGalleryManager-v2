@@ -2,6 +2,7 @@
 #define MOBJECT_H
 
 #include <string>
+#include <iostream>
 #include <QFileInfo>
 
 enum TypeIds
@@ -22,7 +23,7 @@ namespace core
     {
 	public:
 	    MObject(MGallery* parent = NULL);
-	    ~MObject();
+	    virtual ~MObject(){ };
 
 	    // conversions
 	    MGallery* toGallery();
@@ -33,9 +34,10 @@ namespace core
 
 	protected:
 	    char _typeId;
+	    MGallery* _parent;
 
 	private:	    	   
-	    MGallery* _parent;	    
+
     };
 }
 

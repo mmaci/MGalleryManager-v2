@@ -45,8 +45,7 @@ namespace gui
 	signals:
 
 	public slots:
-	    void importPhotos();
-	    void selectFileInView(const QModelIndex& index);	    
+	    void importPhotos();	    	    
 	    void removeItemFromProject();	    
 	    void createGallery();
 

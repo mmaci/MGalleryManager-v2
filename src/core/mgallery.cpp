@@ -10,6 +10,7 @@ core::MGallery::MGallery(core::MGalleryInfo info, core::MGallery* parent) :
 
 core::MGallery::~MGallery()
 {
+    std::cout << "deleting gallery" << std::endl;
     std::set<core::MObject*>::iterator it;
     while(!_content.empty())
     {
@@ -17,6 +18,21 @@ core::MGallery::~MGallery()
 	delete *it;
 	_content.erase(it);
     }
+}
+
+core::MPhoto* core::MGallery::find(QFileInfo info)
+{
+    std::set<core::MObject*>::iterator it;
+    core::MPhoto* photo;
+    for (it = _content.begin(); it != _content.end(); ++it)
+    {
+	if (photo = (*it)->toPhoto())
+	{
+	    if (photo->info().fileInfo() == info)
+		return photo;
+	}
+    }
+    return NULL;
 }
 
 core::MGallery* core::MGallery::insert(core::MGalleryInfo info)

@@ -30,8 +30,3 @@ core::MObject* core::MObject::toObject()
 {
     return dynamic_cast<core::MObject*>(this);
 }
-
-core::MObject::~MObject()
-{    
-
-}

@@ -34,7 +34,8 @@ namespace gui
 	public:
 	    MTreeWidgetItem(core::MGallery* gallery);
 	    MTreeWidgetItem(core::MPhoto* photo);
-	    ~MTreeWidgetItem(){ delete _obj; } // also removes from MDatabase and MGallery
+	    ~MTreeWidgetItem();
+
 	    QTreeWidgetItem* toQWidgetItem(){ return dynamic_cast<QTreeWidgetItem*>(this); }
 
 	    core::MObject* object(){ return _obj; }

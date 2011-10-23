@@ -35,6 +35,7 @@ namespace core
 	    MGallery* insert(MGalleryInfo info);
 	    MPhoto* insert(MPhotoInfo info);
 
+	    MPhoto* find(QFileInfo info);
 	    void remove(MObject* obj){ _content.erase(obj); }
 
 	    std::string name(){ return _info.name(); }

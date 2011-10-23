@@ -151,11 +151,6 @@ void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
 
 } // ENDOF gui::MainWindow::setupFileSystemView
 
-void gui::MainWindow::selectFileInView(const QModelIndex& index)
-{
-}
-
-
 void gui::MainWindow::removeItemFromProject()
 {   
     _projectWidget->remove(); // removes currently selected item
@@ -198,7 +193,7 @@ void gui::MainWindow::importPhotos(std::list<QModelIndex>* list)
 	if (fileInfo.isDir())
 	    continue;
 	// check to find duplicates
-	if (_database->find(fileInfo))
+	if (parent->find(fileInfo))
 	    continue;
 
 	core::MPhotoInfo info(fileInfo);
@@ -219,7 +214,7 @@ void gui::MainWindow::createGallery()
 {
     // reads an input dialog
     bool ok;
-    QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("User name:"), QLineEdit::Normal, QDir::home().dirName(), &ok);
+    QString text = QInputDialog::getText(this, tr("New Gallery"), tr("Name:"), QLineEdit::Normal, QDir::home().dirName(), &ok);
 
     // input text handling
     if (ok)
