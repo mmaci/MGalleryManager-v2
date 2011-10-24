@@ -16,11 +16,13 @@ SOURCES += main.cpp\
     core/mgallery.cpp \
     core/mphoto.cpp \
     gui/mtreewidget.cpp \
-    core/mobject.cpp
+    core/mobject.cpp \
+    gui/mgridwidget.cpp
 
 HEADERS  += gui/mainwindow.h \
     core/mdatabase.h \
     core/mgallery.h \
     core/mphoto.h \
     gui/mtreewidget.h \
-    core/mobject.h
+    core/mobject.h \
+    gui/mgridwidget.h

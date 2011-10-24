@@ -17,7 +17,7 @@ namespace core
 
 	    void setName(std::string name){ _name = name; }
 
-	    std::string name(){ return _name; }
+	    std::string name() const { return _name; }
 
 	private:
 	    std::string _name;
@@ -38,8 +38,8 @@ namespace core
 	    MPhoto* find(QFileInfo info);
 	    void remove(MObject* obj){ _content.erase(obj); }
 
-	    std::string name(){ return _info.name(); }
-	    MGalleryInfo info(){ return _info; }
+	    std::string name() const { return _info.name(); }
+	    MGalleryInfo info() const { return _info; }
 
 	private:
 	    std::set<MObject*> _content;

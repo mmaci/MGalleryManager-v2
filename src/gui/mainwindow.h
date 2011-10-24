@@ -28,6 +28,7 @@
 #include <core/mdatabase.h>
 #include <core/mgallery.h>
 #include <gui/mtreewidget.h>
+#include <gui/mgridwidget.h>
 
 namespace gui
 {
@@ -56,13 +57,18 @@ namespace gui
 	    void setupTabs(QGridLayout* layout);
 	    void setupDetailsTab(QTabWidget* tab);
 	    void setupProjectTab(QTabWidget* tab);
+	    void setupObjectGrid(QWidget* parent);
 
 	    void enableGui(bool state);
 
-	    // central widgets
-	    QWidget* centralWidget;
-	    QWidget* gridLayoutWidget;
-	    QGridLayout* gridLayout;
+	    // layout
+	    QWidget*	    _centralWidget;
+	    QWidget*	    _baseGridWidget;
+	    QGridLayout*    _baseGrid;
+
+	    // central window
+	    MGridWidget*    _objectGridWidget;
+	    QGridLayout*    _objectGrid;
 
 	    // filesystem tree view
 	    QFileSystemModel* fileSystemModel;
@@ -70,7 +76,7 @@ namespace gui
 	    QPushButton* _importButton;
 	    QPushButton* _createGalleryButton;
 
-	    QTabWidget* tabWidget;
+	    QTabWidget* _tabWidget;
 	    QWidget* projectViewWidget;
 	    QWidget* detailsWidget;
 
@@ -80,7 +86,7 @@ namespace gui
 
 	    MTreeWidget* _projectWidget;
 
-	    QTableWidget* tableWidget;
+	    QWidget* tableWidget;
 	    QMenuBar* menuBar;
 	    QMenu* menuProject;
 	    QMenu* menuExport;

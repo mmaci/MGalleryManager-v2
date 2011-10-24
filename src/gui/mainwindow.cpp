@@ -22,7 +22,7 @@ gui::MainWindow::~MainWindow()
     delete projectViewWidget;
     // delete details tab
     delete detailsWidget;
-    delete tabWidget;
+    delete _tabWidget;
     // delete menu
     delete menuProject;
     delete menuExport;
@@ -31,15 +31,17 @@ gui::MainWindow::~MainWindow()
     delete menuImage;
     delete menuBar;
 
+    delete _objectGridWidget;
+
     delete _removeButton;
     delete statusBar;
     delete mainToolBar;
 
     // delete central, layout widgets
-    delete tableWidget;
-    delete gridLayout;
-    delete gridLayoutWidget;
-    delete centralWidget;
+    delete _baseGrid;
+    delete _baseGridWidget;
+    delete _centralWidget;
+
 }
 
 // SETUP: core setup handler
@@ -48,25 +50,26 @@ void gui::MainWindow::setupGui(QMainWindow* mainWindow)
     if (mainWindow->objectName().isEmpty())
 	mainWindow->setObjectName(QString::fromUtf8("MainWindow"));
     mainWindow->resize(1035, 650);
-    centralWidget = new QWidget(mainWindow);
-    centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-    gridLayoutWidget = new QWidget(centralWidget);
-    gridLayoutWidget->setObjectName(QString::fromUtf8("gridLayoutWidget"));
-    gridLayoutWidget->setGeometry(QRect(10, 20, 271, 561));
-    gridLayout = new QGridLayout(gridLayoutWidget);
-    gridLayout->setSpacing(6);
-    gridLayout->setContentsMargins(11, 11, 11, 11);
-    gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-    gridLayout->setContentsMargins(0, 0, 0, 0);
+
+    _centralWidget = new QWidget(mainWindow);
+	_centralWidget->setObjectName(QString::fromUtf8("_centralWidget"));
+
+    _baseGridWidget = new QWidget(_centralWidget);
+	_baseGridWidget->setObjectName(QString::fromUtf8("_baseGridWidget"));
+	_baseGridWidget->setGeometry(QRect(10, 20, 271, 561));
+
+    _baseGrid = new QGridLayout(_baseGridWidget);
+	_baseGrid->setSpacing(6);
+	_baseGrid->setContentsMargins(11, 11, 11, 11);
+	_baseGrid->setObjectName(QString::fromUtf8("_baseGrid"));
+	_baseGrid->setContentsMargins(0, 0, 0, 0);
 
     setupMenu(mainWindow);
-    setupFileSystemView(gridLayout);
-    setupTabs(gridLayout);
+    setupFileSystemView(_baseGrid);
+    setupTabs(_baseGrid);
+    setupObjectGrid(_centralWidget);
 
-    tableWidget = new QTableWidget(centralWidget);
-    tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
-    tableWidget->setGeometry(QRect(290, 20, 731, 561));
-    mainWindow->setCentralWidget(centralWidget);
+    mainWindow->setCentralWidget(_centralWidget);
 
     mainToolBar = new QToolBar(mainWindow);
     mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -76,17 +79,24 @@ void gui::MainWindow::setupGui(QMainWindow* mainWindow)
     mainWindow->setStatusBar(statusBar);
 
 
-
     mainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0, QApplication::UnicodeUTF8));
 
     // at the beginning we disable all kinds of buttons, menus, ...
     // to enable them later on, when we create a project
     // enableGui(false);
+
 } // ENDOF gui::MainWindow::setupGui(QMainWindow* mainWindow)
 
 void gui::MainWindow::enableGui(bool state)
 {
     _importButton->setEnabled(state);
+}
+
+void gui::MainWindow::setupObjectGrid(QWidget* parent)
+{
+    _objectGridWidget = new gui::MGridWidget(parent);
+	_objectGridWidget->setAutoFillBackground(true);
+	_objectGridWidget->setGeometry(QRect(290, 20, 731, 561));
 }
 
 // SETUP: sets menus
@@ -125,7 +135,7 @@ void gui::MainWindow::setupMenu(QMainWindow* mainWindow)
 void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
 {
     // init
-    fileSystemView = new QTreeView(gridLayoutWidget);
+    fileSystemView = new QTreeView(_baseGridWidget);
     fileSystemModel = new QFileSystemModel;
     fileSystemModel->setRootPath(QDir::currentPath());
 
@@ -140,7 +150,7 @@ void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
     layout->addWidget(fileSystemView, 2, 0, 1, 1);
 
     // import button
-    _importButton = new QPushButton(gridLayoutWidget);
+    _importButton = new QPushButton(_baseGridWidget);
     _importButton->setObjectName(QString::fromUtf8("importButton"));
     _importButton->setText(QApplication::translate("MainWindow", "Import", 0, QApplication::UnicodeUTF8));
     layout->addWidget(_importButton, 3, 0, 1, 1);
@@ -153,7 +163,11 @@ void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
 
 void gui::MainWindow::removeItemFromProject()
 {   
-    _projectWidget->remove(); // removes currently selected item
+    if (core::MObject* obj = _projectWidget->remove()) // removes currently selected item from list
+    {
+	_objectGridWidget->remove(obj); // also removes from grid
+	delete obj;
+    }
 }
 
 // ================ PHOTOS ================
@@ -200,8 +214,12 @@ void gui::MainWindow::importPhotos(std::list<QModelIndex>* list)
 	// if insert into core structures succeeds we may also create an entry in list
 	// constructor called in insert(MPhotoInfo)
 	if (core::MPhoto* photo = parent->insert(info))
+	{
 	    _projectWidget->insert(photo, parentItem);
+	    _objectGridWidget->insert(photo);
+	}
     }
+    this->show();
 }
 
 // ================ GALLERIES ================
@@ -252,25 +270,25 @@ void gui::MainWindow::createGallery(std::string name)
 // SETUP: sets tabs
 void gui::MainWindow::setupTabs(QGridLayout* layout)
 {
-    tabWidget = new QTabWidget(gridLayoutWidget);
-    tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
+    _tabWidget = new QTabWidget(_baseGridWidget);
+    _tabWidget->setObjectName(QString::fromUtf8("_tabWidget"));
 
-    setupProjectTab(tabWidget);
-    setupDetailsTab(tabWidget);
+    setupProjectTab(_tabWidget);
+    setupDetailsTab(_tabWidget);
 
-    _removeButton = new QPushButton(gridLayoutWidget);
+    _removeButton = new QPushButton(_baseGridWidget);
     _removeButton->setObjectName(QString::fromUtf8("removeButton"));
     _removeButton->setText(QApplication::translate("MainWindow", "Remove", 0, QApplication::UnicodeUTF8));
 
-    layout->addWidget(tabWidget, 4, 0, 1, 1);
+    layout->addWidget(_tabWidget, 4, 0, 1, 1);
     layout->addWidget(_removeButton, 5, 0, 1, 1);
 
-    _createGalleryButton = new QPushButton(gridLayoutWidget);
+    _createGalleryButton = new QPushButton(_baseGridWidget);
     _createGalleryButton->setObjectName(QString::fromUtf8("removeButton"));
     _createGalleryButton->setText(QApplication::translate("MainWindow", "Create Gallery", 0, QApplication::UnicodeUTF8));
     layout->addWidget(_createGalleryButton, 6, 0, 1, 1);
 
-    tabWidget->setCurrentIndex(0); // makes Project Tab active
+    _tabWidget->setCurrentIndex(0); // makes Project Tab active
 
     connect(_removeButton, SIGNAL(clicked()), this, SLOT(removeItemFromProject()));
     connect(_createGalleryButton, SIGNAL(clicked()), this, SLOT(createGallery()));

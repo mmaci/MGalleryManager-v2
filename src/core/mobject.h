@@ -30,7 +30,7 @@ namespace core
 	    MPhoto* toPhoto();
 	    MObject* toObject();
 
-	    char typeId(){ return _typeId; }
+	    char typeId() const { return _typeId; }
 
 	protected:
 	    char _typeId;

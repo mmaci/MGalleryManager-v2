@@ -31,8 +31,7 @@ gui::MTreeWidgetItem::MTreeWidgetItem(core::MPhoto* photo)
  * destructor
  */
 gui::MTreeWidgetItem::~MTreeWidgetItem()
-{
-    delete _obj; // calls a virtual destructor (continues to MGallery or MPhoto)
+{ 
 }
 
 /**
@@ -84,14 +83,16 @@ void gui::MTreeWidget::insert(core::MPhoto* photo, gui::MTreeWidgetItem* parent)
  * removes currently selected item from the widget
  * also deletes all proper core structures
  */
-void gui::MTreeWidget::remove()
+core::MObject* gui::MTreeWidget::remove()
 {
     gui::MTreeWidgetItem* item = selected();
+    core::MObject* obj = item->object();
 
     // remove from widget
     takeTopLevelItem(indexOfTopLevelItem(item));
+    delete item;
 
-    delete item; // also deletes bound core object
+    return obj;
 }
 
 

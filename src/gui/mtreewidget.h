@@ -24,9 +24,7 @@ namespace gui
 	    void insert(core::MGallery* gallery, MTreeWidgetItem* parent = NULL);
 	    void insert(core::MPhoto* photo, MTreeWidgetItem* parent /* = NULL */); // default value isn't set, because it should never happen
 	    MTreeWidgetItem* selected();
-
-	public slots:
-	    void remove();
+	    core::MObject* remove();
     };
 
     class MTreeWidgetItem : public QTreeWidgetItem

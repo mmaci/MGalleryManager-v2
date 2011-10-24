@@ -24,7 +24,7 @@ namespace core
 	public:	    
 	    MPhoto(MPhotoInfo info, MGallery* parent /* = NULL */); // defaulty must have a parent gallery !
 	    ~MPhoto();
-	    MPhotoInfo info(){ return _info; }
+	    MPhotoInfo info() const { return _info; }
 
 	private:
 	    MPhotoInfo _info;
