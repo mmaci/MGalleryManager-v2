@@ -1,4 +1,8 @@
 #include "gui/mainwindow.h"
+#include "gui/mtreewidget.h"
+#include "gui/mgridwidget.h"
+#include "core/mphoto.h"
+#include "core/mdatabase.h"
 
 gui::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -163,11 +167,8 @@ void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
 
 void gui::MainWindow::removeItemFromProject()
 {   
-    if (core::MObject* obj = _projectWidget->remove()) // removes currently selected item from list
-    {
-	_objectGridWidget->remove(obj); // also removes from grid
-	delete obj;
-    }
+    if (core::MObject* object = _projectWidget->selected()->object())
+	object->remove();
 }
 
 // ================ PHOTOS ================
@@ -215,11 +216,13 @@ void gui::MainWindow::importPhotos(std::list<QModelIndex>* list)
 	// constructor called in insert(MPhotoInfo)
 	if (core::MPhoto* photo = parent->insert(info))
 	{
-	    _projectWidget->insert(photo, parentItem);
-	    _objectGridWidget->insert(photo);
+	    if (gui::MTreeWidgetItem* treeItem = _projectWidget->insert(photo, parentItem))
+		photo->setTreeWidgetItem(treeItem);
+
+	    if (gui::MGridItem* gridItem = _objectGridWidget->insert(photo))
+		photo->setGridWidgetItem(gridItem);
 	}
-    }
-    this->show();
+    }    
 }
 
 // ================ GALLERIES ================
@@ -255,15 +258,18 @@ void gui::MainWindow::createGallery(std::string name)
 	{
 	    // calls a constructor of a new gallery based on its info
 	    if (core::MGallery* gallery = parent->insert(info))
-		_projectWidget->insert(gallery, parentItem);
+	    {
+		if (gui::MTreeWidgetItem* item = _projectWidget->insert(gallery, parentItem))
+		    gallery->setTreeWidgetItem(item);
+	    }
 	}
     }
     // no gallery selected, create gallery on the base level
     else
     {
-	core::MGallery* gallery = new core::MGallery(info);
-	_database->insert(gallery);
-	_projectWidget->insert(gallery);
+	core::MGallery* gallery = new core::MGallery(info);	
+	if (gui::MTreeWidgetItem* item =  _projectWidget->insert(gallery))
+	    gallery->setTreeWidgetItem(item);
     }
 }
 

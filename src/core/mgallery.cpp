@@ -1,16 +1,25 @@
+#define _DEBUG
+
 #include "core/mdatabase.h"
 #include "core/mphoto.h"
+#include "core/mgallery.h"
 
 core::MGallery::MGallery(core::MGalleryInfo info, core::MGallery* parent) :
     MObject(parent)
 {
     _info = info;
     _typeId = TYPEID_GALLERY;
+
+    #ifdef _DEBUG
+    std::cout << "Creating new instance of MGallery (" << _info.name() << ")" << std::endl;
+    #endif
 }
 
 core::MGallery::~MGallery()
 {
-    std::cout << "deleting gallery" << std::endl;
+    #ifdef _DEBUG
+    std::cout << "Deleting contents of MGallery (" << _info.name() << ")" << std::endl;
+    #endif
     std::set<core::MObject*>::iterator it;
     while(!_content.empty())
     {
@@ -18,6 +27,9 @@ core::MGallery::~MGallery()
 	delete *it;
 	_content.erase(it);
     }
+    #ifdef _DEBUG
+    std::cout << "Deleting an instance of MGallery (" << _info.name() << ")" << std::endl;
+    #endif
 }
 
 core::MPhoto* core::MGallery::find(QFileInfo info)

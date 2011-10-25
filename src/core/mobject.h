@@ -12,12 +12,18 @@ enum TypeIds
     TYPEID_PHOTO
 };
 
+namespace gui
+{
+    class MGridItem;
+    class MTreeWidgetItem;
+}
+
 namespace core
 {
 
-    class MGallery;
-    class MDatabase;
+    class MGallery;    
     class MPhoto;
+    struct MPhotoInfo;
 
     class MObject
     {
@@ -32,12 +38,18 @@ namespace core
 
 	    char typeId() const { return _typeId; }
 
+	    void remove();
+
+	    void setGridWidgetItem(gui::MGridItem* item){ _gridItem = item; }
+	    void setTreeWidgetItem(gui::MTreeWidgetItem* item){ _treeItem = item; }
+
 	protected:
 	    char _typeId;
 	    MGallery* _parent;
 
-	private:	    	   
-
+	private:
+	    gui::MGridItem* _gridItem;
+	    gui::MTreeWidgetItem* _treeItem;
     };
 }
 

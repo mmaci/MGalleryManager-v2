@@ -4,11 +4,10 @@
 #include <set>
 #include <string>
 
-#include <core/mobject.h>
-#include <core/mphoto.h>
+#include "core/mphoto.h"
 
 namespace core
-{
+{  
     struct MGalleryInfo
     {
 	public:
@@ -22,8 +21,6 @@ namespace core
 	private:
 	    std::string _name;
     };
-
-    class MDatabase;
 
     class MGallery : public MObject
     {

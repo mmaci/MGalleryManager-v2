@@ -1,4 +1,6 @@
 #include "core/mdatabase.h"
+#include "core/mobject.h"
+#include "core/mphoto.h"
 
 core::MDatabase::MDatabase()
 {

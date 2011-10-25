@@ -3,10 +3,12 @@
 
 #include <QFileInfo>
 
-#include <core/mobject.h>
+#include "core/mobject.h"
 
 namespace core
-{    
+{        
+    class MGallery;
+
     struct MPhotoInfo
     {
 	public:

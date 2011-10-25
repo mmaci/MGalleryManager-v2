@@ -1,14 +1,15 @@
 #ifndef MDATABASE_H
 #define MDATABASE_H
 
+#include <QFileInfo>
+
 #include <set>
 
-#include <core/mgallery.h>
-#include <core/mphoto.h>
-#include <core/mobject.h>
-
 namespace core
-{        
+{
+    class MPhoto;
+    class MObject;
+
     class MDatabase
     {
 	public:

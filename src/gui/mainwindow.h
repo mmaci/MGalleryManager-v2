@@ -1,9 +1,9 @@
+#define _DEBUG
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <iostream>
 #include <string>
-
 #include <QMainWindow>
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
@@ -25,13 +25,16 @@
 #include <QFileSystemModel>
 #include <QInputDialog>
 
-#include <core/mdatabase.h>
-#include <core/mgallery.h>
-#include <gui/mtreewidget.h>
-#include <gui/mgridwidget.h>
+namespace core
+{
+    class MDatabase;
+}
 
 namespace gui
 {
+    class MGridWidget;
+    class MTreeWidget;
+
     class MainWindow : public QMainWindow
     {
 	Q_OBJECT

@@ -5,15 +5,34 @@
 #include <QTreeWidgetItem>
 
 #include <core/mobject.h>
-#include <core/mgallery.h>
-#include <core/mphoto.h>
-#include <iostream>
-#include <string>
+
+namespace core
+{
+    class MPhoto;
+    class MGallery;
+}
 
 namespace gui
 {
+    class MTreeWidget;
 
-    class MTreeWidgetItem;
+    class MTreeWidgetItem : public QTreeWidgetItem
+    {
+	public:
+	    MTreeWidgetItem(MTreeWidget* widget, core::MGallery* gallery);
+	    MTreeWidgetItem(MTreeWidget* widget, core::MPhoto* photo);
+	    ~MTreeWidgetItem();
+
+	    QTreeWidgetItem* toQWidgetItem(){ return dynamic_cast<QTreeWidgetItem*>(this); }
+
+	    core::MObject* object(){ return _obj; }
+
+	    MTreeWidget* widget(){ return _widget; }
+
+	private:
+	    core::MObject* _obj;
+	    MTreeWidget* _widget;
+    };
 
     class MTreeWidget : public QTreeWidget
     {
@@ -21,25 +40,10 @@ namespace gui
 
 	public:
 	    MTreeWidget(QWidget* parent = 0);
-	    void insert(core::MGallery* gallery, MTreeWidgetItem* parent = NULL);
-	    void insert(core::MPhoto* photo, MTreeWidgetItem* parent /* = NULL */); // default value isn't set, because it should never happen
-	    MTreeWidgetItem* selected();
-	    core::MObject* remove();
-    };
-
-    class MTreeWidgetItem : public QTreeWidgetItem
-    {
-	public:
-	    MTreeWidgetItem(core::MGallery* gallery);
-	    MTreeWidgetItem(core::MPhoto* photo);
-	    ~MTreeWidgetItem();
-
-	    QTreeWidgetItem* toQWidgetItem(){ return dynamic_cast<QTreeWidgetItem*>(this); }
-
-	    core::MObject* object(){ return _obj; }
-
-	private:	    
-	    core::MObject* _obj;
+	    MTreeWidgetItem* insert(core::MGallery* gallery, MTreeWidgetItem* parent = NULL);
+	    MTreeWidgetItem* insert(core::MPhoto* photo, MTreeWidgetItem* parent /* = NULL */); // default value isn't set, because it should never happen
+	    MTreeWidgetItem* selected();	    
+	    core::MObject* remove(MTreeWidgetItem* item = NULL);
     };
 }
 

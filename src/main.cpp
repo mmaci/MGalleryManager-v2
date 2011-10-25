@@ -1,3 +1,6 @@
+#define _DEBUG
+
+#include <iostream>
 #include <QtGui/QApplication>
 #include "gui/mainwindow.h"
 
