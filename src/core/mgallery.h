@@ -34,9 +34,11 @@ namespace core
 
 	    MPhoto* find(QFileInfo info);
 	    void remove(MObject* obj){ _content.erase(obj); }
+	    int count(){ return _content.size(); }
 
 	    std::string name() const { return _info.name(); }
 	    MGalleryInfo info() const { return _info; }
+	    std::set<MObject*> content(){ return _content; }
 
 	private:
 	    std::set<MObject*> _content;

@@ -106,6 +106,9 @@ namespace gui
 	    MGridItem* insert(core::MGallery* gallery);
 	    MGridItem* insert(core::MPhoto* gallery);
 
+	    void load(core::MObject* object);
+	    void hideAllItems();
+
 	    int count() const { return _items.size(); }
 	    QGridLayout* layout() { return _layout; }
 
@@ -115,7 +118,7 @@ namespace gui
 
 	private:
 	    QGridLayout* _layout;
-	    std::list<MGridItem*> _items;
+	    std::list<MGridItem*> _items;	    
     };
 }
 

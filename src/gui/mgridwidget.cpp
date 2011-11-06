@@ -125,8 +125,9 @@ gui::MGridWidget::MGridWidget(QWidget* parent) :
     // widget layout
     _layout = new QGridLayout(this);
 	_layout->setSpacing(6);
-	_layout->setContentsMargins(11, 11, 11, 11);
 	_layout->setContentsMargins(0, 0, 0, 0);	
+	_layout->setSizeConstraint(QLayout::SetFixedSize);
+
 
     #ifdef _DEBUG
     std::cout << "Creating new instance of MGridWidget" << std::endl;
@@ -156,8 +157,48 @@ gui::MGridItem* gui::MGridWidget::insert(core::MPhoto* photo)
 	_layout->addWidget(item, pos_y, pos_x, Qt::AlignLeft|Qt::AlignTop);
 	_items.push_back(item);
 
-    item->show();
+    item->show();    
     return item;
+}
+
+void gui::MGridWidget::load(core::MObject* object)
+{
+    hideAllItems();
+
+    if (object->typeId() == TYPEID_GALLERY)
+    {
+	// displays gallery content
+	    core::MGallery* gallery = object->toGallery();
+	    std::set<core::MObject*> galleryContent = gallery->content();
+	    std::set<core::MObject*>::iterator it;
+
+	    int pos_x, pos_y, cnt = 0;
+	    for (it = galleryContent.begin(); it != galleryContent.end(); ++it)
+	    {		
+		pos_x = cnt % GRID_WIDTH;
+		pos_y = cnt / GRID_WIDTH;
+		if ((*it)->typeId() == TYPEID_PHOTO)
+		{		    		    		    
+		    _layout->addWidget((*it)->gridItem(), pos_y, pos_x, Qt::AlignLeft|Qt::AlignTop);
+		    (*it)->gridItem()->show();		    
+		    cnt++;
+		}
+	    }
+    }
+    else
+    if (object->typeId() == TYPEID_PHOTO)
+    {
+    }
+}
+
+void gui::MGridWidget::hideAllItems()
+{
+    std::list<gui::MGridItem*>::iterator it;
+    for (it = _items.begin(); it != _items.end(); ++it)
+    {
+	_layout->removeWidget(*it);
+	(*it)->hide();
+    }    
 }
 
 gui::MGridItem* gui::MGridWidget::find(core::MObject* obj)

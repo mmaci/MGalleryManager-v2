@@ -52,6 +52,7 @@ namespace gui
 	    void importPhotos();	    	    
 	    void removeItemFromProject();	    
 	    void createGallery();
+	    void refreshObjectGrid(QModelIndex index);
 
 	private:
 	    void setupGui(QMainWindow* mainWindow);

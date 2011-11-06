@@ -37,6 +37,8 @@ namespace core
 	    MObject* toObject();
 
 	    char typeId() const { return _typeId; }
+	    gui::MGridItem* gridItem(){ return _gridItem; }
+	    gui::MTreeWidgetItem* treeWidgetItem(){ return _treeItem; }
 
 	    void remove();
 

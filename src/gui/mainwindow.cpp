@@ -161,9 +161,16 @@ void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
 
     // set signals and slots
     // import button imports a photo
-    connect(_importButton, SIGNAL(clicked()), this, SLOT(importPhotos()));
+    connect(_importButton, SIGNAL(clicked()), this, SLOT(importPhotos()));    
 
 } // ENDOF gui::MainWindow::setupFileSystemView
+
+void gui::MainWindow::refreshObjectGrid(QModelIndex index)
+{
+    // index isn't needed because when we double click on an item, we have it selected, so we just try to load the currently selected item
+    // safechecks in load
+    _objectGridWidget->load(_projectWidget->selected()->object());
+}
 
 void gui::MainWindow::removeItemFromProject()
 {   
@@ -181,7 +188,8 @@ void gui::MainWindow::importPhotos()
 {
     // selected list of files
     std::list<QModelIndex> selectedList = fileSystemView->selectionModel()->selectedRows().toStdList();
-    importPhotos(&selectedList); // reference is enough
+    importPhotos(&selectedList); // reference is enough    
+    fileSystemView->clearSelection();
 }
 
 /**
@@ -313,6 +321,8 @@ void gui::MainWindow::setupProjectTab(QTabWidget* tab)
 
     tab->addTab(projectViewWidget, QString());
     tab->setTabText(tab->indexOf(projectViewWidget), QApplication::translate("MainWindow", "Project", 0, QApplication::UnicodeUTF8));
+
+    connect(_projectWidget, SIGNAL(clicked(QModelIndex)), this, SLOT(refreshObjectGrid(QModelIndex)));
 } // ENDOF gui::MainWindow::setupProjectTab
 
 void gui::MainWindow::setupDetailsTab(QTabWidget* tab)
