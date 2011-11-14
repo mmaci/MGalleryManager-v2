@@ -2,6 +2,7 @@
 #define MPHOTO_H
 
 #include <QFileInfo>
+#include <QPixmap>
 
 #include "core/mobject.h"
 
@@ -27,6 +28,7 @@ namespace core
 	    MPhoto(MPhotoInfo info, MGallery* parent /* = NULL */); // defaulty must have a parent gallery !
 	    ~MPhoto();
 	    MPhotoInfo info() const { return _info; }
+	    QPixmap generateImage(int maxSize);
 
 	private:
 	    MPhotoInfo _info;

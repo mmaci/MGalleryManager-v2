@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QGridLayout>
 #include <QCoreApplication>
+#include <QLabel>
 
 #include "gui/mgridwidgetdefines.h"
 
@@ -45,6 +46,7 @@ namespace gui
 	private:
 	    QGridLayout* _layout;
 	    std::list<MGridWidgetItem*> _items;
+	    QLabel* _displayPhoto;
     };
 }
 

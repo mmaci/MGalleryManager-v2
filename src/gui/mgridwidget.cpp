@@ -13,6 +13,7 @@ gui::MGridWidget::MGridWidget(QWidget* parent) :
 	_layout->setContentsMargins(0, 0, 0, 0);	
 	_layout->setSizeConstraint(QLayout::SetFixedSize);
 
+    _displayPhoto = NULL;
 
     #ifdef _DEBUG
     std::cout << "Creating new instance of MGridWidget" << std::endl;
@@ -49,6 +50,13 @@ gui::MGridWidgetItem* gui::MGridWidget::insert(core::MPhoto* photo)
 void gui::MGridWidget::load(core::MObject* object)
 {
     hideAllItems();
+    if (_displayPhoto)
+    {
+	_layout->removeWidget(_displayPhoto);
+	_displayPhoto->hide();
+	delete _displayPhoto;
+	_displayPhoto = NULL;
+    }
 
     if (object->typeId() == TYPEID_GALLERY)
     {
@@ -62,7 +70,7 @@ void gui::MGridWidget::load(core::MObject* object)
 	    {		
 		pos_x = cnt % GRID_WIDTH;
 		pos_y = cnt / GRID_WIDTH;
-		if ((*it)->typeId() == TYPEID_PHOTO)
+		if ((*it)->typeId() == TYPEID_PHOTO && (*it)->gridItem()) // check for gridItem isn't needed here atm, but might be in the future
 		{		    		    		    
 		    _layout->addWidget((*it)->gridItem(), pos_y, pos_x, Qt::AlignLeft|Qt::AlignTop);
 		    (*it)->gridItem()->show();		    
@@ -73,6 +81,13 @@ void gui::MGridWidget::load(core::MObject* object)
     else
     if (object->typeId() == TYPEID_PHOTO)
     {
+	// hacky way of implementing a photo display
+	// we should implement this by subclassing MGridWidgetItem to MGridWidgetThumbnail and MGridWidgetDisplay
+	core::MPhoto* photo = object->toPhoto();
+	_displayPhoto = new QLabel(this);
+	    _displayPhoto->setPixmap(photo->generateImage(500));
+	    _layout->addWidget(_displayPhoto);
+	    _displayPhoto->show();
     }
 }
 

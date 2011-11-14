@@ -20,3 +20,14 @@ core::MPhoto::~MPhoto()
     std::cout << "Deleting an instance of MPhoto (" << _info.fileInfo().baseName().toStdString() << ")" << std::endl;
     #endif
 }
+
+QPixmap core::MPhoto::generateImage(int maxSize)
+{
+    QPixmap image(_info.fileInfo().absoluteFilePath());
+    if (image.height() > image.width())
+	image = image.scaledToHeight(std::min(maxSize, image.height()));
+    else
+	image = image.scaledToWidth(std::min(maxSize, image.width()));
+
+    return image;
+}
