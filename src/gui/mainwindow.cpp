@@ -1,8 +1,12 @@
 #include "gui/mainwindow.h"
-#include "gui/mtreewidget.h"
 #include "gui/mgridwidget.h"
+#include "gui/mtreewidget.h"
+#include "gui/mtreewidgetitem.h"
+#include "gui/mnewgallerydialog.h"
 #include "core/mphoto.h"
 #include "core/mdatabase.h"
+// #include <libexif/exif-data.h>
+// #include <libexif/exif-loader.h>
 
 gui::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -16,8 +20,8 @@ gui::MainWindow::~MainWindow()
 {
     // delete the whole gui
     // delete filesystem view
-    delete fileSystemModel;
-    delete fileSystemView;
+    delete _fileSystemModel;
+    delete _fileSystemView;
     delete _importButton;
     delete _createGalleryButton;
     // delete tabs
@@ -139,19 +143,19 @@ void gui::MainWindow::setupMenu(QMainWindow* mainWindow)
 void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
 {
     // init
-    fileSystemView = new QTreeView(_baseGridWidget);
-    fileSystemModel = new QFileSystemModel;
-    fileSystemModel->setRootPath(QDir::currentPath());
+    _fileSystemView = new QTreeView(_baseGridWidget);
+    _fileSystemModel = new QFileSystemModel;
+    _fileSystemModel->setRootPath(QDir::currentPath());
 
     // name filters
     QStringList nameFilters;
     nameFilters << "*.jpg" << "*.jpeg" << "*.png" << "*.tiff" << "*.tif";
-    fileSystemModel->setNameFilters(nameFilters);
+    _fileSystemModel->setNameFilters(nameFilters);
 
     // connects Filesystem model to treeview and adds to layout
-    fileSystemView->setModel(fileSystemModel);
-    fileSystemView->setSelectionMode(QAbstractItemView::MultiSelection);
-    layout->addWidget(fileSystemView, 2, 0, 1, 1);
+    _fileSystemView->setModel(_fileSystemModel);
+    _fileSystemView->setSelectionMode(QAbstractItemView::MultiSelection);
+    layout->addWidget(_fileSystemView, 2, 0, 1, 1);
 
     // import button
     _importButton = new QPushButton(_baseGridWidget);
@@ -163,7 +167,7 @@ void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
     // import button imports a photo
     connect(_importButton, SIGNAL(clicked()), this, SLOT(importPhotos()));    
 
-} // ENDOF gui::MainWindow::setupFileSystemView
+} // ENDOF gui::MainWindow::setup_fileSystemView
 
 void gui::MainWindow::refreshObjectGrid(QModelIndex index)
 {
@@ -175,7 +179,16 @@ void gui::MainWindow::refreshObjectGrid(QModelIndex index)
 void gui::MainWindow::removeItemFromProject()
 {   
     if (core::MObject* object = _projectWidget->selected()->object())
-	object->remove();
+    {
+	// we don't want to delete gallery in case it contains photos
+	// TODO: invoke a dialog
+	if (core::MGallery* gallery = object->toGallery())
+	{
+	    if (!gallery->empty())
+		return;
+	}
+	object->destroy();
+    }
 }
 
 // ================ PHOTOS ================
@@ -187,9 +200,9 @@ void gui::MainWindow::removeItemFromProject()
 void gui::MainWindow::importPhotos()
 {
     // selected list of files
-    std::list<QModelIndex> selectedList = fileSystemView->selectionModel()->selectedRows().toStdList();
+    std::list<QModelIndex> selectedList = _fileSystemView->selectionModel()->selectedRows().toStdList();
     importPhotos(&selectedList); // reference is enough    
-    fileSystemView->clearSelection();
+    _fileSystemView->clearSelection();
 }
 
 /**
@@ -210,7 +223,7 @@ void gui::MainWindow::importPhotos(std::list<QModelIndex>* list)
     std::list<QModelIndex>::iterator it;
     for (it = list->begin(); it != list->end(); ++it)
     {
-	QFileInfo fileInfo = fileSystemModel->fileInfo(*it);
+	QFileInfo fileInfo = _fileSystemModel->fileInfo(*it);
 
 	// only add files
 	if (fileInfo.isDir())
@@ -227,7 +240,7 @@ void gui::MainWindow::importPhotos(std::list<QModelIndex>* list)
 	    if (gui::MTreeWidgetItem* treeItem = _projectWidget->insert(photo, parentItem))
 		photo->setTreeWidgetItem(treeItem);
 
-	    if (gui::MGridItem* gridItem = _objectGridWidget->insert(photo))
+	    if (gui::MGridWidgetItem* gridItem = _objectGridWidget->insert(photo))
 		photo->setGridWidgetItem(gridItem);
 	}
     }    
@@ -241,23 +254,22 @@ void gui::MainWindow::importPhotos(std::list<QModelIndex>* list)
  */
 void gui::MainWindow::createGallery()
 {
-    // reads an input dialog
-    bool ok;
-    QString text = QInputDialog::getText(this, tr("New Gallery"), tr("Name:"), QLineEdit::Normal, QDir::home().dirName(), &ok);
+    gui::MNewGalleryDialog dialog(this);
 
-    // input text handling
-    if (ok)
-	createGallery(text.toStdString());
+    if (dialog.exec())
+	createGallery(dialog.name(), dialog.description());
 }
 
 /**
- * calls gallery creation handlers on both the gui and the core level
- * must have a selected gallery otherwise it ends here
+ * calls gallery creation handlers on both the gui and the core level 
  * @param name gallery name from input dialog
  */
-void gui::MainWindow::createGallery(std::string name)
+void gui::MainWindow::createGallery(std::string name, std::string description)
 {
-    core::MGalleryInfo info(name);
+    if (name.empty())
+	return;
+
+    core::MGalleryInfo info(name, description);
     // we have a selected gallery
     if (gui::MTreeWidgetItem* parentItem =_projectWidget->selected())
     {

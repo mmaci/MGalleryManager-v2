@@ -1,9 +1,9 @@
 #ifndef MDATABASE_H
 #define MDATABASE_H
 
-#include <QFileInfo>
-
 #include <set>
+
+#include <QFileInfo>
 
 namespace core
 {

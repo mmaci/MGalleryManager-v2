@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+
 #include <QFileInfo>
 
 enum TypeIds
@@ -12,22 +13,27 @@ enum TypeIds
     TYPEID_PHOTO
 };
 
+// forward declarations
 namespace gui
 {
-    class MGridItem;
+    class MGridWidgetItem;
     class MTreeWidgetItem;
 }
 
 namespace core
 {
+    struct MGPSInfo
+    {
+	// TODO: struct holding geographical data
+    };
 
+    // forward declarations
     class MGallery;    
-    class MPhoto;
-    struct MPhotoInfo;
-
+    class MPhoto;    
     class MObject
     {
 	public:
+	    // constructor/destructor
 	    MObject(MGallery* parent = NULL);
 	    virtual ~MObject(){ };
 
@@ -36,22 +42,27 @@ namespace core
 	    MPhoto* toPhoto();
 	    MObject* toObject();
 
+	    // get
 	    char typeId() const { return _typeId; }
-	    gui::MGridItem* gridItem(){ return _gridItem; }
+	    MGallery* parent() { return _parent; }
+	    gui::MGridWidgetItem* gridItem(){ return _gridItem; }
 	    gui::MTreeWidgetItem* treeWidgetItem(){ return _treeItem; }
 
-	    void remove();
-
-	    void setGridWidgetItem(gui::MGridItem* item){ _gridItem = item; }
+	    // set
+	    void setGridWidgetItem(gui::MGridWidgetItem* item){ _gridItem = item; }
 	    void setTreeWidgetItem(gui::MTreeWidgetItem* item){ _treeItem = item; }
+	    void setFavourite();
 
-	protected:
-	    char _typeId;
-	    MGallery* _parent;
+	    void destroy();
+
+	protected:	    	    
+	    char		    _typeId;
 
 	private:
-	    gui::MGridItem* _gridItem;
-	    gui::MTreeWidgetItem* _treeItem;
+	    MGallery*		    _parent;
+	    gui::MGridWidgetItem*   _gridItem;
+	    gui::MTreeWidgetItem*   _treeItem;
+	    bool		    _favourite;
     };
 }
 

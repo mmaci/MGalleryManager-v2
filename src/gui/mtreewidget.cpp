@@ -1,65 +1,8 @@
 #define _DEBUG
 
 #include "gui/mtreewidget.h"
+#include "gui/mtreewidgetitem.h"
 #include "core/mgallery.h"
-
-// ================ MTreeWidgetItem ================
-
-/**
- * constructor
- * casts to an MObject and creates proper widget details
- */
-gui::MTreeWidgetItem::MTreeWidgetItem(gui::MTreeWidget* widget, core::MGallery* gallery)
-{
-    _widget = widget;
-    _obj = gallery->toObject();
-
-    // widget details
-    setText(0, QString(gallery->info().name().c_str()));
-
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MTreeWidgetItem (" << gallery->info().name().c_str() << ")" << std::endl;
-    #endif
-}
-
-/**
- * constructor
- * casts to an MObject and creates proper widget details
- * Photos have different detail structure than Galleries, therefore we can't template these
- */
-gui::MTreeWidgetItem::MTreeWidgetItem(gui::MTreeWidget* widget, core::MPhoto* photo)
-{
-    _widget = widget;
-    _obj = photo->toObject();
-
-    // widget details
-    setText(0, QString(photo->info().fileInfo().baseName()));
-
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MTreeWidgetItem (" << photo->info().fileInfo().baseName().toStdString() << ")" << std::endl;
-    #endif
-}
-
-/**
- * destructor
- */
-gui::MTreeWidgetItem::~MTreeWidgetItem()
-{ 
-    #ifdef _DEBUG
-    std::cout << "Deleting an instance of MTreeWidgetItem" << std::endl;
-    #endif
-}
-
-/**
- * returns a currently selected QTreeWidgetItem, casts it to an MTreeWidgetItem
- * @return MTreeWidget item
- */
-gui::MTreeWidgetItem* gui::MTreeWidget::selected()
-{
-    return static_cast<gui::MTreeWidgetItem*>(currentItem());
-}
-
-// ================ MTreeWidget ================
 
 gui::MTreeWidget::MTreeWidget(QWidget *parent) :
     QTreeWidget(parent)
@@ -103,8 +46,8 @@ gui::MTreeWidgetItem* gui::MTreeWidget::insert(core::MPhoto* photo, gui::MTreeWi
 }
 
 /**
- * removes item based on param, if none given, removes currently selected item
- * also deletes all proper core structures
+ * removes and deletes an item from MTreeWidget
+ * shouldn't be used on its own, only called from destroy() by a core object
  * @param item from a list which we want to remove
  * @return object linked to an item being removed
  */

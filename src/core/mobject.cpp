@@ -1,7 +1,9 @@
 #define _DEBUG
 
 #include "gui/mtreewidget.h"
+#include "gui/mtreewidgetitem.h"
 #include "gui/mgridwidget.h"
+#include "gui/mgridwidgetitem.h"
 #include "core/mobject.h"
 #include "core/mgallery.h"
 #include "core/mphoto.h"
@@ -13,6 +15,7 @@ core::MObject::MObject(core::MGallery* gallery)
 
     _treeItem = NULL;
     _gridItem = NULL;
+    _favourite = false;
 }
 
 // conversions
@@ -37,7 +40,27 @@ core::MObject* core::MObject::toObject()
     return dynamic_cast<core::MObject*>(this);
 }
 
-void core::MObject::remove()
+void core::MObject::setFavourite()
+{
+    if (_favourite)
+    {
+	_favourite = false;
+	if (_gridItem)
+	    _gridItem->showStar(false);
+	if (_treeItem)
+	    _treeItem->highlight(false);
+    }
+    else
+    {
+	_favourite = true;
+	if (_gridItem)
+	    _gridItem->showStar(true);
+	if (_treeItem)
+	    _treeItem->highlight(true);
+    }
+}
+
+void core::MObject::destroy()
 {
     // MTreeItemWidget
     if (_treeItem)

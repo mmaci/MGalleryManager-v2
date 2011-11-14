@@ -1,0 +1,20 @@
+#ifndef MGRIDWIDGETDEFINES_H
+#define MGRIDWIDGETDEFINES_H
+
+enum Buttons
+{
+    BUTTON_EDIT,
+    BUTTON_DELETE,
+    BUTTON_FAV,
+    BUTTON_SELECT,
+
+    MAX_BUTTONS
+};
+
+// defines
+#define MAX_THUMB_SIZE	150
+#define MAX_ITEM_H	200
+#define MAX_ITEM_W	170
+#define GRID_WIDTH	4
+
+#endif // MGRIDWIDGETDEFINES_H

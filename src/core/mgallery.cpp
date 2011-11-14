@@ -4,6 +4,11 @@
 #include "core/mphoto.h"
 #include "core/mgallery.h"
 
+/**
+ * constructor
+ * @param info
+ * @param parent
+ */
 core::MGallery::MGallery(core::MGalleryInfo info, core::MGallery* parent) :
     MObject(parent)
 {
@@ -15,6 +20,9 @@ core::MGallery::MGallery(core::MGalleryInfo info, core::MGallery* parent) :
     #endif
 }
 
+/**
+ * destructor
+ */
 core::MGallery::~MGallery()
 {
     #ifdef _DEBUG
@@ -32,6 +40,10 @@ core::MGallery::~MGallery()
     #endif
 }
 
+/**
+ * @param info
+ * @return
+ */
 core::MPhoto* core::MGallery::find(QFileInfo info)
 {
     std::set<core::MObject*>::iterator it;
@@ -47,6 +59,10 @@ core::MPhoto* core::MGallery::find(QFileInfo info)
     return NULL;
 }
 
+/**
+ * @param info
+ * @return
+ */
 core::MGallery* core::MGallery::insert(core::MGalleryInfo info)
 {
     MGallery* gallery = new MGallery(info, this);
@@ -55,6 +71,10 @@ core::MGallery* core::MGallery::insert(core::MGalleryInfo info)
     return gallery;
 }
 
+/**
+ * @param info
+ * @return
+ */
 core::MPhoto* core::MGallery::insert(core::MPhotoInfo info)
 {
     core::MPhoto* photo = new core::MPhoto(info, this);
