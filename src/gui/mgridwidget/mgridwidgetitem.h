@@ -5,19 +5,20 @@
 #include <QLabel>
 #include <QCoreApplication>
 
-#include "gui/mgridwidgetdefines.h"
+#include "gui/mgridwidget/mgridwidgetdefines.h"
+#include "core/mobject.h"
+#include "core/mphoto.h"
 
 namespace core
-{
-    class MObject;
-    class MGallery;
-    class MPhoto;
+{    
+    class MGallery;    
 }
 
 namespace gui
 {
     class MGridWidget;
-    class MGridWidgetItemIconSet;
+    class MGridWidgetThumbnail;
+    class MGridWidgetViewer;
     class MGridWidgetItem : public QFrame
     {
 	Q_OBJECT
@@ -26,29 +27,34 @@ namespace gui
 	    MGridWidgetItem(QWidget* parent = NULL);
 	    MGridWidgetItem(MGridWidget* widget, core::MGallery* gallery);
 	    MGridWidgetItem(MGridWidget* widget, core::MPhoto* photo);
-	    ~MGridWidgetItem();
+	    virtual ~MGridWidgetItem(){ }
+
+	    MGridWidgetViewer* toViewer();
+	    MGridWidgetThumbnail* toThumbnail();
+	    MGridWidgetItem* toItem();
 
 	    core::MObject* object(){ return _object; }
 	    MGridWidget* widget(){ return _widget; }
 
-	    void showStar(bool apply);
-
 	public slots:
-	    void handleButtonClicked(int type, gui::MGridWidgetItem* item);
+	    void handleButtonClicked(int type, gui::MGridWidgetThumbnail* thumbnail);
+	    void rotateRight()
+	    {
 
-	private:
-	    void setupIcons();
+	    }
 
-	    // gui
-	    MGridWidget*		_widget;
-
-	    MGridWidgetItemIconSet*	_icons;
-
+	protected:
+	    int _type;
 	    QLabel*			_imageLabel;
-	    QLabel*			_starLabel;
+
+	private:	    
+	    // gui
+	    MGridWidget*		_widget;	    
+
+
 
 	    // core links
-	    core::MObject*		_object;
+	    core::MObject*		_object;	    
     };
 }
 

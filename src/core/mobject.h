@@ -17,6 +17,8 @@ enum TypeIds
 namespace gui
 {
     class MGridWidgetItem;
+    class MGridWidgetThumbnail;
+    class MGridWidgetViewer;
     class MTreeWidgetItem;
 }
 
@@ -45,11 +47,13 @@ namespace core
 	    // get
 	    char typeId() const { return _typeId; }
 	    MGallery* parent() { return _parent; }
-	    gui::MGridWidgetItem* gridItem(){ return _gridItem; }
+	    gui::MGridWidgetViewer* gridViewer(){ return _gridViewer; }
+	    gui::MGridWidgetThumbnail* gridThumbnail(){ return _gridThumbnail; }
 	    gui::MTreeWidgetItem* treeWidgetItem(){ return _treeItem; }
 
 	    // set
-	    void setGridWidgetItem(gui::MGridWidgetItem* item){ _gridItem = item; }
+	    void setGridThumbnail(gui::MGridWidgetThumbnail* thumbnail){ _gridThumbnail = thumbnail; }
+	    void setGridViewer(gui::MGridWidgetViewer* viewer){ _gridViewer = viewer; }
 	    void setTreeWidgetItem(gui::MTreeWidgetItem* item){ _treeItem = item; }
 	    void setFavourite();
 
@@ -60,7 +64,8 @@ namespace core
 
 	private:
 	    MGallery*		    _parent;
-	    gui::MGridWidgetItem*   _gridItem;
+	    gui::MGridWidgetThumbnail* _gridThumbnail;
+	    gui::MGridWidgetViewer* _gridViewer;
 	    gui::MTreeWidgetItem*   _treeItem;
 	    bool		    _favourite;
     };

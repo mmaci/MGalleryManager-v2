@@ -1,13 +1,16 @@
-#include "gui/mtreewidget.h"
-#include "gui/mtreewidgetitem.h"
+#include "gui/mtreewidget/mtreewidget.h"
+#include "gui/mtreewidget/mtreewidgetitem.h"
 #include "core/mgallery.h"
 #include "core/mphoto.h"
+
+namespace gui
+{
 
 /**
  * constructor
  * casts to an MObject and creates proper widget details
  */
-gui::MTreeWidgetItem::MTreeWidgetItem(gui::MTreeWidget* widget, core::MGallery* gallery)
+MTreeWidgetItem::MTreeWidgetItem(MTreeWidget* widget, core::MGallery* gallery)
 {
     _widget = widget;
     _obj = gallery->toObject();
@@ -25,7 +28,7 @@ gui::MTreeWidgetItem::MTreeWidgetItem(gui::MTreeWidget* widget, core::MGallery* 
  * casts to an MObject and creates proper widget details
  * Photos have different detail structure than Galleries, therefore we can't template these
  */
-gui::MTreeWidgetItem::MTreeWidgetItem(gui::MTreeWidget* widget, core::MPhoto* photo)
+MTreeWidgetItem::MTreeWidgetItem(MTreeWidget* widget, core::MPhoto* photo)
 {
     _widget = widget;
     _obj = photo->toObject();
@@ -41,7 +44,7 @@ gui::MTreeWidgetItem::MTreeWidgetItem(gui::MTreeWidget* widget, core::MPhoto* ph
 /**
  * destructor
  */
-gui::MTreeWidgetItem::~MTreeWidgetItem()
+MTreeWidgetItem::~MTreeWidgetItem()
 {
     #ifdef _DEBUG
     std::cout << "Deleting an instance of MTreeWidgetItem" << std::endl;
@@ -52,7 +55,7 @@ gui::MTreeWidgetItem::~MTreeWidgetItem()
  * highlights a line in the tree
  * @param apply used to display or hide the background color
  */
-void gui::MTreeWidgetItem::highlight(bool apply)
+void MTreeWidgetItem::highlight(bool apply)
 {
     if (apply)
 	setBackground(0, QBrush(QColor(Qt::yellow)));
@@ -64,7 +67,9 @@ void gui::MTreeWidgetItem::highlight(bool apply)
  * returns a currently selected QTreeWidgetItem, casts it to an MTreeWidgetItem
  * @return MTreeWidget item
  */
-gui::MTreeWidgetItem* gui::MTreeWidget::selected()
+MTreeWidgetItem* MTreeWidget::selected()
 {
-    return static_cast<gui::MTreeWidgetItem*>(currentItem());
+    return static_cast<MTreeWidgetItem*>(currentItem());
 }
+
+} // NAMESPACE GUI

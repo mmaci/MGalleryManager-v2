@@ -3,11 +3,28 @@
 
 #include <QFileInfo>
 #include <QPixmap>
+#include <QImage>
+#include <QLabel>
+
+#include <boost/gil/image.hpp>
+#include <boost/gil/typedefs.hpp>
+#include <boost/gil/extension/io/jpeg_io.hpp>
+#include <boost/gil/extension/numeric/sampler.hpp>
+#include <boost/gil/extension/numeric/resample.hpp>
+#include <boost/assert.hpp>
 
 #include "core/mobject.h"
 
+#include "core/mimage.h"
+#include "core/mnumeric.h"
+
+namespace gui
+{
+    class MGridWidgetViewer;
+}
+
 namespace core
-{        
+{                
     class MGallery;
 
     struct MPhotoInfo
@@ -27,11 +44,57 @@ namespace core
 	public:	    
 	    MPhoto(MPhotoInfo info, MGallery* parent /* = NULL */); // defaulty must have a parent gallery !
 	    ~MPhoto();
-	    MPhotoInfo info() const { return _info; }
-	    QPixmap generateImage(int maxSize);
+
+	    // set and get
+	    MPhotoInfo info(){ return _info; } // when we want access to the whole info
+	    std::string filePath(){ return _info.fileInfo().absoluteFilePath().toStdString(); }
+
+	    // gui helpers
+	    // we use these to generate different gui features like thumbnails
+	    QPixmap generatePixmap(int maxSize); // scales pixmap inside a maxSize x maxSize container
+	    QPixmap generatePixmap(int width, int height); // resizes to a set height and width
+	    QLabel generateLabel(QPixmap pixmap); // generates a label (widget used to display pixmap)
+
+	    // transforms
+	    // rotation
+	    void rotate(mextension::image::RGB background, double angle);
+	    template <typename SourceView, typename DestView>
+	    void rotate(const SourceView& source, const DestView& dest, double angle);
+	    template <typename SourceView>
+	    boost::gil::matrix3x2<double> getTranslationMatrix(const SourceView& source, double angle);
+
+	    // resize
+	    void resize(double width, double height);
+	    void resize(double maxSize);
+	    template <typename SourceView, typename DestView>
+	    void resize(const SourceView& source, const DestView& dest);
+
+	    // color change
+	    // value ranges from -255.0 to 255.0
+	    void brightness(double value);
+	    template <typename SourceView, typename DestView>
+	    void brightness(const SourceView& source, const DestView& dest, double value);
+
+	    void contrast(double value);
+	    template <typename SourceView, typename DestView>
+	    void contrast(const SourceView& source, const DestView& dest, double value);
+
+
+	    void saturate(double value);
+	    void blackandwhite();
+
+	    bool load(std::string path);
+
+	    bool save(bool force = false);
+	    bool saveAs(std::string path, bool force = false);
 
 	private:
-	    MPhotoInfo _info;
+	    // fileinfo about the original file
+	    // contains all kinds of metadata, filepath, ...
+	    MPhotoInfo	    _info;
+
+	    // color and image representations
+	    boost::gil::rgb8_image_t _image;
     };
 }
 

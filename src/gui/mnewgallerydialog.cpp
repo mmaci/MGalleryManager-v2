@@ -1,4 +1,4 @@
-#include "mnewgallerydialog.h"
+#include "gui/mnewgallerydialog.h"
 
 gui::MNewGalleryDialog::MNewGalleryDialog(QWidget* parent) :
     QDialog(parent)

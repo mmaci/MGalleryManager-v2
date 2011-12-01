@@ -1,7 +1,9 @@
 #include "gui/mainwindow.h"
-#include "gui/mgridwidget.h"
-#include "gui/mtreewidget.h"
-#include "gui/mtreewidgetitem.h"
+#include "gui/mgridwidget/mgridwidget.h"
+#include "gui/mtreewidget/mtreewidget.h"
+#include "gui/mtreewidget/mtreewidgetitem.h"
+#include "gui/mgridwidget/mgridwidgetitem.h"
+#include "gui/mgridwidget/MGridWidgetThumbnail.h"
 #include "gui/mnewgallerydialog.h"
 #include "core/mphoto.h"
 #include "core/mdatabase.h"
@@ -240,8 +242,12 @@ void gui::MainWindow::importPhotos(std::list<QModelIndex>* list)
 	    if (gui::MTreeWidgetItem* treeItem = _projectWidget->insert(photo, parentItem))
 		photo->setTreeWidgetItem(treeItem);
 
-	    if (gui::MGridWidgetItem* gridItem = _objectGridWidget->insert(photo))
-		photo->setGridWidgetItem(gridItem);
+	    if (gui::MGridWidgetThumbnail* gridItem = _objectGridWidget->insert(photo))
+		photo->setGridThumbnail(gridItem->toThumbnail());
+
+	    photo->load("c:/atest/ovce_v_uhlopricce.jpg");
+	    photo->contrast(1.5);
+	    photo->saveAs("c:/atest/contrast.jpg");
 	}
     }    
 }

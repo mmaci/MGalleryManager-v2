@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QGridLayout>
 
-#include "mgridwidgetdefines.h"
+#include "gui/mgridwidget/mgridwidgetdefines.h"
 
 namespace core
 {
@@ -13,20 +13,22 @@ namespace core
 
 namespace gui
 {
-    class MGridWidgetItem;
+    class MGridWidgetThumbnail;
     class MGridWidgetItemButton;
     class MGridWidgetItemIconSet : public QWidget
     {
 	Q_OBJECT
 
 	public:
-	    MGridWidgetItemIconSet(QWidget* parent = NULL);
+	    MGridWidgetItemIconSet(MGridWidgetThumbnail* parent = NULL);
 	    ~MGridWidgetItemIconSet();
+
+	    MGridWidgetThumbnail* thumbnail(){ return _thumbnail; }
 
 	private:
 	    QGridLayout* _layout;
 	    MGridWidgetItemButton* _button[MAX_BUTTONS];	    
-	    MGridWidgetItem* _item;
+	    MGridWidgetThumbnail* _thumbnail;
     };
 }
 

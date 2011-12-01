@@ -1,20 +1,24 @@
-#include "gui/mgridwidgetitem.h"
-#include "gui/mgridwidgetitemiconset.h"
-#include "gui/mgridwidgetitembutton.h"
+#include "gui/mgridwidget/mgridwidgetitem.h"
+#include "gui/mgridwidget/mgridwidgetthumbnail.h"
+#include "gui/mgridwidget/mgridwidgetitemiconset.h"
+#include "gui/mgridwidget/mgridwidgetitembutton.h"
 
-gui::MGridWidgetItemIconSet::MGridWidgetItemIconSet(QWidget* parent) :
-    QWidget(parent)
+namespace gui
+{
+
+MGridWidgetItemIconSet::MGridWidgetItemIconSet(MGridWidgetThumbnail* parent) :
+    QWidget(parent->toItem())
 {
     #ifdef _DEBUG
     std::cout << "Creating new instance of MGridWidgetItemIconSet" << std::endl;
     #endif
 
-    _item = static_cast<gui::MGridWidgetItem*>(parent);
+    _thumbnail = parent;
     _layout = new QGridLayout(this);
 
     for (int i = 0; i < MAX_BUTTONS; ++i)
     {
-	_button[i] = new gui::MGridWidgetItemButton(i, _item);
+	_button[i] = new MGridWidgetItemButton(i, this);
 	switch (i)
 	{
 	    case BUTTON_DELETE:
@@ -32,11 +36,12 @@ gui::MGridWidgetItemIconSet::MGridWidgetItemIconSet(QWidget* parent) :
 	}
 	_layout->addWidget(_button[i], 0, i);
 
-	connect(_button[i], SIGNAL(clicked(int, gui::MGridWidgetItem*)), _item, SLOT(handleButtonClicked(int, gui::MGridWidgetItem*)));
+	// don't remove the gui:: namespace in signals !
+	connect(_button[i], SIGNAL(clicked(int, gui::MGridWidgetThumbnail*)), _thumbnail, SLOT(handleButtonClicked(int, gui::MGridWidgetThumbnail*)));
     }
 }
 
-gui::MGridWidgetItemIconSet::~MGridWidgetItemIconSet()
+MGridWidgetItemIconSet::~MGridWidgetItemIconSet()
 {
     #ifdef _DEBUG
     std::cout << "Deleting an instance of MGridWidgetItemIconSet" << std::endl;
@@ -45,4 +50,6 @@ gui::MGridWidgetItemIconSet::~MGridWidgetItemIconSet()
     for (int i = 0; i < MAX_BUTTONS; ++i)
 	delete _button[i];
     delete _layout;
+}
+
 }

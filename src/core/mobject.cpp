@@ -1,9 +1,10 @@
 #define _DEBUG
 
-#include "gui/mtreewidget.h"
-#include "gui/mtreewidgetitem.h"
-#include "gui/mgridwidget.h"
-#include "gui/mgridwidgetitem.h"
+#include "gui/mtreewidget/mtreewidget.h"
+#include "gui/mtreewidget/mtreewidgetitem.h"
+#include "gui/mgridwidget/mgridwidget.h"
+#include "gui/mgridwidget/mgridwidgetitem.h"
+#include "gui/mgridwidget/mgridwidgetthumbnail.h"
 #include "core/mobject.h"
 #include "core/mgallery.h"
 #include "core/mphoto.h"
@@ -14,7 +15,8 @@ core::MObject::MObject(core::MGallery* gallery)
     _typeId = TYPEID_OBJECT;
 
     _treeItem = NULL;
-    _gridItem = NULL;
+    _gridThumbnail = NULL;
+    _gridViewer = NULL;
     _favourite = false;
 }
 
@@ -45,16 +47,16 @@ void core::MObject::setFavourite()
     if (_favourite)
     {
 	_favourite = false;
-	if (_gridItem)
-	    _gridItem->showStar(false);
+	if (_gridThumbnail)
+	    _gridThumbnail->showStar(false);
 	if (_treeItem)
 	    _treeItem->highlight(false);
     }
     else
     {
 	_favourite = true;
-	if (_gridItem)
-	    _gridItem->showStar(true);
+	if (_gridThumbnail)
+	    _gridThumbnail->showStar(true);
 	if (_treeItem)
 	    _treeItem->highlight(true);
     }
@@ -70,10 +72,10 @@ void core::MObject::destroy()
     }
 
     // MGridWidgetItem
-    if (_gridItem)
+    if (_gridThumbnail)
     {
-	if (gui::MGridWidget* widget = _gridItem->widget())
-	    widget->remove(_gridItem);
+	if (gui::MGridWidget* widget = _gridThumbnail->widget())
+	    widget->remove(_gridThumbnail);
     }
 
     if (_parent)

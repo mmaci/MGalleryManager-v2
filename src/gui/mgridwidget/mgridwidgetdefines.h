@@ -1,6 +1,9 @@
 #ifndef MGRIDWIDGETDEFINES_H
 #define MGRIDWIDGETDEFINES_H
 
+namespace gui
+{
+
 enum Buttons
 {
     BUTTON_EDIT,
@@ -16,5 +19,15 @@ enum Buttons
 #define MAX_ITEM_H	200
 #define MAX_ITEM_W	170
 #define GRID_WIDTH	4
+#define DEFAULT_VIEWER_IMAGE_SIZE 450
+
+enum GridTypes
+{
+    GRIDTYPE_ITEM,
+    GRIDTYPE_VIEWER,
+    GRIDTYPE_THUMBNAIL
+};
+
+} // NAMESPACE GUI
 
 #endif // MGRIDWIDGETDEFINES_H

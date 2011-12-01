@@ -27,7 +27,7 @@ core::MGallery::~MGallery()
 {
     #ifdef _DEBUG
     std::cout << "Deleting contents of MGallery (" << _info.name() << ")" << std::endl;
-    #endif
+    #endif    
     std::set<core::MObject*>::iterator it;
     while(!_content.empty())
     {

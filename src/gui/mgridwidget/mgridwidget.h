@@ -8,7 +8,7 @@
 #include <QCoreApplication>
 #include <QLabel>
 
-#include "gui/mgridwidgetdefines.h"
+#include "gui/mgridwidget/mgridwidgetdefines.h"
 
 #include "core/mgallery.h"
 
@@ -31,7 +31,7 @@ namespace gui
 	    ~MGridWidget();
 
 	    MGridWidgetItem* insert(core::MGallery* gallery);
-	    MGridWidgetItem* insert(core::MPhoto* gallery);
+	    MGridWidgetThumbnail* insert(core::MPhoto* gallery);
 
 	    void load(core::MObject* object);
 	    void hideAllItems();
@@ -41,7 +41,9 @@ namespace gui
 
 	    core::MObject* remove(gui::MGridWidgetItem* item);
 	    core::MObject* remove(core::MObject* obj);
-	    gui::MGridWidgetItem* find(core::MObject* obj);
+	    MGridWidgetItem* find(core::MObject* obj);
+
+	    MGridWidgetViewer* generateGridViewer(core::MPhoto* photo, int maxSize = DEFAULT_VIEWER_IMAGE_SIZE);
 
 	private:
 	    QGridLayout* _layout;
