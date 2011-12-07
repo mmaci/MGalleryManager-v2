@@ -244,10 +244,6 @@ void gui::MainWindow::importPhotos(std::list<QModelIndex>* list)
 
 	    if (gui::MGridWidgetThumbnail* gridItem = _objectGridWidget->insert(photo))
 		photo->setGridThumbnail(gridItem->toThumbnail());
-
-	    photo->load("c:/atest/ovce_v_uhlopricce.jpg");
-	    photo->contrast(1.5);
-	    photo->saveAs("c:/atest/contrast.jpg");
 	}
     }    
 }

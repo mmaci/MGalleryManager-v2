@@ -4,6 +4,8 @@
 #include "core/mgallery.h"
 #include "gui/mgridwidget/mgridwidgetviewer.h"
 
+#include <QColor>
+
 namespace core
 {
 
@@ -11,7 +13,9 @@ MPhoto::MPhoto(MPhotoInfo info, MGallery* parent) :
     MObject(parent)
 {
     _info = info;
-    _typeId = TYPEID_PHOTO;    
+    _typeId = TYPEID_PHOTO;
+
+    load(info.fileInfo().absoluteFilePath().toStdString());
 
     #ifdef _DEBUG
     std::cout << "Creating new instance of MPhoto (" << _info.fileInfo().baseName().toStdString() << ")" << std::endl;
@@ -25,9 +29,21 @@ MPhoto::~MPhoto()
     #endif
 }
 
-QPixmap MPhoto::generatePixmap(int maxSize)
+////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////
+
+/**
+ * \brief generates a pixmap straight from the file
+ * used when creating initial thumbnail, converting a boost::gil view is much more expensive
+ * also scales to proper dimensions
+ */
+
+QPixmap MPhoto::pixmapFromFile(int maxSize)
 {
     QPixmap image(_info.fileInfo().absoluteFilePath());
+
+    // scaling
     if (image.height() > image.width())
 	image = image.scaledToHeight(std::min(maxSize, image.height()));
     else
@@ -36,34 +52,117 @@ QPixmap MPhoto::generatePixmap(int maxSize)
     return image;
 }
 
+/**
+ * \brief converts a boost::gil view to a QImage
+ * copies all the RGB values pixel by pixel
+ */
+template <typename SourceView>
+QImage MPhoto::viewToQImage(const SourceView& source)
+{
+    using namespace boost::gil;
+    // only able to convert 3 channel rgbs
+    BOOST_ASSERT_MSG(num_channels<SourceView>::value == 3, "Must have 3 channels - RGB.");
+
+    QImage tmpImage(source.width(), source.height(), QImage::Format_RGB16);
+
+    // we iterate through all the pixels and copy the values
+    for (int y = 0; y < source.height(); ++y)
+    {
+	typename SourceView::x_iterator source_it = source.row_begin(y);
+	for (int x = 0; x < source.width(); ++x)
+	    tmpImage.setPixel(x, y, qRgb(source_it[x][0], source_it[x][1], source_it[x][2]));
+    }
+    return tmpImage;
+}
+
+/**
+ * \brief wrapper for creating a pixmap from a boost::gil view
+ * calculates proper image size and passes it on
+ */
+QPixmap MPhoto::pixmapFromView(int maxSize)
+{
+    // it's better to do all the maths using doubles, not to lose any digits
+    double width = static_cast<double>(_image.width());
+    double height = static_cast<double>(_image.height());
+    double max = static_cast<double>(maxSize);
+    double coef;
+
+    // vertical image
+    if (_image.height() > _image.width())
+    {
+	coef = height / max;
+	if (height > max) height = max;
+	width = width / coef;
+
+    }
+    // horizontal image
+    else
+    {
+	coef = width / max;
+	if (width > max) width = max;
+	height = height / coef;
+    }
+    return pixmapFromView(static_cast<int>(width), static_cast<int>(height));
+}
+
+/**
+ * \brief creates a pixmap from a view, given proper dimensions
+ * creates an image with given dimensions, resizes the original image into it
+ * and calls conversion to QImage
+ */
+QPixmap MPhoto::pixmapFromView(int width, int height)
+{
+    using namespace boost::gil;
+
+    rgb8_image_t resultImage(width, height);
+
+    if (width != _image.width() || height != _image.height())
+	resize(const_view(_image), view(resultImage));
+    else
+	resultImage = _image;
+
+    return pixmapFromView(viewToQImage(const_view(resultImage)));
+}
+
+/**
+ * \brief conversion from QImage to QPixmap
+ */
+QPixmap MPhoto::pixmapFromView(const QImage& image)
+{
+    return QPixmap::fromImage(image);
+}
+
 ////////////////////////////////////////////////////////////////
 // Rotation
 ////////////////////////////////////////////////////////////////
 
 /**
- * \brief wrapper for mextension::image rotation
- * calculates and creates an mextension::image big enough for variable rotation
+ * \brief wrapper for image rotation
+ * calculates and creates an image big enough for variable rotation
  * sets an appropriate background and calls rotation itself
  */
-void MPhoto::rotate(mextension::image::RGB background, double angle)
+void MPhoto::rotate(mimage::RGB background, double angle)
 {
     using namespace boost::gil;   
 
-    angle = angle * (mextension::numeric::PI/180.0);
+    angle = angle * (mnumeric::PI/180.0);
 
     double width = _image.width();
     double height = _image.height();
 
     // canvas size after rotation
-    double canvasWidth = std::fabs(height*cos(angle)) + std::fabs(width*sin(angle));
-    double canvasHeight = std::fabs(width*cos(angle)) + std::fabs(height*sin(angle));
+    double canvasHeight =   std::fabs(std::sin(angle)*width)	+ std::fabs(std::cos(angle)*height);
+    double canvasWidth =    std::fabs(std::sin(angle)*height)	+ std::fabs(std::cos(angle)*width);
 
-    rgb8_image_t resultImage(rgb8_image_t::point_t(canvasHeight, canvasWidth));
+    rgb8_image_t resultImage(canvasWidth, canvasHeight);
     fill_pixels(view(resultImage), rgb8_pixel_t(background.red, background.green, background.blue));
 
     rotate(const_view(_image), view(resultImage), angle);
 
-    _image = resultImage;
+    // save and add to history
+    _history.push_back(resultImage);
+    ++_historyIt;
+    _image = resultImage;    
 }
 
 /**
@@ -80,30 +179,30 @@ void MPhoto::rotate(const SourceView& source, const DestView& dest, double angle
     matrix3x2<double> transformation =	getTranslationMatrix(source, angle) *
 					matrix3x2<double>::get_rotate(angle);
 
-    resample_pixels(source, dest, transformation, nearest_neighbor_sampler());
+    resample_pixels(source, dest, transformation, bilinear_sampler());
 }
 
 /**
- * \brief returns a 3x2 translation matrix based on mextension::image rotation
- * after an mextension::image is rotated it shifts outside of the canvas
- * we have to compute a translation matrix to move the mextension::image to fit the canvas
+ * \brief returns a 3x2 translation matrix based on image rotation
+ * after an image is rotated it shifts outside of the canvas
+ * we have to compute a translation matrix to move the image to fit the canvas
  */
 template <typename SourceView>
 boost::gil::matrix3x2<double> MPhoto::getTranslationMatrix(const SourceView& source, double angle)
 {
-    angle = mextension::numeric::mod(angle, 2*mextension::numeric::PI);
+    angle = mnumeric::mod(angle, 2*mnumeric::PI);
 
     std::pair<double, double> result = std::make_pair(0.0, 0.0);
-    if (angle <= mextension::numeric::PI/2)
+    if (angle <= mnumeric::PI/2)
 	result = std::make_pair(0.0, source.width()*std::sin(angle));
     else
-    if (angle <= mextension::numeric::PI)
+    if (angle <= mnumeric::PI)
 	result = std::make_pair(-std::cos(angle)*source.width(), std::sin(angle)*source.width() - std::cos(angle)*source.height());
     else
-    if (angle <= 3*mextension::numeric::PI/2)
+    if (angle <= 3*mnumeric::PI/2)
 	result = std::make_pair(-std::cos(angle)*source.width() - std::sin(angle)*source.height(), -std::cos(angle)*source.height());
     else
-    if (angle <= 2*mextension::numeric::PI)
+    if (angle <= 2*mnumeric::PI)
 	result = std::make_pair(-std::sin(angle)*source.height(), 0.0);
 
     return boost::gil::matrix3x2<double>(1.0, 0.0, 0.0, 1.0, -result.first, -result.second);
@@ -114,9 +213,9 @@ boost::gil::matrix3x2<double> MPhoto::getTranslationMatrix(const SourceView& sou
 ////////////////////////////////////////////////////////////////
 
 /**
- * \brief mextension::image resize wrapper
- * resizes an mextension::image holding scale into maxSize x maxSize mextension::image
- * example: maxSize: 200, original mextension::image: 300x200, final mextension::image 200x(200*(200/300))
+ * \brief image resize wrapper
+ * resizes an image holding scale into maxSize x maxSize image
+ * example: maxSize: 200, original image: 300x200, final image 200x(200*(200/300))
  */
 void MPhoto::resize(double maxSize)
 {
@@ -139,12 +238,16 @@ void MPhoto::resize(double maxSize)
     rgb8_image_t resultImage(rgb8_image_t::point_t(width, height));
 
     resize(const_view(_image), view(resultImage));
+
+    // save and add to history
+    _history.push_back(resultImage);
+    ++_historyIt;
     _image = resultImage;
 }
 
 /**
- * \brief mextension::image resize wrapper
- * creates a canvas for mextension::image resize and calls proper handlers
+ * \brief image resize wrapper
+ * creates a canvas for image resize and calls proper handlers
  */
 void MPhoto::resize(double width, double height)
 {
@@ -153,11 +256,15 @@ void MPhoto::resize(double width, double height)
     rgb8_image_t resultImage(rgb8_image_t::point_t(width, height));
 
     resize(const_view(_image), view(resultImage));
-    _image = resultImage;
+
+    // save and add to history
+    _history.push_back(resultImage);
+    ++_historyIt;
+    _image = resultImage;   
 }
 
 /**
- * \brief mextension::image resize handler
+ * \brief image resize handler
  * scales the original view onto a new canvas
  */
 template <typename SourceView, typename DestView>
@@ -185,6 +292,9 @@ void MPhoto::brightness(double value)
 
     brightness(const_view(_image), view(resultImage), value);
 
+    // save and add to history
+    _history.push_back(resultImage);
+    ++_historyIt;
     _image = resultImage;
 }
 
@@ -223,6 +333,9 @@ void MPhoto::contrast(double value)
 
     contrast(const_view(_image), view(resultImage), value);
 
+    // save and add to history
+    _history.push_back(resultImage);
+    ++_historyIt;
     _image = resultImage;
 }
 
@@ -240,9 +353,9 @@ void MPhoto::contrast(const SourceView& source, const DestView& dest, double val
 
 	for (int x = 0; x < source.width(); ++x)
 	{
-	    dest_it[x][0] = mextension::numeric::setRange((source_it[x][0] - 127.0)*value + 127.0, 0.0, 255.0);
-	    dest_it[x][1] = mextension::numeric::setRange((source_it[x][1] - 127.0)*value + 127.0, 0.0, 255.0);
-	    dest_it[x][2] = mextension::numeric::setRange((source_it[x][2] - 127.0)*value + 127.0, 0.0, 255.0);
+	    dest_it[x][0] = mnumeric::setRange((source_it[x][0] - 127.0)*value + 127.0, 0.0, 255.0);
+	    dest_it[x][1] = mnumeric::setRange((source_it[x][1] - 127.0)*value + 127.0, 0.0, 255.0);
+	    dest_it[x][2] = mnumeric::setRange((source_it[x][2] - 127.0)*value + 127.0, 0.0, 255.0);
 	}
 
     }
@@ -256,7 +369,11 @@ bool MPhoto::load(std::string path)
 {
     using namespace boost::gil;
 
-    jpeg_read_image(path, _image); // we read jpeg
+    // we read jpeg
+    jpeg_read_image(path, _image);
+    // initial step in history
+    _history.push_back(_image);
+    _historyIt = _history.begin();
 
     return true;
 }

@@ -5,6 +5,7 @@
 #include "gui/mgridwidget/mgridwidgetviewer.h"
 #include "core/mobject.h"
 #include "core/mphoto.h"
+#include <QInputDialog>
 
 gui::MGridWidgetItem::MGridWidgetItem(QWidget* parent) :
     QFrame(parent)
@@ -56,5 +57,112 @@ void gui::MGridWidgetItem::handleButtonClicked(int type, gui::MGridWidgetThumbna
 	case BUTTON_FAV:
 	    thumbnail->object()->setFavourite();
 	    break;
+    }
+}
+
+void gui::MGridWidgetItem::reload(QPixmap pixmap)
+{        
+    if (gui::MGridWidgetViewer* viewer = toViewer())
+    {
+	delete _imageLabel;
+
+	_imageLabel = new QLabel(this);
+	_imageLabel->setPixmap(pixmap);
+	_imageLabel->resize(pixmap.size());
+	_imageLabel->move(25, 25);
+	_imageLabel->show();
+
+	viewer->setFixedSize(pixmap.width() + 50, pixmap.height() + 100);
+    }
+}
+
+////////////////////////////////////////////////////////////////
+// Public Slots handling buttons
+////////////////////////////////////////////////////////////////
+
+void gui::MGridWidgetItem::rotatePhoto()
+{
+    bool ok;
+    double value = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"), tr("Amount:"), 0.0, -360.0, 360.0, 2, &ok);
+
+    if (ok)
+    {
+       if (core::MPhoto* photo = _object->toPhoto())
+       {
+	   photo->rotate(mimage::RGB(255, 255, 255), value);
+	   reload(photo->pixmapFromView(450));
+       }
+    }
+}
+
+void gui::MGridWidgetItem::resizePhoto()
+{
+}
+
+void gui::MGridWidgetItem::contrastPhoto()
+{
+    bool ok;
+    double value = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"), tr("Amount:"), 0.0, -100.0, 100.0, 2, &ok);
+
+    if (ok)
+    {
+       if (core::MPhoto* photo = _object->toPhoto())
+       {
+	   photo->contrast(value);
+	   reload(photo->pixmapFromView(450));
+       }
+    }
+}
+
+void gui::MGridWidgetItem::brightnessPhoto()
+{
+    bool ok;
+    double value = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"), tr("Amount:"), 0.0, -100.0, 100.0, 2, &ok);
+
+    if (ok)
+    {
+       if (core::MPhoto* photo = _object->toPhoto())
+       {
+	   photo->brightness(value);
+	   reload(photo->pixmapFromView(450));
+       }
+    }
+}
+
+void gui::MGridWidgetItem::saturatePhoto()
+{
+}
+
+void gui::MGridWidgetItem::bnwPhoto()
+{
+}
+
+void gui::MGridWidgetItem::deletePhoto()
+{
+}
+
+void gui::MGridWidgetItem::editPhoto()
+{
+}
+
+void gui::MGridWidgetItem::favPhoto()
+{
+}
+
+void gui::MGridWidgetItem::forwPhoto()
+{
+    if (core::MPhoto* photo = _object->toPhoto())
+    {
+	if (photo->forward())
+	    reload(photo->pixmapFromView(450));
+    }
+}
+
+void gui::MGridWidgetItem::backPhoto()
+{
+    if (core::MPhoto* photo = _object->toPhoto())
+    {
+	if (photo->backward())
+	    reload(photo->pixmapFromView(450));
     }
 }

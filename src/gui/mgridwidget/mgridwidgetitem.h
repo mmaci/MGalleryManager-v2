@@ -36,7 +36,21 @@ namespace gui
 	    core::MObject* object(){ return _object; }
 	    MGridWidget* widget(){ return _widget; }
 
-	public slots:
+	    void reload(QPixmap pixmap);
+
+	public slots:    
+	    void rotatePhoto();
+	    void resizePhoto();
+	    void contrastPhoto();
+	    void brightnessPhoto();
+	    void saturatePhoto();
+	    void bnwPhoto();
+	    void deletePhoto();
+	    void editPhoto();
+	    void favPhoto();	    
+	    void forwPhoto();
+	    void backPhoto();
+
 	    void handleButtonClicked(int type, gui::MGridWidgetThumbnail* thumbnail);
 	    void rotateRight()
 	    {
@@ -50,8 +64,6 @@ namespace gui
 	private:	    
 	    // gui
 	    MGridWidget*		_widget;	    
-
-
 
 	    // core links
 	    core::MObject*		_object;	    

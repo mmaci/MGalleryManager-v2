@@ -1,9 +1,7 @@
 #ifndef MNUMERIC_H
 #define MNUMERIC_H
 
-namespace mextension
-{
-namespace numeric
+namespace mnumeric
 {
 
 const double PI = 4.0*atan(1.0);
@@ -33,7 +31,6 @@ Num setRange(Num number, Num from, Num to)
     return number;
 }
 
-} // NAMESPACE numeric
-} // NAMESPACE mextension
+} // NAMESPACE mnumeric
 
 #endif // MNUMERIC_H

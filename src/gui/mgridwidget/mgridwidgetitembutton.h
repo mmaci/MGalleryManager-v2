@@ -7,12 +7,14 @@
 namespace gui
 {    
     class MGridWidgetThumbnail;
+    class MGridWidgetItem;
     class MGridWidgetItemButton : public QToolButton
     {
 	Q_OBJECT
 
 	public:
 	    MGridWidgetItemButton(int type, MGridWidgetItemIconSet* iconSet);
+	    MGridWidgetItemButton(int width, int height, MGridWidgetItem* item);
 	    ~MGridWidgetItemButton();
 
 	signals:
@@ -23,6 +25,7 @@ namespace gui
 
 	private:
 	    int _type;
+	    MGridWidgetItem* _item;
 	    MGridWidgetItemIconSet* _iconSet;
     };
 }

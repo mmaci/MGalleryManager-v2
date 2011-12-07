@@ -4,9 +4,7 @@
 #include <boost/gil/image.hpp>
 #include <boost/gil/typedefs.hpp>
 
-namespace mextension
-{
-namespace image
+namespace mimage
 {
 
 /**
@@ -75,7 +73,7 @@ struct CMYK
     int black;
 };
 
-inline double getLuminance(image::RGB color)
+inline double getLuminance(mimage::RGB color)
 {
     return  0.2126*static_cast<double>(color.red) +
 	    0.7152*static_cast<double>(color.green) +
@@ -178,7 +176,6 @@ inline ColorHistogram genHistogram(const SourceView& source)
     return histogram;
 }
 
-} // NAMESPACE image
-} // NAMESPACE extension
+} // NAMESPACE mimage
 
 #endif // MCOLOR_H

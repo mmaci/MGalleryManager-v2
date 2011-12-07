@@ -93,7 +93,7 @@ void MGridWidget::load(core::MObject* object)
 
 MGridWidgetViewer* MGridWidget::generateGridViewer(core::MPhoto* photo, int maxSize)
 {
-    QPixmap pixmap = photo->generatePixmap(maxSize);
+    QPixmap pixmap = photo->pixmapFromFile(maxSize);
 
     MGridWidgetViewer* viewer = new MGridWidgetViewer(pixmap, this, photo);
 

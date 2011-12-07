@@ -1,6 +1,8 @@
 #ifndef MPHOTO_H
 #define MPHOTO_H
 
+#include <list>
+
 #include <QFileInfo>
 #include <QPixmap>
 #include <QImage>
@@ -33,6 +35,8 @@ namespace core
 	    MPhotoInfo(){ };
 	    MPhotoInfo(QFileInfo fileInfo){ _fileInfo = fileInfo; }
 	    QFileInfo fileInfo(){ return _fileInfo; }
+	    std::string filepath(){ return _fileInfo.absoluteFilePath().toStdString(); }
+	    std::string filename(){ return _fileInfo.baseName().toStdString(); }
 
 	private:
 	    QFileInfo _fileInfo;
@@ -51,13 +55,16 @@ namespace core
 
 	    // gui helpers
 	    // we use these to generate different gui features like thumbnails
-	    QPixmap generatePixmap(int maxSize); // scales pixmap inside a maxSize x maxSize container
-	    QPixmap generatePixmap(int width, int height); // resizes to a set height and width
-	    QLabel generateLabel(QPixmap pixmap); // generates a label (widget used to display pixmap)
+	    QPixmap pixmapFromView(const QImage& image);
+	    QPixmap pixmapFromView(int width, int height);
+	    QPixmap pixmapFromView(int maxSize);
+	    QPixmap pixmapFromFile(int maxSize);
+	    template <typename SourceView>
+	    QImage viewToQImage(const SourceView& source);
 
 	    // transforms
 	    // rotation
-	    void rotate(mextension::image::RGB background, double angle);
+	    void rotate(mimage::RGB background, double angle);
 	    template <typename SourceView, typename DestView>
 	    void rotate(const SourceView& source, const DestView& dest, double angle);
 	    template <typename SourceView>
@@ -88,6 +95,31 @@ namespace core
 	    bool save(bool force = false);
 	    bool saveAs(std::string path, bool force = false);
 
+	    bool backward()
+	    {
+		if (_historyIt != _history.begin())
+		{
+		    --_historyIt;
+		    _image = *_historyIt;
+		    return true;
+		}
+		return false;
+	    }
+
+	    bool forward()
+	    {
+		++_historyIt;
+
+		if (_historyIt != _history.end())
+		{
+		    _image = *_historyIt;
+		    return true;
+		}
+
+		--_historyIt;
+		return false;
+	    }
+
 	private:
 	    // fileinfo about the original file
 	    // contains all kinds of metadata, filepath, ...
@@ -95,6 +127,8 @@ namespace core
 
 	    // color and image representations
 	    boost::gil::rgb8_image_t _image;
+	    std::list<boost::gil::rgb8_image_t> _history;
+	    std::list<boost::gil::rgb8_image_t>::iterator _historyIt;
     };
 }
 

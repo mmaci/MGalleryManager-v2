@@ -37,4 +37,5 @@ HEADERS  += gui/mainwindow.h \
     gui/mgridwidget/mgridwidgetviewer.h \
     gui/mgridwidget/mgridwidgetthumbnail.h \
     core/mnumeric.h \
-    core/mimage.h
+    core/mimage.h \
+    shareddefines.h
