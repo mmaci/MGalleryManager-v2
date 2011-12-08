@@ -17,7 +17,7 @@ MGridWidget::MGridWidget(QWidget* parent) :
 	_layout->setContentsMargins(0, 0, 0, 0);	
 	_layout->setSizeConstraint(QLayout::SetFixedSize);
 
-    _displayPhoto = NULL;
+    _viewer = NULL;
 
     #ifdef _DEBUG
     std::cout << "Creating new instance of MGridWidget" << std::endl;
@@ -85,7 +85,7 @@ void MGridWidget::load(core::MObject* object)
 	if (!photo->gridViewer())
 	    photo->setGridViewer(generateGridViewer(photo));
 
-	_items.push_back(photo->gridViewer());
+	_viewer = photo->gridViewer();
 	_layout->addWidget(photo->gridViewer(), 0, 0);
 	photo->gridViewer()->show();
     }
@@ -108,6 +108,13 @@ void MGridWidget::hideAllItems()
 	_layout->removeWidget(*it);
 	(*it)->hide();
     }    
+
+    if (_viewer)
+    {
+	_layout->removeWidget(_viewer);
+	_viewer->hide();
+	_viewer = NULL;
+    }
 }
 
 MGridWidgetItem* MGridWidget::find(core::MObject* obj)

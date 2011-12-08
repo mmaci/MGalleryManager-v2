@@ -7,16 +7,19 @@
 #include "core/mphoto.h"
 #include <QInputDialog>
 
-gui::MGridWidgetItem::MGridWidgetItem(QWidget* parent) :
+namespace gui
+{
+
+MGridWidgetItem::MGridWidgetItem(QWidget* parent) :
     QFrame(parent)
 {
-    _type = gui::GRIDTYPE_ITEM;
+    _type = GRIDTYPE_ITEM;
 }
 
-gui::MGridWidgetItem::MGridWidgetItem(gui::MGridWidget* widget, core::MPhoto* photo) :
+MGridWidgetItem::MGridWidgetItem(MGridWidget* widget, core::MPhoto* photo) :
     QFrame(widget)
 {
-    _type = gui::GRIDTYPE_ITEM;
+    _type = GRIDTYPE_ITEM;
 
     #ifdef _DEBUG
     std::cout << "Creating new instance of MGridWidgetItem (" << photo->info().fileInfo().baseName().toStdString() << ")" << std::endl;
@@ -30,24 +33,24 @@ gui::MGridWidgetItem::MGridWidgetItem(gui::MGridWidget* widget, core::MPhoto* ph
     setLineWidth(1);    
 }
 
-gui::MGridWidgetViewer* gui::MGridWidgetItem::toViewer()
+MGridWidgetViewer* MGridWidgetItem::toViewer()
 {
     // static cast has no runtime check, conversion from a child to another child would fail
-    return _type != gui::GRIDTYPE_THUMBNAIL ? static_cast<gui::MGridWidgetViewer*>(this) : NULL;
+    return _type != GRIDTYPE_THUMBNAIL ? static_cast<MGridWidgetViewer*>(this) : NULL;
 }
 
-gui::MGridWidgetThumbnail* gui::MGridWidgetItem::toThumbnail()
+MGridWidgetThumbnail* MGridWidgetItem::toThumbnail()
 {
     // static cast has no runtime check, conversion from a child to another child would fail
-    return _type != gui::GRIDTYPE_VIEWER ? static_cast<gui::MGridWidgetThumbnail*>(this) : NULL;
+    return _type != GRIDTYPE_VIEWER ? static_cast<MGridWidgetThumbnail*>(this) : NULL;
 }
 
-gui::MGridWidgetItem* gui::MGridWidgetItem::toItem()
+MGridWidgetItem* MGridWidgetItem::toItem()
 {
-    return dynamic_cast<gui::MGridWidgetItem*>(this);
+    return dynamic_cast<MGridWidgetItem*>(this);
 }
 
-void gui::MGridWidgetItem::handleButtonClicked(int type, gui::MGridWidgetThumbnail* thumbnail)
+void MGridWidgetItem::handleButtonClicked(int type, MGridWidgetThumbnail* thumbnail)
 {
     switch (type)
     {
@@ -60,19 +63,22 @@ void gui::MGridWidgetItem::handleButtonClicked(int type, gui::MGridWidgetThumbna
     }
 }
 
-void gui::MGridWidgetItem::reload(QPixmap pixmap)
+void MGridWidgetItem::reload(QPixmap pixmap)
 {        
-    if (gui::MGridWidgetViewer* viewer = toViewer())
-    {
-	delete _imageLabel;
-
-	_imageLabel = new QLabel(this);
+    if (MGridWidgetViewer* viewer = toViewer())
+    {	
 	_imageLabel->setPixmap(pixmap);
-	_imageLabel->resize(pixmap.size());
-	_imageLabel->move(25, 25);
-	_imageLabel->show();
+	_imageLabel->resize(pixmap.size());		
 
-	viewer->setFixedSize(pixmap.width() + 50, pixmap.height() + 100);
+	viewer->setFixedSize(pixmap.width() + 50, pixmap.height() + 80);
+
+	int indent = std::max(5, (pixmap.width() + 50 - MAX_VIEWER_BUTTONS*35 - 5) / 2);
+
+	if (MGridWidgetViewer* viewer = toViewer())
+	{
+	    for (int i = 0; i < MAX_VIEWER_BUTTONS; ++i)
+		viewer->moveButton(i, i*35 + indent, pixmap.height() + 45);
+	}
     }
 }
 
@@ -80,7 +86,7 @@ void gui::MGridWidgetItem::reload(QPixmap pixmap)
 // Public Slots handling buttons
 ////////////////////////////////////////////////////////////////
 
-void gui::MGridWidgetItem::rotatePhoto()
+void MGridWidgetItem::rotatePhoto()
 {
     bool ok;
     double value = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"), tr("Amount:"), 0.0, -360.0, 360.0, 2, &ok);
@@ -91,15 +97,18 @@ void gui::MGridWidgetItem::rotatePhoto()
        {
 	   photo->rotate(mimage::RGB(255, 255, 255), value);
 	   reload(photo->pixmapFromView(450));
+	   // enable history
+	   if (MGridWidgetViewer* viewer = toViewer())
+	       viewer->enableHistoryButtons(true);
        }
     }
 }
 
-void gui::MGridWidgetItem::resizePhoto()
+void MGridWidgetItem::resizePhoto()
 {
 }
 
-void gui::MGridWidgetItem::contrastPhoto()
+void MGridWidgetItem::contrastPhoto()
 {
     bool ok;
     double value = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"), tr("Amount:"), 0.0, -100.0, 100.0, 2, &ok);
@@ -110,11 +119,14 @@ void gui::MGridWidgetItem::contrastPhoto()
        {
 	   photo->contrast(value);
 	   reload(photo->pixmapFromView(450));
+	   // enable history
+	   if (MGridWidgetViewer* viewer = toViewer())
+	       viewer->enableHistoryButtons(true);
        }
     }
 }
 
-void gui::MGridWidgetItem::brightnessPhoto()
+void MGridWidgetItem::brightnessPhoto()
 {
     bool ok;
     double value = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"), tr("Amount:"), 0.0, -100.0, 100.0, 2, &ok);
@@ -125,31 +137,34 @@ void gui::MGridWidgetItem::brightnessPhoto()
        {
 	   photo->brightness(value);
 	   reload(photo->pixmapFromView(450));
+	   // enable history
+	   if (MGridWidgetViewer* viewer = toViewer())
+	       viewer->enableHistoryButtons(true);
        }
     }
 }
 
-void gui::MGridWidgetItem::saturatePhoto()
+void MGridWidgetItem::saturatePhoto()
 {
 }
 
-void gui::MGridWidgetItem::bnwPhoto()
+void MGridWidgetItem::bnwPhoto()
 {
 }
 
-void gui::MGridWidgetItem::deletePhoto()
+void MGridWidgetItem::deletePhoto()
 {
 }
 
-void gui::MGridWidgetItem::editPhoto()
+void MGridWidgetItem::editPhoto()
 {
 }
 
-void gui::MGridWidgetItem::favPhoto()
+void MGridWidgetItem::favPhoto()
 {
 }
 
-void gui::MGridWidgetItem::forwPhoto()
+void MGridWidgetItem::forwPhoto()
 {
     if (core::MPhoto* photo = _object->toPhoto())
     {
@@ -158,7 +173,7 @@ void gui::MGridWidgetItem::forwPhoto()
     }
 }
 
-void gui::MGridWidgetItem::backPhoto()
+void MGridWidgetItem::backPhoto()
 {
     if (core::MPhoto* photo = _object->toPhoto())
     {
@@ -166,3 +181,5 @@ void gui::MGridWidgetItem::backPhoto()
 	    reload(photo->pixmapFromView(450));
     }
 }
+
+} // NAMESPACE gui

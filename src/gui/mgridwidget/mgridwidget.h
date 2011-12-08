@@ -47,8 +47,8 @@ namespace gui
 
 	private:
 	    QGridLayout* _layout;
-	    std::list<MGridWidgetItem*> _items;
-	    QLabel* _displayPhoto;
+	    std::list<MGridWidgetItem*> _items;	    
+	    MGridWidgetViewer* _viewer;
     };
 }
 

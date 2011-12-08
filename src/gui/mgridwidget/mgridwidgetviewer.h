@@ -12,7 +12,7 @@
 
 #include "shareddefines.h"
 
-enum ViewerButtons
+enum MainViewerButtons
 {
     BUTTON_VIEWER_ROTATE,
     BUTTON_VIEWER_RESIZE,
@@ -25,24 +25,30 @@ enum ViewerButtons
     BUTTON_VIEWER_EDIT,
     BUTTON_VIEWER_FAV,
 
-    BUTTON_VIEWER_BACK,
-    BUTTON_VIEWER_FORW,
-
-    MAX_VIEWER_BUTTONS
+    MAX_VIEWER_BUTTONS,
 };
 
-const QString viewer_icons_path =			  "/images";
-const QString rotate_icon_path = viewer_icons_path	+ "/rotate_anticlock.png";
-const QString resize_icon_path = viewer_icons_path	+ "/resize.png";
-const QString contrast_icon_path = viewer_icons_path	+ "/contrast.png";
-const QString brightness_icon_path = viewer_icons_path	+ "/brightness.png";
-const QString saturate_icon_path = viewer_icons_path	+ "/saturate.png";
-const QString bnw_icon_path = viewer_icons_path		+ "/bnw.png";
-const QString delete_icon_path = viewer_icons_path	+ "/delete.png";
-const QString edit_icon_path = viewer_icons_path	+ "/edit.png";
-const QString fav_icon_path = viewer_icons_path		+ "/fav.png";
-const QString forw_icon_path = viewer_icons_path	+ "/forward.png";
-const QString back_icon_path = viewer_icons_path	+ "/backward.png";
+enum HistoryButtons
+{
+    BUTTON_HISTORY_BACK,
+    BUTTON_HISTORY_FORW,
+
+    MAX_HISTORY_BUTTONS
+};
+
+const QString VIEWER_ICONS_PATH =			  "/images";
+const QString ROTATE_ICON_PATH = VIEWER_ICONS_PATH	+ "/rotate_anticlock.png";
+const QString RESIZE_ICON_PATH = VIEWER_ICONS_PATH	+ "/resize.png";
+const QString CONTRAST_ICON_PATH = VIEWER_ICONS_PATH	+ "/contrast.png";
+const QString BRIGHTNESS_ICON_PATH = VIEWER_ICONS_PATH	+ "/brightness.png";
+const QString SATURATE_ICON_PATH = VIEWER_ICONS_PATH	+ "/saturate.png";
+const QString BNW_ICON_PATH = VIEWER_ICONS_PATH		+ "/bnw.png";
+const QString DELETE_ICON_PATH = VIEWER_ICONS_PATH	+ "/delete.png";
+const QString EDIT_ICON_PATH = VIEWER_ICONS_PATH	+ "/edit.png";
+const QString FAV_ICON_PATH = VIEWER_ICONS_PATH		+ "/fav.png";
+
+const QString FORW_ICON_PATH = VIEWER_ICONS_PATH	+ "/forward.png";
+const QString BACK_ICON_PATH = VIEWER_ICONS_PATH	+ "/backward.png";
 
 namespace core
 {
@@ -58,11 +64,16 @@ namespace gui
 	public:
 	    MGridWidgetViewer(QWidget* parent = NULL);
 	    MGridWidgetViewer(QPixmap pixmap, MGridWidget* widget, core::MPhoto* photo);
-	    void reload();
 
+	    void reload();
+	    void enableHistoryButtons(bool enable);
+	    void enableHistoryButtonForw(bool enable);
+	    void enableHistoryButtonBack(bool enable);
+
+	    void moveButton(int id, int x, int y);
 	private:
-	    QPixmap* _imagePixmap;
 	    MGridWidgetItemButton* _buttons[MAX_VIEWER_BUTTONS];
+	    MGridWidgetItemButton* _historyButtons[MAX_HISTORY_BUTTONS];
     };
 }
 

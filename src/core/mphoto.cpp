@@ -159,9 +159,8 @@ void MPhoto::rotate(mimage::RGB background, double angle)
 
     rotate(const_view(_image), view(resultImage), angle);
 
-    // save and add to history
-    _history.push_back(resultImage);
-    ++_historyIt;
+    // save and add to history   
+    pushToHistory(resultImage);
     _image = resultImage;    
 }
 
@@ -240,7 +239,7 @@ void MPhoto::resize(double maxSize)
     resize(const_view(_image), view(resultImage));
 
     // save and add to history
-    _history.push_back(resultImage);
+    pushToHistory(resultImage);
     ++_historyIt;
     _image = resultImage;
 }
@@ -258,8 +257,7 @@ void MPhoto::resize(double width, double height)
     resize(const_view(_image), view(resultImage));
 
     // save and add to history
-    _history.push_back(resultImage);
-    ++_historyIt;
+    pushToHistory(resultImage);
     _image = resultImage;   
 }
 
@@ -293,8 +291,7 @@ void MPhoto::brightness(double value)
     brightness(const_view(_image), view(resultImage), value);
 
     // save and add to history
-    _history.push_back(resultImage);
-    ++_historyIt;
+    pushToHistory(resultImage);
     _image = resultImage;
 }
 
@@ -331,11 +328,12 @@ void MPhoto::contrast(double value)
 
     rgb8_image_t resultImage(rgb8_image_t::point_t(_image.width(), _image.height()));
 
+    // rescale the value to <-100,100> range
+    value = 1 + value/100.0;
     contrast(const_view(_image), view(resultImage), value);
 
     // save and add to history
-    _history.push_back(resultImage);
-    ++_historyIt;
+    pushToHistory(resultImage);
     _image = resultImage;
 }
 
@@ -372,8 +370,9 @@ bool MPhoto::load(std::string path)
     // we read jpeg
     jpeg_read_image(path, _image);
     // initial step in history
-    _history.push_back(_image);
     _historyIt = _history.begin();
+    pushToHistory(_image);
+    _originalImage = _image;
 
     return true;
 }
@@ -386,6 +385,48 @@ bool MPhoto::saveAs(std::string path, bool force)
     jpeg_write_view(path, view(_image));
 
     return true;
+}
+
+void MPhoto::pushToHistory(boost::gil::rgb8_image_t image)
+{
+    ++_historyIt;
+    while (_historyIt != _history.end())
+	_historyIt = _history.erase(_historyIt);
+
+    _history.push_back(image);
+    _historyIt = --_history.end();
+
+    while (_history.size() > HISTORY_SIZE)
+	popFromHistory();
+}
+
+void MPhoto::popFromHistory()
+{
+    _history.pop_front();
+}
+
+bool MPhoto::backward()
+{
+    if (_historyIt != _history.begin())
+    {
+	--_historyIt;
+	_image = *_historyIt;
+	return true;
+    }
+    return false;
+}
+bool MPhoto::forward()
+{
+    ++_historyIt;
+
+    if (_historyIt != _history.end())
+    {
+	_image = *_historyIt;
+	return true;
+    }
+
+    --_historyIt;
+    return false;
 }
 
 } // NAMESPACE core

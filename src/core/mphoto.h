@@ -20,6 +20,8 @@
 #include "core/mimage.h"
 #include "core/mnumeric.h"
 
+const unsigned int HISTORY_SIZE = 10;
+
 namespace gui
 {
     class MGridWidgetViewer;
@@ -90,35 +92,16 @@ namespace core
 	    void saturate(double value);
 	    void blackandwhite();
 
+	    // loading/saving
 	    bool load(std::string path);
-
 	    bool save(bool force = false);
 	    bool saveAs(std::string path, bool force = false);
 
-	    bool backward()
-	    {
-		if (_historyIt != _history.begin())
-		{
-		    --_historyIt;
-		    _image = *_historyIt;
-		    return true;
-		}
-		return false;
-	    }
-
-	    bool forward()
-	    {
-		++_historyIt;
-
-		if (_historyIt != _history.end())
-		{
-		    _image = *_historyIt;
-		    return true;
-		}
-
-		--_historyIt;
-		return false;
-	    }
+	    // history
+	    void pushToHistory(boost::gil::rgb8_image_t image);
+	    void popFromHistory();
+	    bool backward();
+	    bool forward();
 
 	private:
 	    // fileinfo about the original file
@@ -127,6 +110,7 @@ namespace core
 
 	    // color and image representations
 	    boost::gil::rgb8_image_t _image;
+	    boost::gil::rgb8_image_t _originalImage;
 	    std::list<boost::gil::rgb8_image_t> _history;
 	    std::list<boost::gil::rgb8_image_t>::iterator _historyIt;
     };
