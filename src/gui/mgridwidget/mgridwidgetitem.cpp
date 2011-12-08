@@ -146,6 +146,20 @@ void MGridWidgetItem::brightnessPhoto()
 
 void MGridWidgetItem::saturatePhoto()
 {
+    bool ok;
+    double value = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"), tr("Amount:"), 0.0, -100.0, 100.0, 2, &ok);
+
+    if (ok)
+    {
+       if (core::MPhoto* photo = _object->toPhoto())
+       {
+	   photo->saturation(value);
+	   reload(photo->pixmapFromView(450));
+	   // enable history
+	   if (MGridWidgetViewer* viewer = toViewer())
+	       viewer->enableHistoryButtons(true);
+       }
+    }
 }
 
 void MGridWidgetItem::bnwPhoto()

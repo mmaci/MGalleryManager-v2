@@ -59,7 +59,7 @@ MGridWidgetViewer::MGridWidgetViewer(QPixmap pixmap, MGridWidget* widget, core::
 		break;
 	    case BUTTON_VIEWER_SATURATE:
 		_buttons[BUTTON_VIEWER_SATURATE]->setIcon(QIcon(QCoreApplication::applicationDirPath() + SATURATE_ICON_PATH));
-		connect(this, SIGNAL(clicked()), this, SLOT(saturatePhoto()));
+		connect(_buttons[BUTTON_VIEWER_SATURATE], SIGNAL(clicked()), this, SLOT(saturatePhoto()));
 		break;
 	    case BUTTON_VIEWER_BNW:
 		_buttons[BUTTON_VIEWER_BNW]->setIcon(QIcon(QCoreApplication::applicationDirPath() + BNW_ICON_PATH));

@@ -88,8 +88,10 @@ namespace core
 	    template <typename SourceView, typename DestView>
 	    void contrast(const SourceView& source, const DestView& dest, double value);
 
+	    void saturation(double value);
+	    template <typename SourceView, typename DestView>
+	    void saturation(const SourceView& source, const DestView& dest, double value);
 
-	    void saturate(double value);
 	    void blackandwhite();
 
 	    // loading/saving

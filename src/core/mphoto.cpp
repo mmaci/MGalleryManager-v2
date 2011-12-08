@@ -359,6 +359,54 @@ void MPhoto::contrast(const SourceView& source, const DestView& dest, double val
     }
 }
 
+void MPhoto::saturation(double value)
+{
+    using namespace boost::gil;
+
+    BOOST_ASSERT_MSG(value <= 100.0 && value >= -100.0, "Saturation value must be in range between -100.0 and 100.0.");
+
+    rgb8_image_t resultImage(rgb8_image_t::point_t(_image.width(), _image.height()));
+
+    saturation(const_view(_image), view(resultImage), value);
+
+    // save and add to history
+    pushToHistory(resultImage);
+    _image = resultImage;
+}
+
+template <typename SourceView, typename DestView>
+void MPhoto::saturation(const SourceView& source, const DestView& dest, double value)
+{
+    using namespace boost::gil;
+
+    BOOST_ASSERT_MSG(num_channels<SourceView>::value == 3, "Must have 3 channels - RGB.");
+
+    for (int y = 0; y < source.height(); ++y)
+    {
+	typename SourceView::x_iterator source_it = source.row_begin(y);
+	typename DestView::x_iterator dest_it = dest.row_begin(y);
+
+	for (int x = 0; x < source.width(); ++x)
+	{
+	    mimage::RGB rgbColor(source_it[x][0], source_it[x][1], source_it[x][2]);
+	    mimage::HSV hsvColor = mimage::RGBtoHSV(rgbColor);
+
+	    if (hsvColor.hue != COLOR_UNDEFINED)
+		hsvColor.saturation += (value/20.0);
+
+	    if (hsvColor.saturation < 0.0)
+		hsvColor.saturation = 0.0;
+
+	    rgbColor = mimage::HSVtoRGB(hsvColor);
+
+	    dest_it[x][0] = mnumeric::setRange(rgbColor.red, 0, 255);
+	    dest_it[x][1] = mnumeric::setRange(rgbColor.green, 0, 255);
+	    dest_it[x][2] = mnumeric::setRange(rgbColor.blue, 0, 255);
+	}
+
+    }
+}
+
 ////////////////////////////////////////////////////////////////
 // Saving & Loading
 ////////////////////////////////////////////////////////////////
