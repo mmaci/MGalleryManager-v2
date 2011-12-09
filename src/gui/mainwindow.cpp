@@ -45,7 +45,6 @@ gui::MainWindow::~MainWindow()
 
     delete _removeButton;
     delete statusBar;
-    delete mainToolBar;
 
     // delete central, layout widgets
     delete _baseGrid;
@@ -59,20 +58,19 @@ void gui::MainWindow::setupGui(QMainWindow* mainWindow)
 {
     if (mainWindow->objectName().isEmpty())
 	mainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-    mainWindow->resize(1035, 650);
+
+    mainWindow->resize(1024, 768);
 
     _centralWidget = new QWidget(mainWindow);
 	_centralWidget->setObjectName(QString::fromUtf8("_centralWidget"));
 
-    _baseGridWidget = new QWidget(_centralWidget);
+    _baseGridWidget = new QWidget(_centralWidget);	
 	_baseGridWidget->setObjectName(QString::fromUtf8("_baseGridWidget"));
-	_baseGridWidget->setGeometry(QRect(10, 20, 271, 561));
+	_baseGridWidget->setGeometry(QRect(0, 0, 271, 561));
 
-    _baseGrid = new QGridLayout(_baseGridWidget);
-	_baseGrid->setSpacing(6);
-	_baseGrid->setContentsMargins(11, 11, 11, 11);
+    _baseGrid = new QGridLayout(_baseGridWidget);	
 	_baseGrid->setObjectName(QString::fromUtf8("_baseGrid"));
-	_baseGrid->setContentsMargins(0, 0, 0, 0);
+	_baseGrid->setMargin(1);
 
     setupMenu(mainWindow);
     setupFileSystemView(_baseGrid);
@@ -81,15 +79,11 @@ void gui::MainWindow::setupGui(QMainWindow* mainWindow)
 
     mainWindow->setCentralWidget(_centralWidget);
 
-    mainToolBar = new QToolBar(mainWindow);
-    mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
-    mainWindow->addToolBar(Qt::TopToolBarArea, mainToolBar);
     statusBar = new QStatusBar(mainWindow);
-    statusBar->setObjectName(QString::fromUtf8("statusBar"));
-    mainWindow->setStatusBar(statusBar);
+	statusBar->setObjectName(QString::fromUtf8("statusBar"));
+	mainWindow->setStatusBar(statusBar);
 
-
-    mainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0, QApplication::UnicodeUTF8));
+    mainWindow->setWindowTitle(QApplication::translate("MGallery", "MGallery", 0, QApplication::UnicodeUTF8));
 
     // at the beginning we disable all kinds of buttons, menus, ...
     // to enable them later on, when we create a project
@@ -106,7 +100,7 @@ void gui::MainWindow::setupObjectGrid(QWidget* parent)
 {
     _objectGridWidget = new gui::MGridWidget(parent);
 	_objectGridWidget->setAutoFillBackground(true);
-	_objectGridWidget->setGeometry(QRect(290, 20, 731, 561));
+	_objectGridWidget->setGeometry(QRect(272, 0, 753, 747));
 }
 
 // SETUP: sets menus
@@ -114,7 +108,8 @@ void gui::MainWindow::setupMenu(QMainWindow* mainWindow)
 {
     menuBar = new QMenuBar(mainWindow);
     menuBar->setObjectName(QString::fromUtf8("menuBar"));
-    menuBar->setGeometry(QRect(0, 0, 1035, 21));
+    menuBar->setGeometry(QRect(0, 0, 1024, 20));
+
     menuProject = new QMenu(menuBar);
     menuProject->setObjectName(QString::fromUtf8("menuProject"));
     menuExport = new QMenu(menuBar);
@@ -147,7 +142,7 @@ void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
     // init
     _fileSystemView = new QTreeView(_baseGridWidget);
     _fileSystemModel = new QFileSystemModel;
-    _fileSystemModel->setRootPath(QDir::currentPath());
+	_fileSystemModel->setRootPath(QDir::currentPath());
 
     // name filters
     QStringList nameFilters;
@@ -157,13 +152,13 @@ void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
     // connects Filesystem model to treeview and adds to layout
     _fileSystemView->setModel(_fileSystemModel);
     _fileSystemView->setSelectionMode(QAbstractItemView::MultiSelection);
-    layout->addWidget(_fileSystemView, 2, 0, 1, 1);
+    layout->addWidget(_fileSystemView, 0, 0);
 
     // import button
     _importButton = new QPushButton(_baseGridWidget);
-    _importButton->setObjectName(QString::fromUtf8("importButton"));
-    _importButton->setText(QApplication::translate("MainWindow", "Import", 0, QApplication::UnicodeUTF8));
-    layout->addWidget(_importButton, 3, 0, 1, 1);
+	_importButton->setObjectName(QString::fromUtf8("importButton"));
+	_importButton->setText(QApplication::translate("MainWindow", "Import", 0, QApplication::UnicodeUTF8));
+	layout->addWidget(_importButton, 1, 0);
 
     // set signals and slots
     // import button imports a photo
@@ -308,13 +303,13 @@ void gui::MainWindow::setupTabs(QGridLayout* layout)
     _removeButton->setObjectName(QString::fromUtf8("removeButton"));
     _removeButton->setText(QApplication::translate("MainWindow", "Remove", 0, QApplication::UnicodeUTF8));
 
-    layout->addWidget(_tabWidget, 4, 0, 1, 1);
-    layout->addWidget(_removeButton, 5, 0, 1, 1);
+    layout->addWidget(_tabWidget, 2, 0);
+    layout->addWidget(_removeButton, 3, 0);
 
     _createGalleryButton = new QPushButton(_baseGridWidget);
     _createGalleryButton->setObjectName(QString::fromUtf8("removeButton"));
     _createGalleryButton->setText(QApplication::translate("MainWindow", "Create Gallery", 0, QApplication::UnicodeUTF8));
-    layout->addWidget(_createGalleryButton, 6, 0, 1, 1);
+    layout->addWidget(_createGalleryButton, 4, 0);
 
     _tabWidget->setCurrentIndex(0); // makes Project Tab active
 
@@ -326,12 +321,12 @@ void gui::MainWindow::setupTabs(QGridLayout* layout)
 void gui::MainWindow::setupProjectTab(QTabWidget* tab)
 {
     projectViewWidget = new QWidget();
-    projectViewWidget->setObjectName(QString::fromUtf8("projectViewWidget"));
+	projectViewWidget->setObjectName(QString::fromUtf8("projectViewWidget"));
 
     _projectWidget = new gui::MTreeWidget(projectViewWidget);
-    _projectWidget->setObjectName(QString::fromUtf8("projectWidget"));
-    _projectWidget->setGeometry(QRect(0, 0, 261, 221));
-    _projectWidget->setColumnCount(1);
+	_projectWidget->setObjectName(QString::fromUtf8("projectWidget"));
+	_projectWidget->setGeometry(QRect(0, 0, 261, 221));
+	_projectWidget->setColumnCount(1);
 
     tab->addTab(projectViewWidget, QString());
     tab->setTabText(tab->indexOf(projectViewWidget), QApplication::translate("MainWindow", "Project", 0, QApplication::UnicodeUTF8));
@@ -342,7 +337,7 @@ void gui::MainWindow::setupProjectTab(QTabWidget* tab)
 void gui::MainWindow::setupDetailsTab(QTabWidget* tab)
 {
     detailsWidget = new QWidget();
-    detailsWidget->setObjectName(QString::fromUtf8("detailsWidget"));
+	detailsWidget->setObjectName(QString::fromUtf8("detailsWidget"));
 
     tab->addTab(detailsWidget, QString());
     tab->setTabText(tab->indexOf(detailsWidget), QApplication::translate("MainWindow", "Details", 0, QApplication::UnicodeUTF8));

@@ -94,8 +94,7 @@ namespace gui
 	    QMenu* menuExport;
 	    QMenu* menuView;
 	    QMenu* menuHelp;
-	    QMenu* menuImage;
-	    QToolBar* mainToolBar;
+	    QMenu* menuImage;	   
 	    QStatusBar* statusBar;
 
 	    core::MDatabase*	_database;

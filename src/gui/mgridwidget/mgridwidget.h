@@ -43,7 +43,7 @@ namespace gui
 	    core::MObject* remove(core::MObject* obj);
 	    MGridWidgetItem* find(core::MObject* obj);
 
-	    MGridWidgetViewer* generateGridViewer(core::MPhoto* photo, int maxSize = DEFAULT_VIEWER_IMAGE_SIZE);
+	    MGridWidgetViewer* generateGridViewer(core::MPhoto* photo, int maxSize = 0); // 0 means no scaling
 
 	private:
 	    QGridLayout* _layout;

@@ -59,7 +59,7 @@ namespace core
 	    // we use these to generate different gui features like thumbnails
 	    QPixmap pixmapFromView(const QImage& image);
 	    QPixmap pixmapFromView(int width, int height);
-	    QPixmap pixmapFromView(int maxSize);
+	    QPixmap pixmapFromView(int maxSize = 0); // we don't scale
 	    QPixmap pixmapFromFile(int maxSize);
 	    template <typename SourceView>
 	    QImage viewToQImage(const SourceView& source);

@@ -6,6 +6,7 @@
 #include "core/mobject.h"
 #include "core/mphoto.h"
 #include <QInputDialog>
+#include "gui/mresizedialog.h"
 
 namespace gui
 {
@@ -64,22 +65,9 @@ void MGridWidgetItem::handleButtonClicked(int type, MGridWidgetThumbnail* thumbn
 }
 
 void MGridWidgetItem::reload(QPixmap pixmap)
-{        
-    if (MGridWidgetViewer* viewer = toViewer())
-    {	
-	_imageLabel->setPixmap(pixmap);
-	_imageLabel->resize(pixmap.size());		
-
-	viewer->setFixedSize(pixmap.width() + 50, pixmap.height() + 80);
-
-	int indent = std::max(5, (pixmap.width() + 50 - MAX_VIEWER_BUTTONS*35 - 5) / 2);
-
-	if (MGridWidgetViewer* viewer = toViewer())
-	{
-	    for (int i = 0; i < MAX_VIEWER_BUTTONS; ++i)
-		viewer->moveButton(i, i*35 + indent, pixmap.height() + 45);
-	}
-    }
+{            
+    _imageLabel->setPixmap(pixmap);
+    _imageLabel->resize(pixmap.size());
 }
 
 ////////////////////////////////////////////////////////////////
@@ -89,14 +77,14 @@ void MGridWidgetItem::reload(QPixmap pixmap)
 void MGridWidgetItem::rotatePhoto()
 {
     bool ok;
-    double value = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"), tr("Amount:"), 0.0, -360.0, 360.0, 2, &ok);
+    double value = QInputDialog::getDouble(this, tr("Rotation"), tr("Amount:"), 0.0, 0.0, 360.0, 2, &ok);
 
     if (ok)
     {
        if (core::MPhoto* photo = _object->toPhoto())
        {
 	   photo->rotate(mimage::RGB(255, 255, 255), value);
-	   reload(photo->pixmapFromView(450));
+	   reload(photo->pixmapFromView());
 	   // enable history
 	   if (MGridWidgetViewer* viewer = toViewer())
 	       viewer->enableHistoryButtons(true);
@@ -106,19 +94,33 @@ void MGridWidgetItem::rotatePhoto()
 
 void MGridWidgetItem::resizePhoto()
 {
+    MResizeDialog dialog(this);
+
+    if (dialog.exec())
+    {
+	if (core::MPhoto* photo = _object->toPhoto())
+	{
+	   photo->resize(static_cast<double>(dialog.getWidth()), static_cast<double>(dialog.getHeight()));
+	   reload(photo->pixmapFromView());
+	   // enable history
+	   if (MGridWidgetViewer* viewer = toViewer())
+	       viewer->enableHistoryButtons(true);
+	}
+    }
+
 }
 
 void MGridWidgetItem::contrastPhoto()
 {
     bool ok;
-    double value = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"), tr("Amount:"), 0.0, -100.0, 100.0, 2, &ok);
+    double value = QInputDialog::getDouble(this, tr("Contrast"), tr("Amount:"), 0.0, -100.0, 100.0, 2, &ok);
 
     if (ok)
     {
        if (core::MPhoto* photo = _object->toPhoto())
        {
 	   photo->contrast(value);
-	   reload(photo->pixmapFromView(450));
+	   reload(photo->pixmapFromView());
 	   // enable history
 	   if (MGridWidgetViewer* viewer = toViewer())
 	       viewer->enableHistoryButtons(true);
@@ -129,14 +131,14 @@ void MGridWidgetItem::contrastPhoto()
 void MGridWidgetItem::brightnessPhoto()
 {
     bool ok;
-    double value = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"), tr("Amount:"), 0.0, -100.0, 100.0, 2, &ok);
+    double value = QInputDialog::getDouble(this, tr("Brightness"), tr("Amount:"), 0.0, -100.0, 100.0, 2, &ok);
 
     if (ok)
     {
        if (core::MPhoto* photo = _object->toPhoto())
        {
 	   photo->brightness(value);
-	   reload(photo->pixmapFromView(450));
+	   reload(photo->pixmapFromView());
 	   // enable history
 	   if (MGridWidgetViewer* viewer = toViewer())
 	       viewer->enableHistoryButtons(true);
@@ -147,14 +149,14 @@ void MGridWidgetItem::brightnessPhoto()
 void MGridWidgetItem::saturatePhoto()
 {
     bool ok;
-    double value = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"), tr("Amount:"), 0.0, -100.0, 100.0, 2, &ok);
+    double value = QInputDialog::getDouble(this, tr("Saturation"), tr("Amount:"), 0.0, -100.0, 100.0, 2, &ok);
 
     if (ok)
     {
        if (core::MPhoto* photo = _object->toPhoto())
        {
 	   photo->saturation(value);
-	   reload(photo->pixmapFromView(450));
+	   reload(photo->pixmapFromView());
 	   // enable history
 	   if (MGridWidgetViewer* viewer = toViewer())
 	       viewer->enableHistoryButtons(true);
@@ -164,6 +166,14 @@ void MGridWidgetItem::saturatePhoto()
 
 void MGridWidgetItem::bnwPhoto()
 {
+    if (core::MPhoto* photo = _object->toPhoto())
+    {
+	photo->blackandwhite();
+	reload(photo->pixmapFromView());
+	// enable history
+	if (MGridWidgetViewer* viewer = toViewer())
+	    viewer->enableHistoryButtons(true);
+    }
 }
 
 void MGridWidgetItem::deletePhoto()
@@ -183,7 +193,7 @@ void MGridWidgetItem::forwPhoto()
     if (core::MPhoto* photo = _object->toPhoto())
     {
 	if (photo->forward())
-	    reload(photo->pixmapFromView(450));
+	    reload(photo->pixmapFromView());
     }
 }
 
@@ -192,7 +202,7 @@ void MGridWidgetItem::backPhoto()
     if (core::MPhoto* photo = _object->toPhoto())
     {
 	if (photo->backward())
-	    reload(photo->pixmapFromView(450));
+	    reload(photo->pixmapFromView());
     }
 }
 

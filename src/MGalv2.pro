@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     gui/mtreewidget/mtreewidgetitem.cpp \
     gui/mnewgallerydialog.cpp \
     gui/mgridwidget/mgridwidgetviewer.cpp \
-    gui/mgridwidget/mgridwidgetthumbnail.cpp
+    gui/mgridwidget/mgridwidgetthumbnail.cpp \
+    gui/mresizedialog.cpp
 
 HEADERS  += gui/mainwindow.h \
     core/mdatabase.h \
@@ -38,4 +39,5 @@ HEADERS  += gui/mainwindow.h \
     gui/mgridwidget/mgridwidgetthumbnail.h \
     core/mnumeric.h \
     core/mimage.h \
-    shareddefines.h
+    shareddefines.h \
+    gui/mresizedialog.h

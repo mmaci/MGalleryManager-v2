@@ -43,6 +43,10 @@ QPixmap MPhoto::pixmapFromFile(int maxSize)
 {
     QPixmap image(_info.fileInfo().absoluteFilePath());
 
+    // no need for scaling
+    if (!maxSize)
+	return image;
+
     // scaling
     if (image.height() > image.width())
 	image = image.scaledToHeight(std::min(maxSize, image.height()));
@@ -84,23 +88,26 @@ QPixmap MPhoto::pixmapFromView(int maxSize)
     // it's better to do all the maths using doubles, not to lose any digits
     double width = static_cast<double>(_image.width());
     double height = static_cast<double>(_image.height());
-    double max = static_cast<double>(maxSize);
-    double coef;
-
-    // vertical image
-    if (_image.height() > _image.width())
+    // if we have maxSize set, we scale, otherwise we do not
+    if (maxSize)
     {
-	coef = height / max;
-	if (height > max) height = max;
-	width = width / coef;
+	double max = static_cast<double>(maxSize);
+	double coef;
+	// vertical image
+	if (_image.height() > _image.width())
+	{
+	    coef = height / max;
+	    if (height > max) height = max;
+	    width = width / coef;
 
-    }
-    // horizontal image
-    else
-    {
-	coef = width / max;
-	if (width > max) width = max;
-	height = height / coef;
+	}
+	// horizontal image
+	else
+	{
+	    coef = width / max;
+	    if (width > max) width = max;
+	    height = height / coef;
+	}
     }
     return pixmapFromView(static_cast<int>(width), static_cast<int>(height));
 }
@@ -405,6 +412,11 @@ void MPhoto::saturation(const SourceView& source, const DestView& dest, double v
 	}
 
     }
+}
+
+void MPhoto::blackandwhite()
+{
+    saturation(-100.0);
 }
 
 ////////////////////////////////////////////////////////////////

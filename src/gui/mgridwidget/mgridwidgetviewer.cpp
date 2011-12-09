@@ -10,7 +10,7 @@ namespace gui
 
 MGridWidgetViewer::MGridWidgetViewer(QWidget* parent) :
     MGridWidgetItem(parent)
-{
+{       
     _type = GRIDTYPE_VIEWER;
 }
 
@@ -18,36 +18,64 @@ MGridWidgetViewer::MGridWidgetViewer(QPixmap pixmap, MGridWidget* widget, core::
     MGridWidgetItem(widget, photo)
 {
     _type = GRIDTYPE_VIEWER;
+    _zoom = 100.0;
+
+    setFixedSize(750, 720);
 
     _imageLabel = new QLabel(this);
 	_imageLabel->setPixmap(pixmap);
-	_imageLabel->resize(pixmap.size());
+	_imageLabel->setBackgroundRole(QPalette::Base);
+	_imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+	_imageLabel->setScaledContents(true);
+
+    _imageArea = new QScrollArea(this);
+	_imageArea->setWidget(_imageLabel);
+	_imageArea->setBackgroundRole(QPalette::Dark);
+	_imageArea->move(0, VIEWER_BUTTON_SIZE + 2*VIEWER_MARGIN);
+	// there are buttons on the bottom and on the top
+	_imageArea->resize(750, 720 - 2*VIEWER_BUTTON_SIZE - 4*VIEWER_MARGIN);
 
     ////////////////////////////////////////////////////////////////
     // Positioning Buttons
     ////////////////////////////////////////////////////////////////
 
-    const int buttonWidth = MAX_VIEWER_BUTTONS*35 + 5;
-    setFixedSize(std::max(pixmap.width() + 50, buttonWidth), pixmap.height() + 80);
-    _imageLabel->move(25, 40);
-
-    // button initialization
-    int indent = std::max(5, (pixmap.width() + 50 - MAX_VIEWER_BUTTONS*35 - 5) / 2);
-    for (int i = 0; i < MAX_VIEWER_BUTTONS; ++i)
+    // HISTORY BUTTONS
+    //
+    for (int i = 0; i < MAX_HISTORY_BUTTONS; ++i)
     {
-	_buttons[i] = new MGridWidgetItemButton(30, 30, this);
-	_buttons[i]->move(i*(_buttons[0]->width() + 5) + indent, pixmap.height() + 45);
-
+	_historyButtons[i] = new MGridWidgetItemButton(VIEWER_BUTTON_SIZE, VIEWER_BUTTON_SIZE, this);
+	_historyButtons[i]->move(i*(VIEWER_BUTTON_SIZE + VIEWER_MARGIN) + VIEWER_MARGIN, VIEWER_MARGIN);
 	switch (i)
 	{
-	    // image manipulation
+	    case BUTTON_HISTORY_BACK:
+		_historyButtons[BUTTON_HISTORY_BACK]->setIcon(QIcon(QCoreApplication::applicationDirPath() + BACK_ICON_PATH));
+		connect(_historyButtons[BUTTON_HISTORY_BACK], SIGNAL(clicked()), this, SLOT(backPhoto()));
+		break;
+
+	    case BUTTON_HISTORY_FORW:
+		_historyButtons[BUTTON_HISTORY_FORW]->setIcon(QIcon(QCoreApplication::applicationDirPath() + FORW_ICON_PATH));
+		connect(_historyButtons[BUTTON_HISTORY_FORW], SIGNAL(clicked()), this, SLOT(forwPhoto()));
+		break;
+	}
+    }
+    enableHistoryButtons(false);
+
+    // PHOTO MANIPULATION BUTTONS
+    //
+    for (int i = 0; i < MAX_VIEWER_BUTTONS; ++i)
+    {
+	_buttons[i] = new MGridWidgetItemButton(VIEWER_BUTTON_SIZE, VIEWER_BUTTON_SIZE, this);
+	_buttons[i]->move(i*(VIEWER_BUTTON_SIZE + VIEWER_MARGIN) + VIEWER_MARGIN, _imageArea->height() + VIEWER_BUTTON_SIZE + 3*VIEWER_MARGIN);
+
+	switch (i)
+	{	    
 	    case BUTTON_VIEWER_ROTATE:		
 		_buttons[BUTTON_VIEWER_ROTATE]->setIcon(QIcon(QCoreApplication::applicationDirPath() + ROTATE_ICON_PATH));
 		connect(_buttons[BUTTON_VIEWER_ROTATE], SIGNAL(clicked()), this, SLOT(rotatePhoto()));
 		break;
 	    case BUTTON_VIEWER_RESIZE:
 		_buttons[BUTTON_VIEWER_RESIZE]->setIcon(QIcon(QCoreApplication::applicationDirPath() + RESIZE_ICON_PATH));
-		connect(this, SIGNAL(clicked()), this, SLOT(resizePhoto()));
+		connect(_buttons[BUTTON_VIEWER_RESIZE], SIGNAL(clicked()), this, SLOT(resizePhoto()));
 		break;
 	    case BUTTON_VIEWER_CONTRAST:
 		_buttons[BUTTON_VIEWER_CONTRAST]->setIcon(QIcon(QCoreApplication::applicationDirPath() + CONTRAST_ICON_PATH));
@@ -63,10 +91,10 @@ MGridWidgetViewer::MGridWidgetViewer(QPixmap pixmap, MGridWidget* widget, core::
 		break;
 	    case BUTTON_VIEWER_BNW:
 		_buttons[BUTTON_VIEWER_BNW]->setIcon(QIcon(QCoreApplication::applicationDirPath() + BNW_ICON_PATH));
-		connect(this, SIGNAL(clicked()), this, SLOT(bnwPhoto()));
+		connect(_buttons[BUTTON_VIEWER_BNW], SIGNAL(clicked()), this, SLOT(bnwPhoto()));
 		break;
 
-	    // photo management
+	    // PHOTO MANAGEMENT
 	    case BUTTON_VIEWER_DELETE:
 		_buttons[BUTTON_VIEWER_DELETE]->setIcon(QIcon(QCoreApplication::applicationDirPath() + DELETE_ICON_PATH));
 		connect(this, SIGNAL(clicked()), this, SLOT(deletePhoto()));
@@ -83,28 +111,7 @@ MGridWidgetViewer::MGridWidgetViewer(QPixmap pixmap, MGridWidget* widget, core::
 	    default:
 		break;
 	}
-    }
-
-    indent = 5;
-    for (int i = 0; i < MAX_HISTORY_BUTTONS; ++i)
-    {
-	_historyButtons[i] = new MGridWidgetItemButton(30, 30, this);
-	_historyButtons[i]->move(i*(_buttons[0]->width() + 5) + indent, indent);
-	switch (i)
-	{
-	    // history
-	    case BUTTON_HISTORY_BACK:
-		_historyButtons[BUTTON_HISTORY_BACK]->setIcon(QIcon(QCoreApplication::applicationDirPath() + BACK_ICON_PATH));
-		connect(_historyButtons[BUTTON_HISTORY_BACK], SIGNAL(clicked()), this, SLOT(backPhoto()));
-		break;
-
-	    case BUTTON_HISTORY_FORW:
-		_historyButtons[BUTTON_HISTORY_FORW]->setIcon(QIcon(QCoreApplication::applicationDirPath() + FORW_ICON_PATH));
-		connect(_historyButtons[BUTTON_HISTORY_FORW], SIGNAL(clicked()), this, SLOT(forwPhoto()));
-		break;
-	}
-    }
-    enableHistoryButtons(false);
+    }    
 }
 
 void MGridWidgetViewer::enableHistoryButtons(bool enable)
