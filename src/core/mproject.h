@@ -1,33 +1,33 @@
-#ifndef MDATABASE_H
-#define MDATABASE_H
+#ifndef MPROJECT_H
+#define MPROJECT_H
 
 #include <set>
 
 #include <QFileInfo>
 
+
 namespace core
 {
+    class MGallery;
     class MPhoto;
     class MObject;
-
-    class MDatabase
+    class MProject
     {
 	public:
-	    MDatabase();
-	    ~MDatabase();
+	    MProject();
+	    ~MProject();
 
 	    void insert(MObject* obj);
 
 	    unsigned int const generateId();
-	    unsigned int const size(){ return _content.size(); }
 
 	    MPhoto* find(QFileInfo fileInfo);
-	    void remove(MObject* obj){ _content.erase(obj); }
+	    MGallery* base(){ return _base; }
 
 	private:
-	    std::set<MObject*> _content;
+	    MGallery* _base;
 	    unsigned int _maxid;
     };
 }
 
-#endif // MDATABASE_H
+#endif // MPROJECT_H

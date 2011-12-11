@@ -31,13 +31,17 @@ namespace core
     {
 	public:
 	    // constructors/destructors
-	    MGallery();
+	    MGallery(MGallery* parent = NULL);
 	    MGallery(MGalleryInfo info, MGallery* parent = NULL);
 	    ~MGallery();
 
 	    // modify data
 	    MGallery* insert(MGalleryInfo info);
+	    void insert(MGallery* gallery);
 	    MPhoto* insert(MPhotoInfo info);
+	    void insert(MPhoto* gallery);
+	    void insert(MObject* object);
+
 	    MPhoto* find(QFileInfo info);
 	    void remove(MObject* object){ _content.erase(object); }
 
@@ -53,7 +57,7 @@ namespace core
 	    std::string description() const { return _info.description(); }
 	    bool	empty() const { return _content.empty(); }
 	    // content
-	    std::set<MObject*> content() const { return _content; }
+	    std::set<MObject*> content() { return _content; }
 
 	    // SET
 	    // methods used to set information

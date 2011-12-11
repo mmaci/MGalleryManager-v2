@@ -1,6 +1,7 @@
 #define _DEBUG
 
 #include <QApplication>
+#include <iostream>
 #include "gui/mainwindow.h"
 
 int main(int argc, char *argv[])

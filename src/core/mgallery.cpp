@@ -1,18 +1,20 @@
 #define _DEBUG
 
-#include "core/mdatabase.h"
+#include "core/mproject.h"
 #include "core/mphoto.h"
 #include "core/mgallery.h"
 
+
+namespace core
+{
 /**
  * constructor
  * @param info
  * @param parent
  */
-core::MGallery::MGallery(core::MGalleryInfo info, core::MGallery* parent) :
+MGallery::MGallery(MGallery* parent) :
     MObject(parent)
 {
-    _info = info;
     _typeId = TYPEID_GALLERY;
 
     #ifdef _DEBUG
@@ -21,14 +23,30 @@ core::MGallery::MGallery(core::MGalleryInfo info, core::MGallery* parent) :
 }
 
 /**
+ * constructor
+ * @param info
+ * @param parent
+ */
+MGallery::MGallery(MGalleryInfo info, MGallery* parent) :
+    MObject(parent)
+{
+    _info = info;
+    _typeId = TYPEID_GALLERY;
+
+    #ifdef _DEBUG
+    std::cout << "Creating new instance of MGallery (" << _info.name() << ")" << std::endl;
+    #endif 
+}
+
+/**
  * destructor
  */
-core::MGallery::~MGallery()
+MGallery::~MGallery()
 {
     #ifdef _DEBUG
     std::cout << "Deleting contents of MGallery (" << _info.name() << ")" << std::endl;
     #endif    
-    std::set<core::MObject*>::iterator it;
+    std::set<MObject*>::iterator it;
     while(!_content.empty())
     {
 	it = _content.begin();
@@ -44,10 +62,10 @@ core::MGallery::~MGallery()
  * @param info
  * @return
  */
-core::MPhoto* core::MGallery::find(QFileInfo info)
+MPhoto* MGallery::find(QFileInfo info)
 {
-    std::set<core::MObject*>::iterator it;
-    core::MPhoto* photo;
+    std::set<MObject*>::iterator it;
+    MPhoto* photo;
     for (it = _content.begin(); it != _content.end(); ++it)
     {
 	if (photo = (*it)->toPhoto())
@@ -63,7 +81,7 @@ core::MPhoto* core::MGallery::find(QFileInfo info)
  * @param info
  * @return
  */
-core::MGallery* core::MGallery::insert(core::MGalleryInfo info)
+MGallery* MGallery::insert(MGalleryInfo info)
 {
     MGallery* gallery = new MGallery(info, this);
     _content.insert(gallery);
@@ -71,14 +89,34 @@ core::MGallery* core::MGallery::insert(core::MGalleryInfo info)
     return gallery;
 }
 
+void MGallery::insert(MGallery* gallery)
+{
+    _content.insert(gallery);
+
+}
+
+void MGallery::insert(MPhoto* photo)
+{
+    _content.insert(photo);
+
+}
+
+
+void MGallery::insert(MObject* object)
+{
+    _content.insert(object);
+}
+
 /**
  * @param info
  * @return
  */
-core::MPhoto* core::MGallery::insert(core::MPhotoInfo info)
+MPhoto* MGallery::insert(MPhotoInfo info)
 {
-    core::MPhoto* photo = new core::MPhoto(info, this);
+    MPhoto* photo = new MPhoto(info, this);
     _content.insert(photo);
 
     return photo;
 }
+
+} // NAMESPACE core

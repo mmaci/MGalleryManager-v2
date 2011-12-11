@@ -35,12 +35,31 @@ namespace core
     {
 	public:
 	    MPhotoInfo(){ };
-	    MPhotoInfo(QFileInfo fileInfo){ _fileInfo = fileInfo; }
+	    MPhotoInfo(QFileInfo fileInfo)
+	    {
+		_fileInfo = fileInfo;
+		_name = fileName();
+		_description = "not implemented";
+		_path = fileInfo.absoluteFilePath().toStdString();
+	    }
+
 	    QFileInfo fileInfo(){ return _fileInfo; }
-	    std::string filepath(){ return _fileInfo.absoluteFilePath().toStdString(); }
-	    std::string filename(){ return _fileInfo.baseName().toStdString(); }
+	    std::string filePath(){ return _fileInfo.absoluteFilePath().toStdString(); }
+	    std::string fileName(){ return _fileInfo.baseName().toStdString(); }
+
+	    std::string path() const { return _path; }
+	    std::string name() const { return _name; }
+	    std::string description() const { return _description; }
+
+	    void setPath(std::string path){ _path = path; }
+	    void setName(std::string name){ _name = name; }
+	    void setDescription(std::string description){ _description = description; }
 
 	private:
+	    std::string _name;
+	    std::string _description;
+	    std::string _path;
+
 	    QFileInfo _fileInfo;
 
     };
@@ -48,12 +67,19 @@ namespace core
     class MPhoto : public MObject
     {
 	public:	    
+	    MPhoto(MGallery* parent /* = NULL */); // defaulty must have a parent gallery !
 	    MPhoto(MPhotoInfo info, MGallery* parent /* = NULL */); // defaulty must have a parent gallery !
 	    ~MPhoto();
 
 	    // set and get
-	    MPhotoInfo info(){ return _info; } // when we want access to the whole info
-	    std::string filePath(){ return _info.fileInfo().absoluteFilePath().toStdString(); }
+	    MPhotoInfo info() const { return _info; } // when we want access to the whole info
+	    std::string path() const { return _info.path(); }
+	    std::string name() const { return _info.name(); }
+	    std::string description() const { return _info.description(); }
+
+	    void setPath(std::string path){ _info.setPath(path); }
+	    void setName(std::string path){ _info.setName(path); }
+	    void setDescription(std::string path){ _info.setDescription(path); }
 
 	    // gui helpers
 	    // we use these to generate different gui features like thumbnails

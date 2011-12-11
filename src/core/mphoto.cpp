@@ -9,6 +9,16 @@
 namespace core
 {
 
+MPhoto::MPhoto(MGallery* parent) :
+    MObject(parent)
+{
+    _typeId = TYPEID_PHOTO;
+
+    #ifdef _DEBUG
+    std::cout << "Creating new instance of MPhoto ()" << std::endl;
+    #endif
+}
+
 MPhoto::MPhoto(MPhotoInfo info, MGallery* parent) :
     MObject(parent)
 {
@@ -19,7 +29,7 @@ MPhoto::MPhoto(MPhotoInfo info, MGallery* parent) :
 
     #ifdef _DEBUG
     std::cout << "Creating new instance of MPhoto (" << _info.fileInfo().baseName().toStdString() << ")" << std::endl;
-    #endif
+    #endif    
 }
 
 MPhoto::~MPhoto()

@@ -1,25 +1,26 @@
-#include "core/mdatabase.h"
+#include "core/mproject.h"
+#include "core/mgallery.h"
 #include "core/mobject.h"
 #include "core/mphoto.h"
 
-core::MDatabase::MDatabase()
+core::MProject::MProject()
 {
-    _maxid = 0;
+    _base = new core::MGallery();
 }
 
 /**
  * @brief destructor deleting all database content
  */
-core::MDatabase::~MDatabase()
+core::MProject::~MProject()
 {
     // delete all photos
     std::set<core::MObject*>::iterator it;
-    while(!_content.empty())
+    while(!_base->content().empty())
     {
-	it = _content.begin();
+	it = _base->content().begin();
 	delete *it;
 
-	_content.erase(it);
+	_base->content().erase(it);
     }
 }
 
@@ -27,23 +28,23 @@ core::MDatabase::~MDatabase()
  * @brief generates a unique photo id
  * rbegin contains the last photo in the map (ordered by id), which is then incremented by 1
  */
-unsigned int const core::MDatabase::generateId()
+unsigned int const core::MProject::generateId()
 {
-    if (_content.empty())
+    if (_base->content().empty())
 	return 0;
 
     return ++_maxid;
 }
 
-void core::MDatabase::insert(core::MObject* obj)
+void core::MProject::insert(core::MObject* obj)
 {
-    _content.insert(obj);
+    _base->insert(obj);
 }
 
-core::MPhoto* core::MDatabase::find(QFileInfo fileInfo)
+core::MPhoto* core::MProject::find(QFileInfo fileInfo)
 {
     std::set<core::MObject*>::iterator it;
-    for (it = _content.begin(); it != _content.end(); ++it)
+    for (it = _base->content().begin(); it != _base->content().end(); ++it)
     {
 	if (core::MPhoto* photo = (*it)->toPhoto())
 	{

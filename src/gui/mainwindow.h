@@ -26,7 +26,7 @@
 
 namespace core
 {
-    class MDatabase;
+    class MProject;
 }
 
 namespace gui
@@ -52,6 +52,8 @@ namespace gui
 	    void removeItemFromProject();	    
 	    void createGallery();
 	    void refreshObjectGrid(QModelIndex index);
+
+	    void saveAsDialog();
 
 	private:
 	    void setupGui(QMainWindow* mainWindow);
@@ -88,17 +90,24 @@ namespace gui
 
 	    MTreeWidget*	_projectWidget;
 
+	    QMenuBar*		_menuBar;
+	    QMenu*		_menuProject;
+	    QAction*		_actionSave;
+	    QAction*		_actionSaveAs;
+	    QAction*		_actionLoad;
+
 	    QWidget* tableWidget;
-	    QMenuBar* menuBar;
-	    QMenu* menuProject;
+
 	    QMenu* menuExport;
 	    QMenu* menuView;
 	    QMenu* menuHelp;
-	    QMenu* menuImage;	   
+	    QMenu* menuImage;
+
 	    QStatusBar* statusBar;
 
-	    core::MDatabase*	_database;
+	    core::MProject*	_project;
     };
-}
+
+} // NAMESPACE gui
 
 #endif // MAINWINDOW_H

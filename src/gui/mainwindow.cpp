@@ -6,14 +6,16 @@
 #include "gui/mgridwidget/MGridWidgetThumbnail.h"
 #include "gui/mnewgallerydialog.h"
 #include "core/mphoto.h"
-#include "core/mdatabase.h"
+#include "core/mproject.h"
+#include "core/mxmlhandler.h"
+#include <string>
 // #include <libexif/exif-data.h>
 // #include <libexif/exif-loader.h>
 
 gui::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    _database = new core::MDatabase();
+    _project = new core::MProject();
 
     setupGui(this);
 }
@@ -34,12 +36,12 @@ gui::MainWindow::~MainWindow()
     delete detailsWidget;
     delete _tabWidget;
     // delete menu
-    delete menuProject;
+    delete _menuProject;
     delete menuExport;
     delete menuView;
     delete menuHelp;
     delete menuImage;
-    delete menuBar;
+    delete _menuBar;
 
     delete _objectGridWidget;
 
@@ -106,35 +108,77 @@ void gui::MainWindow::setupObjectGrid(QWidget* parent)
 // SETUP: sets menus
 void gui::MainWindow::setupMenu(QMainWindow* mainWindow)
 {
-    menuBar = new QMenuBar(mainWindow);
-    menuBar->setObjectName(QString::fromUtf8("menuBar"));
-    menuBar->setGeometry(QRect(0, 0, 1024, 20));
+    _menuBar = new QMenuBar(mainWindow);
+    _menuBar->setObjectName(QString::fromUtf8("_menuBar"));
+    _menuBar->setGeometry(QRect(0, 0, 1024, 20));
 
-    menuProject = new QMenu(menuBar);
-    menuProject->setObjectName(QString::fromUtf8("menuProject"));
-    menuExport = new QMenu(menuBar);
+    _menuProject = new QMenu(_menuBar);
+	_menuProject->setObjectName(QString::fromUtf8("_menuProject"));
+	_menuProject->setTitle(QApplication::translate("MainWindow", "Project", 0, QApplication::UnicodeUTF8));
+	_menuBar->addAction(_menuProject->menuAction());
+	/// Actions
+	/// Save Project
+	_menuBar->addAction(_menuProject->menuAction());
+	_actionSave = new QAction(mainWindow);
+	_actionSave->setText(QString("Save Project"));
+	_actionSave->setDisabled(true);
+	_menuProject->addAction(_actionSave);
+
+	/// Save Project As ..
+	_menuBar->addAction(_menuProject->menuAction());
+	_actionSaveAs = new QAction(mainWindow);
+	_actionSaveAs->setText(QString("Save Project as ..."));
+	_menuProject->addAction(_actionSaveAs);
+	_menuProject->addSeparator();
+
+	/// Load Project
+	_menuBar->addAction(_menuProject->menuAction());
+	_actionLoad = new QAction(mainWindow);
+	_actionLoad->setText(QString("Load Project"));
+	_menuProject->addAction(_actionLoad);
+
+    menuExport = new QMenu(_menuBar);
     menuExport->setObjectName(QString::fromUtf8("menuExport"));
-    menuView = new QMenu(menuBar);
+    menuView = new QMenu(_menuBar);
     menuView->setObjectName(QString::fromUtf8("menuView"));
-    menuHelp = new QMenu(menuBar);
+    menuHelp = new QMenu(_menuBar);
     menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
-    menuImage = new QMenu(menuBar);
+    menuImage = new QMenu(_menuBar);
     menuImage->setObjectName(QString::fromUtf8("menuImage"));
 
-    mainWindow->setMenuBar(menuBar);
+    mainWindow->setMenuBar(_menuBar);
 
-    menuBar->addAction(menuProject->menuAction());
-    menuBar->addAction(menuExport->menuAction());
-    menuBar->addAction(menuView->menuAction());
-    menuBar->addAction(menuImage->menuAction());
-    menuBar->addAction(menuHelp->menuAction());
+    _menuBar->addAction(_menuProject->menuAction());
+    _menuBar->addAction(menuExport->menuAction());
+    _menuBar->addAction(menuView->menuAction());
+    _menuBar->addAction(menuImage->menuAction());
+    _menuBar->addAction(menuHelp->menuAction());
 
-    menuProject->setTitle(QApplication::translate("MainWindow", "Project", 0, QApplication::UnicodeUTF8));
     menuExport->setTitle(QApplication::translate("MainWindow", "Export", 0, QApplication::UnicodeUTF8));
     menuView->setTitle(QApplication::translate("MainWindow", "View", 0, QApplication::UnicodeUTF8));
     menuHelp->setTitle(QApplication::translate("MainWindow", "Help", 0, QApplication::UnicodeUTF8));
     menuImage->setTitle(QApplication::translate("MainWindow", "Image", 0, QApplication::UnicodeUTF8));
+
+	/// Submenus
+	_menuProject = new QMenu(_menuBar);
+	_menuProject->setTitle(QString("Project")); ///< Title
+
+	    QObject::connect(_actionSaveAs, SIGNAL(triggered()), this, SLOT(saveAsDialog()));
+
+    #ifdef DEBUG
+    std::cout << "Menu created." << endl;
+    #endif
+
 } // ENDOF gui::MainWindow::setupMenu
+
+void gui::MainWindow::saveAsDialog()
+{
+    core::MXMLHandler* xml = new core::MXMLHandler();
+
+    xml->saveProjectAs(std::string("c:/atest/test.xml"), _project->base());
+
+    delete xml;
+}
 
 // SETUP: sets file system view tree
 void gui::MainWindow::setupFileSystemView(QGridLayout* layout)
@@ -268,7 +312,7 @@ void gui::MainWindow::createGallery(std::string name, std::string description)
 
     core::MGalleryInfo info(name, description);
     // we have a selected gallery
-    if (gui::MTreeWidgetItem* parentItem =_projectWidget->selected())
+    if (gui::MTreeWidgetItem* parentItem = _projectWidget->selected())
     {
 	// selected object can be a photo or a gallery, we must ensure it's a gallery
 	if (core::MGallery* parent = parentItem->object()->toGallery())
@@ -284,9 +328,12 @@ void gui::MainWindow::createGallery(std::string name, std::string description)
     // no gallery selected, create gallery on the base level
     else
     {
-	core::MGallery* gallery = new core::MGallery(info);	
+	core::MGallery* gallery = new core::MGallery(info);
+
 	if (gui::MTreeWidgetItem* item =  _projectWidget->insert(gallery))
 	    gallery->setTreeWidgetItem(item);
+
+	_project->insert(gallery);
     }
 }
 

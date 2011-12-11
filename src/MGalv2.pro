@@ -7,7 +7,7 @@ TEMPLATE    = app
 
 SOURCES += main.cpp\        
     gui/mainwindow.cpp \
-    core/mdatabase.cpp \
+    core/mproject.cpp \
     core/mgallery.cpp \
     core/mphoto.cpp \
     gui/mtreewidget/mtreewidget.cpp \
@@ -20,10 +20,11 @@ SOURCES += main.cpp\
     gui/mnewgallerydialog.cpp \
     gui/mgridwidget/mgridwidgetviewer.cpp \
     gui/mgridwidget/mgridwidgetthumbnail.cpp \
-    gui/mresizedialog.cpp
+    gui/mresizedialog.cpp \
+    core/mxmlhander.cpp
 
 HEADERS  += gui/mainwindow.h \
-    core/mdatabase.h \
+    core/mproject.h \
     core/mgallery.h \
     core/mphoto.h \
     gui/mtreewidget/mtreewidget.h \
@@ -40,4 +41,5 @@ HEADERS  += gui/mainwindow.h \
     core/mnumeric.h \
     core/mimage.h \
     shareddefines.h \
-    gui/mresizedialog.h
+    gui/mresizedialog.h \
+    core/mxmlhandler.h
