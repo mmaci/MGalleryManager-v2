@@ -23,6 +23,7 @@
 #include <QFileSystemModel>
 #include <QInputDialog>
 #include <QErrorMessage>
+#include <QFileDialog>
 
 namespace core
 {
@@ -54,6 +55,7 @@ namespace gui
 	    void refreshObjectGrid(QModelIndex index);
 
 	    void saveAsDialog();
+	    void load();
 
 	private:
 	    void setupGui(QMainWindow* mainWindow);

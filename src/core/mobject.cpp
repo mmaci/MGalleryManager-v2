@@ -9,7 +9,10 @@
 #include "core/mgallery.h"
 #include "core/mphoto.h"
 
-core::MObject::MObject(core::MGallery* gallery)
+namespace core
+{
+
+MObject::MObject(MGallery* gallery)
 {
     _parent = gallery;
     _typeId = TYPEID_OBJECT;
@@ -25,28 +28,28 @@ core::MObject::MObject(core::MGallery* gallery)
 }
 
 // conversions
-core::MGallery* core::MObject::toGallery()
+MGallery* MObject::toGallery()
 {
     if (_typeId == TYPEID_PHOTO)
 	return NULL;
 
-    return static_cast<core::MGallery*>(this);
+    return static_cast<MGallery*>(this);
 }
 
-core::MPhoto* core::MObject::toPhoto()
+MPhoto* MObject::toPhoto()
 {
     if (_typeId == TYPEID_GALLERY)
 	return NULL;
 
-    return static_cast<core::MPhoto*>(this);
+    return static_cast<MPhoto*>(this);
 }
 
-core::MObject* core::MObject::toObject()
+MObject* MObject::toObject()
 {
-    return dynamic_cast<core::MObject*>(this);
+    return dynamic_cast<MObject*>(this);
 }
 
-void core::MObject::setFavourite()
+void MObject::setFavourite()
 {
     if (_favourite)
     {
@@ -66,7 +69,7 @@ void core::MObject::setFavourite()
     }
 }
 
-void core::MObject::destroy()
+void MObject::destroy()
 {
     // MTreeItemWidget
     if (_treeItem)
@@ -84,9 +87,11 @@ void core::MObject::destroy()
 
     if (_parent)
     {
-	if (core::MGallery* gallery = _parent->toGallery())
+	if (MGallery* gallery = _parent->toGallery())
 	    gallery->remove(this);
     }
 
     delete this; // implicit destructor call
 }
+
+} // NAMESPACE core

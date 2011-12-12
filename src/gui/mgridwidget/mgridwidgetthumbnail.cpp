@@ -23,7 +23,7 @@ MGridWidgetThumbnail::MGridWidgetThumbnail(MGridWidget* widget, core::MPhoto* ph
 	_icons->move(0, 10 + MAX_THUMB_SIZE);
 
     // loading image and scaling
-    QPixmap tmp(photo->info().fileInfo().absoluteFilePath());
+    QPixmap tmp(QString(photo->path().c_str()));
     if (tmp.width() > tmp.height())
 	tmp = tmp.scaledToWidth(MAX_THUMB_SIZE);
     else
@@ -35,6 +35,8 @@ MGridWidgetThumbnail::MGridWidgetThumbnail(MGridWidget* widget, core::MPhoto* ph
 	_imageLabel->move((MAX_ITEM_W -_imageLabel->width()) / 2, std::min(10, MAX_ITEM_H - _imageLabel->height() / 2));
 
     setFixedSize(MAX_ITEM_W, MAX_ITEM_H);
+
+    photo->setGridThumbnail(this);
 }
 
 void MGridWidgetThumbnail::showStar(bool apply)

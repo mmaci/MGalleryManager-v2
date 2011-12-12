@@ -10,9 +10,39 @@ namespace gui
 MTreeWidget::MTreeWidget(QWidget *parent) :
     QTreeWidget(parent)
 {
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MTreeWidget" << std::endl;
-    #endif
+}
+
+void MTreeWidget::loadGallery(core::MGallery* gallery, MTreeWidgetItem* parent, int depth)
+{
+    std::set<core::MObject*>::iterator it;
+    std::set<core::MObject*> content = gallery->content();
+
+    // TODO: rewrite this!
+    // skips the first step, because initial gallery is only a wrapper for the whole project
+    if (!depth)
+    {
+	it = content.begin();
+	loadGallery((*it)->toGallery(), NULL, depth+1);
+	return;
+    }
+
+    MTreeWidgetItem* item;
+    core::MGallery* tmpGal;
+    std::cout << "name: " << gallery->name() << " size: " << content.size() << std::endl;
+    for (it = content.begin(); it != content.end(); ++it)
+    {
+	switch ((*it)->typeId())
+	{
+	    case TYPEID_GALLERY:
+		tmpGal = (*it)->toGallery();
+		item = insert(tmpGal, parent);
+		loadGallery(tmpGal, item, depth+1);
+		break;
+	    case TYPEID_PHOTO:
+		insert((*it)->toPhoto(), parent);
+		break;
+	}
+    }
 }
 
 /**

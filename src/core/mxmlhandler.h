@@ -1,5 +1,6 @@
 #ifndef MXMLHANDLER_H
 #define MXMLHANDLER_H
+#define _DEBUG
 
 #include <set>
 
@@ -30,24 +31,24 @@ namespace core
     class MXMLHandler
     {
 	public:
-	    MXMLHandler();
+	    MXMLHandler();	    	    
 
-	    bool loadProject(std::string path);
+	    MGallery* loadProject(std::string path);
 	    bool saveProject(MGallery* project);
 	    bool saveProjectAs(std::string path, MGallery* baseGallery);
 
 	private:
 	    // creates a new project based on XML input
+	    void readFile(QIODevice* device);
 	    void readXML();
 	    // generates XML from an existing project
 	    bool writeToFile(QIODevice* device, MGallery* baseGallery);
-	    void writeItem(MObject* object);
-
-
+	    void writeItem(MObject* object);	   
 
 	    QXmlStreamReader	_reader;
-	    QXmlStreamWriter	_writer;
-	    QFile*		_file;
+	    QXmlStreamWriter	_writer;	    
+
+	    QString		_currentNamespaceUri;
 
 	    std::list<QString>	_currentElements;
 	    QString		_currentElement() const { return _currentElements.back(); }
@@ -59,6 +60,11 @@ namespace core
 	    MPhoto*		_currentPhoto;
 	    MGallery*		_currentGallery;
 	    MGallery*		_parentGallery;
+
+	    // DEBUG FUNCTIONS
+	    #ifdef _DEBUG
+	    void printToConsole(MGallery* gallery, int depth = 0);
+	    #endif
     };
 }
 

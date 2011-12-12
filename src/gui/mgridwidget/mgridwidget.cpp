@@ -18,36 +18,37 @@ MGridWidget::MGridWidget(QWidget* parent) :
 	_layout->setSizeConstraint(QLayout::SetFixedSize);
 
     _viewer = NULL;
-
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MGridWidget" << std::endl;
-    #endif
 }
 
 MGridWidget::~MGridWidget()
 {
-    std::list<MGridWidgetItem*>::iterator it;
+    std::set<MGridWidgetItem*>::iterator it;
     for (it = _items.begin(); it != _items.end(); ++it)
 	delete *it;
 
     delete _layout;
-
-    #ifdef _DEBUG
-    std::cout << "Deleting an instance of MGridWidgetItem" << std::endl;
-    #endif
 }
 
-MGridWidgetThumbnail* MGridWidget::insert(core::MPhoto* photo)
+MGridWidgetThumbnail* MGridWidget::insert(core::MPhoto* photo, int x, int y)
 {
-    int pos_x = count() % GRID_WIDTH;
-    int pos_y = count() / GRID_WIDTH;
 
     // we create a grid item and add it to our layout
-    MGridWidgetThumbnail* item = new MGridWidgetThumbnail(this, photo);
-	_layout->addWidget(item, pos_y, pos_x, Qt::AlignLeft|Qt::AlignTop);
-	_items.push_back(item);
+    MGridWidgetThumbnail* item;
+    if (!photo->gridThumbnail())
+	item = new MGridWidgetThumbnail(this, photo);
+    else
+	item = photo->gridThumbnail();
 
-    item->show();    
+    // when x and y are -1 we place the thumbnail at the end
+    if (x == -1)
+	x = count() % GRID_WIDTH;
+    if (y == -1)
+	y = count() / GRID_WIDTH;
+
+    _layout->addWidget(item, y, x, Qt::AlignLeft|Qt::AlignTop);
+    _items.insert(item);
+    item->show();
+
     return item;
 }
 
@@ -62,17 +63,15 @@ void MGridWidget::load(core::MObject* object)
 	std::set<core::MObject*> galleryContent = gallery->content();
 	std::set<core::MObject*>::iterator it;
 
-	int pos_x, pos_y, cnt = 0;
+	int pos_x, pos_y, cnt = 0;	
 	for (it = galleryContent.begin(); it != galleryContent.end(); ++it)
 	{
 	    pos_x = cnt % GRID_WIDTH;
 	    pos_y = cnt / GRID_WIDTH;
-	    if ((*it)->typeId() == TYPEID_PHOTO && (*it)->gridThumbnail()) // check for gridItem isn't needed here atm, but might be in the future
-	    {
-		_layout->addWidget((*it)->gridThumbnail(), pos_y, pos_x, Qt::AlignLeft|Qt::AlignTop);
-		(*it)->gridThumbnail()->show();
-		cnt++;
-	    }
+	    if ((*it)->typeId() == TYPEID_PHOTO) // check for gridItem isn't needed here atm, but might be in the future
+		insert((*it)->toPhoto(), pos_x, pos_y);
+
+	    ++cnt;
 	}
     }
     else
@@ -102,7 +101,7 @@ MGridWidgetViewer* MGridWidget::generateGridViewer(core::MPhoto* photo, int maxS
 
 void MGridWidget::hideAllItems()
 {
-    std::list<MGridWidgetItem*>::iterator it;
+    std::set<MGridWidgetItem*>::iterator it;
     for (it = _items.begin(); it != _items.end(); ++it)
     {
 	_layout->removeWidget(*it);
@@ -119,7 +118,7 @@ void MGridWidget::hideAllItems()
 
 MGridWidgetItem* MGridWidget::find(core::MObject* obj)
 {
-    std::list<MGridWidgetItem*>::iterator it;
+    std::set<MGridWidgetItem*>::iterator it;
     for (it = _items.begin(); it != _items.end(); ++it)
     {
 	if ((*it)->object() == obj)
@@ -131,7 +130,7 @@ MGridWidgetItem* MGridWidget::find(core::MObject* obj)
 core::MObject* MGridWidget::remove(MGridWidgetItem* item)
 {
     item->hide();
-    _items.remove(item);
+    _items.erase(item);
     delete item;
     return item->object();
 }

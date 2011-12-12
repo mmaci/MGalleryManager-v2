@@ -1,4 +1,7 @@
+#define _DEBUG
+
 #include "mxmlhandler.h"
+#include "core/mobject.h"
 
 namespace core
 {
@@ -8,16 +11,43 @@ MXMLHandler::MXMLHandler()
     _writer.setAutoFormatting(true);
 }
 
-void MXMLHandler::readXML()
+MGallery* MXMLHandler::loadProject(std::string path)
 {
+    QFile file(QString(path.c_str()));
+
+    if (!file.open(QFile::ReadOnly | QFile::Text))
+	return NULL;
+
+    readFile(&file);
+    return _galleries.front();
+}
+
+void MXMLHandler::readFile(QIODevice* device)
+{
+    _reader.setDevice(device);
+
+    readXML();
+
+#ifdef _DEBUG
+printToConsole(_galleries.front());
+#endif
+
+    // return !_reader.error();
+}
+
+void MXMLHandler::readXML()
+{    
+    _galleries.push_back(new MGallery());
+
     while (!_reader.atEnd())
     {
-	_reader.readNext();
+	_reader.readNext();	
 	// START ELEMENT
 	//
 	if (_reader.isStartElement())
 	{
-	    _currentElements.push_back(_reader.name().toString());
+	    _currentElements.push_back(_reader.name().toString());	   
+	    _currentNamespaceUri = _reader.namespaceUri().toString();
 
 	    // <mgallery>
 	    if (_currentElement() == ELEM_GALLERY)
@@ -47,7 +77,8 @@ void MXMLHandler::readXML()
 	    if (_currentElement() == ELEM_PHOTO)
 		_currentPhoto = NULL;
 
-	    _currentElements.pop_back();
+	    _currentNamespaceUri = "";
+	    _currentElements.pop_back();	    
 	}
 	else
 	// ELEMENT CONTENT
@@ -55,7 +86,7 @@ void MXMLHandler::readXML()
 	if (_reader.isCharacters() && !_reader.isWhitespace())
 	{
 	    // namespace mgallery
-	    if (_reader.namespaceUri() == NAMESPACE_GALLERY)
+	    if (_currentNamespaceUri == NAMESPACE_GALLERY)
 	    {
 		// <mgallery::name>
 		if (_currentElement() == ELEM_NAME)
@@ -71,7 +102,7 @@ void MXMLHandler::readXML()
 	    }
 	    else
 	    // namespace mphoto
-	    if (_reader.namespaceUri() == NAMESPACE_PHOTO)
+	    if (_currentNamespaceUri == NAMESPACE_PHOTO)
 	    {
 		BOOST_ASSERT_MSG(_currentPhoto, "No allocated mphoto when inside namespace mphoto.");
 
@@ -91,6 +122,7 @@ void MXMLHandler::readXML()
 		if (_currentElement() == ELEM_PATH)
 		{
 		    _currentPhoto->setPath(_reader.text().toString().toStdString());
+		    _currentPhoto->load(_reader.text().toString().toStdString());
 		}
 	    }
 
@@ -108,12 +140,12 @@ void MXMLHandler::readXML()
 
 bool MXMLHandler::saveProject(MGallery* project)
 {
-    return writeToFile(_file, project);
+    return true;
 }
 
 bool MXMLHandler::saveProjectAs(std::string path, MGallery* baseGallery)
 {
-   QFile file(QString(path.c_str()));
+    QFile file(QString(path.c_str()));
 
     if (!file.open(QFile::WriteOnly | QFile::Text))
 	return false;
@@ -129,7 +161,7 @@ bool MXMLHandler::writeToFile(QIODevice* device, MGallery* baseGallery)
     _writer.writeNamespace(NAMESPACE_PHOTO, NAMESPACE_PHOTO);
 
     _writer.writeStartDocument();
-    _writer.writeDTD("<!DOCTYPE mgallery manager>");
+    // _writer.writeDTD("<!DOCTYPE mgallery manager>");
     _writer.writeStartElement("mgallery");
     _writer.writeAttribute("version", "0.2");           
 
@@ -211,5 +243,38 @@ void MXMLHandler::writeItem(core::MObject* object)
 	}
     }
 }
+
+#ifdef _DEBUG
+void MXMLHandler::printToConsole(MGallery* gallery, int depth)
+{
+    if (!depth)
+	std::cout << "Printing project content: " << std::endl;
+
+    std::set<MObject*> content = gallery->content();
+    std::set<MObject*>::iterator it;
+
+    MPhoto* photo;
+    MGallery* gal;
+    for (it = content.begin(); it != content.end(); ++it)
+    {
+	switch ((*it)->typeId())
+	{
+	    case TYPEID_PHOTO:
+		photo = (*it)->toPhoto();
+		for (int i = 0; i < depth; ++i)
+		    std::cout << "\t";
+		std::cout << photo->name() << std::endl;
+		break;
+	    case TYPEID_GALLERY:
+		gal = (*it)->toGallery();
+		for (int i = 0; i < depth; ++i)
+		    std::cout << "\t";
+		std::cout << gal->name() << std::endl;
+		printToConsole(gal, depth+1);
+		break;
+	}
+    }
+}
+#endif
 
 } // NAMESPACE core

@@ -24,6 +24,8 @@ namespace gui
 	    MTreeWidgetItem* insert(core::MPhoto* photo, MTreeWidgetItem* parent /* = NULL */); // default value isn't set, because it should never happen
 												// a photo must always be inside a gallery
 
+	    void loadGallery(core::MGallery* gallery, MTreeWidgetItem* parent = NULL, int depth = 0);
+
 	    MTreeWidgetItem* selected();
 	    core::MObject* remove(MTreeWidgetItem* item = NULL);
     };

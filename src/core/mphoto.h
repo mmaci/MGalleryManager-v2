@@ -78,8 +78,8 @@ namespace core
 	    std::string description() const { return _info.description(); }
 
 	    void setPath(std::string path){ _info.setPath(path); }
-	    void setName(std::string path){ _info.setName(path); }
-	    void setDescription(std::string path){ _info.setDescription(path); }
+	    void setName(std::string name){ _info.setName(name); }
+	    void setDescription(std::string description){ _info.setDescription(description); }
 
 	    // gui helpers
 	    // we use these to generate different gui features like thumbnails

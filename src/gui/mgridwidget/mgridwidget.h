@@ -1,7 +1,7 @@
 #ifndef MGRIDWIDGET_H
 #define MGRIDWIDGET_H
 
-#include <list>
+#include <set>
 
 #include <QWidget>
 #include <QGridLayout>
@@ -31,7 +31,7 @@ namespace gui
 	    ~MGridWidget();
 
 	    MGridWidgetItem* insert(core::MGallery* gallery);
-	    MGridWidgetThumbnail* insert(core::MPhoto* gallery);
+	    MGridWidgetThumbnail* insert(core::MPhoto* photo, int x = -1, int y = -1);
 
 	    void load(core::MObject* object);
 	    void hideAllItems();
@@ -47,7 +47,7 @@ namespace gui
 
 	private:
 	    QGridLayout* _layout;
-	    std::list<MGridWidgetItem*> _items;	    
+	    std::set<MGridWidgetItem*> _items;
 	    MGridWidgetViewer* _viewer;
     };
 }

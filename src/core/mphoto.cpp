@@ -13,10 +13,6 @@ MPhoto::MPhoto(MGallery* parent) :
     MObject(parent)
 {
     _typeId = TYPEID_PHOTO;
-
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MPhoto ()" << std::endl;
-    #endif
 }
 
 MPhoto::MPhoto(MPhotoInfo info, MGallery* parent) :
@@ -25,18 +21,12 @@ MPhoto::MPhoto(MPhotoInfo info, MGallery* parent) :
     _info = info;
     _typeId = TYPEID_PHOTO;
 
+    // loading an image for processing
     load(info.fileInfo().absoluteFilePath().toStdString());
-
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MPhoto (" << _info.fileInfo().baseName().toStdString() << ")" << std::endl;
-    #endif    
 }
 
 MPhoto::~MPhoto()
 {
-    #ifdef _DEBUG
-    std::cout << "Deleting an instance of MPhoto (" << _info.fileInfo().baseName().toStdString() << ")" << std::endl;
-    #endif
 }
 
 ////////////////////////////////////////////////////////////////
@@ -51,7 +41,7 @@ MPhoto::~MPhoto()
 
 QPixmap MPhoto::pixmapFromFile(int maxSize)
 {
-    QPixmap image(_info.fileInfo().absoluteFilePath());
+    QPixmap image(QString(_info.path().c_str()));
 
     // no need for scaling
     if (!maxSize)

@@ -22,14 +22,11 @@ MGridWidgetItem::MGridWidgetItem(MGridWidget* widget, core::MPhoto* photo) :
 {
     _type = GRIDTYPE_ITEM;
 
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MGridWidgetItem (" << photo->info().fileInfo().baseName().toStdString() << ")" << std::endl;
-    #endif
-
     // links
     _widget = widget;
-    _object = photo;    
+    _object = photo;
 
+    // gui
     setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
     setLineWidth(1);    
 }

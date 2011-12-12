@@ -5,10 +5,10 @@
 
 #include <QFileInfo>
 
+#include "core/mgallery.h"
 
 namespace core
-{
-    class MGallery;
+{    
     class MPhoto;
     class MObject;
     class MProject
@@ -23,6 +23,11 @@ namespace core
 
 	    MPhoto* find(QFileInfo fileInfo);
 	    MGallery* base(){ return _base; }
+	    void setBase(MGallery* base)
+	    {
+		delete _base;
+		_base = base;
+	    }
 
 	private:
 	    MGallery* _base;

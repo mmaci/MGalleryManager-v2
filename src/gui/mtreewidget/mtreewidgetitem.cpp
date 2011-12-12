@@ -16,11 +16,8 @@ MTreeWidgetItem::MTreeWidgetItem(MTreeWidget* widget, core::MGallery* gallery)
     _obj = gallery->toObject();
 
     // widget details
-    setText(0, QString(gallery->info().name().c_str()));
-
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MTreeWidgetItem (" << gallery->info().name().c_str() << ")" << std::endl;
-    #endif
+    setText(0, QString(gallery->name().c_str()));
+    gallery->setTreeWidgetItem(this);
 }
 
 /**
@@ -34,11 +31,8 @@ MTreeWidgetItem::MTreeWidgetItem(MTreeWidget* widget, core::MPhoto* photo)
     _obj = photo->toObject();
 
     // widget details
-    setText(0, QString(photo->info().fileInfo().baseName()));
-
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MTreeWidgetItem (" << photo->info().fileInfo().baseName().toStdString() << ")" << std::endl;
-    #endif
+    setText(0, QString(photo->name().c_str()));
+    photo->setTreeWidgetItem(this);
 }
 
 /**

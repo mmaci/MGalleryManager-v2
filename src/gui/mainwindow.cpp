@@ -114,25 +114,23 @@ void gui::MainWindow::setupMenu(QMainWindow* mainWindow)
 
     _menuProject = new QMenu(_menuBar);
 	_menuProject->setObjectName(QString::fromUtf8("_menuProject"));
-	_menuProject->setTitle(QApplication::translate("MainWindow", "Project", 0, QApplication::UnicodeUTF8));
-	_menuBar->addAction(_menuProject->menuAction());
-	/// Actions
-	/// Save Project
+	_menuProject->setTitle(QApplication::translate("MainWindow", "Project", 0, QApplication::UnicodeUTF8));	
+
+	// Actions
+	// Save Project
 	_menuBar->addAction(_menuProject->menuAction());
 	_actionSave = new QAction(mainWindow);
 	_actionSave->setText(QString("Save Project"));
 	_actionSave->setDisabled(true);
 	_menuProject->addAction(_actionSave);
 
-	/// Save Project As ..
-	_menuBar->addAction(_menuProject->menuAction());
+	// Save Project As ..
 	_actionSaveAs = new QAction(mainWindow);
 	_actionSaveAs->setText(QString("Save Project as ..."));
 	_menuProject->addAction(_actionSaveAs);
 	_menuProject->addSeparator();
 
-	/// Load Project
-	_menuBar->addAction(_menuProject->menuAction());
+	// Load Project
 	_actionLoad = new QAction(mainWindow);
 	_actionLoad->setText(QString("Load Project"));
 	_menuProject->addAction(_actionLoad);
@@ -163,7 +161,8 @@ void gui::MainWindow::setupMenu(QMainWindow* mainWindow)
 	_menuProject = new QMenu(_menuBar);
 	_menuProject->setTitle(QString("Project")); ///< Title
 
-	    QObject::connect(_actionSaveAs, SIGNAL(triggered()), this, SLOT(saveAsDialog()));
+    connect(_actionSaveAs, SIGNAL(triggered()), this, SLOT(saveAsDialog()));
+    connect(_actionLoad, SIGNAL(triggered()), this, SLOT(load()));
 
     #ifdef DEBUG
     std::cout << "Menu created." << endl;
@@ -176,6 +175,19 @@ void gui::MainWindow::saveAsDialog()
     core::MXMLHandler* xml = new core::MXMLHandler();
 
     xml->saveProjectAs(std::string("c:/atest/test.xml"), _project->base());
+
+    delete xml;
+}
+
+void gui::MainWindow::load()
+{
+    core::MXMLHandler* xml = new core::MXMLHandler();
+
+    QString fileName = QFileDialog::getOpenFileName(this, QString("Open Project"), QString(), tr("XML files (*.xml)"));
+
+    core::MGallery* gallery = xml->loadProject(fileName.toStdString());
+    _project->setBase(gallery);
+    _projectWidget->loadGallery(gallery);
 
     delete xml;
 }
@@ -278,11 +290,8 @@ void gui::MainWindow::importPhotos(std::list<QModelIndex>* list)
 	// constructor called in insert(MPhotoInfo)
 	if (core::MPhoto* photo = parent->insert(info))
 	{
-	    if (gui::MTreeWidgetItem* treeItem = _projectWidget->insert(photo, parentItem))
-		photo->setTreeWidgetItem(treeItem);
-
-	    if (gui::MGridWidgetThumbnail* gridItem = _objectGridWidget->insert(photo))
-		photo->setGridThumbnail(gridItem->toThumbnail());
+	    _projectWidget->insert(photo, parentItem);
+	    _objectGridWidget->insert(photo);
 	}
     }    
 }
@@ -330,7 +339,7 @@ void gui::MainWindow::createGallery(std::string name, std::string description)
     {
 	core::MGallery* gallery = new core::MGallery(info);
 
-	if (gui::MTreeWidgetItem* item =  _projectWidget->insert(gallery))
+	if (gui::MTreeWidgetItem* item = _projectWidget->insert(gallery))
 	    gallery->setTreeWidgetItem(item);
 
 	_project->insert(gallery);
