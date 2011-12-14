@@ -36,7 +36,7 @@ printToConsole(_galleries.front());
 }
 
 void MXMLHandler::readXML()
-{    
+{       
     _galleries.push_back(new MGallery());
 
     while (!_reader.atEnd())

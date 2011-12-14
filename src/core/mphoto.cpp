@@ -13,16 +13,18 @@ MPhoto::MPhoto(MGallery* parent) :
     MObject(parent)
 {
     _typeId = TYPEID_PHOTO;
+
+    _info = new MPhotoInfo();
 }
 
 MPhoto::MPhoto(MPhotoInfo info, MGallery* parent) :
     MObject(parent)
-{
-    _info = info;
+{    
     _typeId = TYPEID_PHOTO;
+    _info = new MPhotoInfo(info); // also loads exif data
 
     // loading an image for processing
-    load(info.fileInfo().absoluteFilePath().toStdString());
+    load(info.fileInfo().absoluteFilePath().toStdString());    
 }
 
 MPhoto::~MPhoto()
@@ -41,7 +43,7 @@ MPhoto::~MPhoto()
 
 QPixmap MPhoto::pixmapFromFile(int maxSize)
 {
-    QPixmap image(QString(_info.path().c_str()));
+    QPixmap image(QString(_info->path().c_str()));
 
     // no need for scaling
     if (!maxSize)

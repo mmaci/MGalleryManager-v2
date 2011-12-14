@@ -16,9 +16,9 @@
 #include <boost/assert.hpp>
 
 #include "core/mobject.h"
-
 #include "core/mimage.h"
 #include "core/mnumeric.h"
+#include "core/mphotoinfo.h"
 
 const unsigned int HISTORY_SIZE = 10;
 
@@ -30,40 +30,6 @@ namespace gui
 namespace core
 {                
     class MGallery;
-
-    struct MPhotoInfo
-    {
-	public:
-	    MPhotoInfo(){ };
-	    MPhotoInfo(QFileInfo fileInfo)
-	    {
-		_fileInfo = fileInfo;
-		_name = fileName();
-		_description = "not implemented";
-		_path = fileInfo.absoluteFilePath().toStdString();
-	    }
-
-	    QFileInfo fileInfo(){ return _fileInfo; }
-	    std::string filePath(){ return _fileInfo.absoluteFilePath().toStdString(); }
-	    std::string fileName(){ return _fileInfo.baseName().toStdString(); }
-
-	    std::string path() const { return _path; }
-	    std::string name() const { return _name; }
-	    std::string description() const { return _description; }
-
-	    void setPath(std::string path){ _path = path; }
-	    void setName(std::string name){ _name = name; }
-	    void setDescription(std::string description){ _description = description; }
-
-	private:
-	    std::string _name;
-	    std::string _description;
-	    std::string _path;
-
-	    QFileInfo _fileInfo;
-
-    };
-
     class MPhoto : public MObject
     {
 	public:	    
@@ -72,14 +38,14 @@ namespace core
 	    ~MPhoto();
 
 	    // set and get
-	    MPhotoInfo info() const { return _info; } // when we want access to the whole info
-	    std::string path() const { return _info.path(); }
-	    std::string name() const { return _info.name(); }
-	    std::string description() const { return _info.description(); }
+	    MPhotoInfo* info() const { return _info; } // when we want access to the whole info
+	    std::string path() const { return _info->path(); }
+	    std::string name() const { return _info->name(); }
+	    std::string description() const { return _info->description(); }
 
-	    void setPath(std::string path){ _info.setPath(path); }
-	    void setName(std::string name){ _info.setName(name); }
-	    void setDescription(std::string description){ _info.setDescription(description); }
+	    void setPath(std::string path){ _info->setPath(path); }
+	    void setName(std::string name){ _info->setName(name); }
+	    void setDescription(std::string description){ _info->setDescription(description); }
 
 	    // gui helpers
 	    // we use these to generate different gui features like thumbnails
@@ -134,7 +100,7 @@ namespace core
 	private:
 	    // fileinfo about the original file
 	    // contains all kinds of metadata, filepath, ...
-	    MPhotoInfo	    _info;
+	    MPhotoInfo*	    _info;
 
 	    // color and image representations
 	    boost::gil::rgb8_image_t _image;

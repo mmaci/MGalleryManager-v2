@@ -3,6 +3,7 @@
 #define _DEBUG
 
 #include <set>
+#include <memory>
 
 #include <core/mgallery.h>
 #include <core/mobject.h>

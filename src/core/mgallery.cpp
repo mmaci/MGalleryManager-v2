@@ -16,10 +16,6 @@ MGallery::MGallery(MGallery* parent) :
     MObject(parent)
 {
     _typeId = TYPEID_GALLERY;
-
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MGallery (" << _info.name() << ")" << std::endl;
-    #endif
 }
 
 /**
@@ -32,20 +28,13 @@ MGallery::MGallery(MGalleryInfo info, MGallery* parent) :
 {
     _info = info;
     _typeId = TYPEID_GALLERY;
-
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MGallery (" << _info.name() << ")" << std::endl;
-    #endif 
 }
 
 /**
  * destructor
  */
 MGallery::~MGallery()
-{
-    #ifdef _DEBUG
-    std::cout << "Deleting contents of MGallery (" << _info.name() << ")" << std::endl;
-    #endif    
+{ 
     std::set<MObject*>::iterator it;
     while(!_content.empty())
     {
@@ -53,9 +42,6 @@ MGallery::~MGallery()
 	delete *it;
 	_content.erase(it);
     }
-    #ifdef _DEBUG
-    std::cout << "Deleting an instance of MGallery (" << _info.name() << ")" << std::endl;
-    #endif
 }
 
 /**
@@ -70,7 +56,7 @@ MPhoto* MGallery::find(QFileInfo info)
     {
 	if (photo = (*it)->toPhoto())
 	{
-	    if (photo->info().fileInfo() == info)
+	    if (photo->info()->fileInfo() == info)
 		return photo;
 	}
     }

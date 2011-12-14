@@ -21,10 +21,6 @@ MObject::MObject(MGallery* gallery)
     _gridThumbnail = NULL;
     _gridViewer = NULL;
     _favourite = false;
-
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MObject" << std::endl;
-    #endif
 }
 
 // conversions

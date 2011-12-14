@@ -1,6 +1,7 @@
 QT	    += core gui
-INCLUDEPATH = C:/libs/boost_1_47_0 C:/libs/jpeg-8c
+INCLUDEPATH = C:/libs/boost_1_47_0 C:/libs/jpeg-8c C:/libs/libexif
 LIBS	    += C:/libs/jpeg-8c/libjpeg-8.dll
+LIBS	    += C:/libs/libexif/libexif.dll
 
 TARGET	    = MGalv2
 TEMPLATE    = app
@@ -21,7 +22,8 @@ SOURCES += main.cpp\
     gui/mgridwidget/mgridwidgetviewer.cpp \
     gui/mgridwidget/mgridwidgetthumbnail.cpp \
     gui/mresizedialog.cpp \
-    core/mxmlhander.cpp
+    core/mxmlhander.cpp \
+    core/mphotoinfo.cpp
 
 HEADERS  += gui/mainwindow.h \
     core/mproject.h \
@@ -42,4 +44,5 @@ HEADERS  += gui/mainwindow.h \
     core/mimage.h \
     shareddefines.h \
     gui/mresizedialog.h \
-    core/mxmlhandler.h
+    core/mxmlhandler.h \
+    core/mphotoinfo.h

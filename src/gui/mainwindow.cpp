@@ -9,8 +9,6 @@
 #include "core/mproject.h"
 #include "core/mxmlhandler.h"
 #include <string>
-// #include <libexif/exif-data.h>
-// #include <libexif/exif-loader.h>
 
 gui::MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)

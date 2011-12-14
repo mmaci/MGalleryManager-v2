@@ -48,7 +48,7 @@ core::MPhoto* core::MProject::find(QFileInfo fileInfo)
     {
 	if (core::MPhoto* photo = (*it)->toPhoto())
 	{
-	    if (photo->info().fileInfo() == fileInfo)
+	    if (photo->info()->fileInfo() == fileInfo)
 		return photo;
 	}
     }

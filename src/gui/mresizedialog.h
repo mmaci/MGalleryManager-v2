@@ -2,6 +2,7 @@
 #define MRESIZEDIALOG_H
 
 #include <string>
+#include <memory>
 #include <QIntValidator>
 
 #include <QDialog>

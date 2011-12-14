@@ -64,8 +64,6 @@ namespace core
 	    void setName(std::string name){ _info.setName(name); }
 	    void setDescription(std::string description){ _info.setDescription(description); }
 
-	    // !!!
-	    // information holder, shouldn't be used, atm just a temporary class to access whole info
 	    MGalleryInfo info() { return _info; }
 
 	private:
