@@ -17,15 +17,6 @@ void MTreeWidget::loadGallery(core::MGallery* gallery, MTreeWidgetItem* parent, 
     std::set<core::MObject*>::iterator it;
     std::set<core::MObject*> content = gallery->content();
 
-    // TODO: rewrite this!
-    // skips the first step, because initial gallery is only a wrapper for the whole project
-    if (!depth)
-    {
-	it = content.begin();
-	loadGallery((*it)->toGallery(), NULL, depth+1);
-	return;
-    }
-
     MTreeWidgetItem* item;
     core::MGallery* tmpGal;
     std::cout << "name: " << gallery->name() << " size: " << content.size() << std::endl;
@@ -47,8 +38,8 @@ void MTreeWidget::loadGallery(core::MGallery* gallery, MTreeWidgetItem* parent, 
 
 /**
  * inserts a gallery into Tree Widget
- * @param gallery gallery we are inserting, needed to create widget data
- * @param parent parent widget to which we are adding, default NULL
+ * \param gallery gallery we are inserting, needed to create widget data
+ * \param parent parent widget to which we are adding, default NULL
  */
 MTreeWidgetItem* MTreeWidget::insert(core::MGallery* gallery, MTreeWidgetItem* parent)
 {
@@ -64,8 +55,8 @@ MTreeWidgetItem* MTreeWidget::insert(core::MGallery* gallery, MTreeWidgetItem* p
 /**
  * inserts a photo into Tree Widget
  * cannot be templated because photos behave a little different from galleries
- * @param photo photo we are inserting, needed to create widget data
- * @param parent parent widget to which we are adding, default NULL
+ * \param photo photo we are inserting, needed to create widget data
+ * \param parent parent widget to which we are adding, default NULL
  */
 MTreeWidgetItem* MTreeWidget::insert(core::MPhoto* photo, MTreeWidgetItem* parent)
 {
@@ -81,8 +72,8 @@ MTreeWidgetItem* MTreeWidget::insert(core::MPhoto* photo, MTreeWidgetItem* paren
 /**
  * removes and deletes an item from MTreeWidget
  * shouldn't be used on its own, only called from destroy() by a core object
- * @param item from a list which we want to remove
- * @return object linked to an item being removed
+ * \param item from a list which we want to remove
+ * \return object linked to an item being removed
  */
 core::MObject* MTreeWidget::remove(MTreeWidgetItem* item)
 {

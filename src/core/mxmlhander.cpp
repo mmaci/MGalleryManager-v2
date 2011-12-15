@@ -19,6 +19,12 @@ MGallery* MXMLHandler::loadProject(std::string path)
 	return NULL;
 
     readFile(&file);
+
+    if (!_galleries.size())
+	return NULL;
+
+    BOOST_ASSERT_MSG(_galleries.size() == 1, "There must be only one top gallery when exporting.");
+
     return _galleries.front();
 }
 
@@ -26,17 +32,11 @@ void MXMLHandler::readFile(QIODevice* device)
 {
     _reader.setDevice(device);
 
-    readXML();
-
-#ifdef _DEBUG
-printToConsole(_galleries.front());
-#endif
-
-    // return !_reader.error();
+    readXML();    
 }
 
 void MXMLHandler::readXML()
-{       
+{           
     _galleries.push_back(new MGallery());
 
     while (!_reader.atEnd())
@@ -162,7 +162,7 @@ bool MXMLHandler::writeToFile(QIODevice* device, MGallery* baseGallery)
 
     _writer.writeStartDocument();
     // _writer.writeDTD("<!DOCTYPE mgallery manager>");
-    _writer.writeStartElement("mgallery");
+    _writer.writeStartElement("mproject");
     _writer.writeAttribute("version", "0.2");           
 
     std::set<core::MObject*>::iterator it;

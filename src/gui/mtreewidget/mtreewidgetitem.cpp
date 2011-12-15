@@ -47,7 +47,7 @@ MTreeWidgetItem::~MTreeWidgetItem()
 
 /**
  * highlights a line in the tree
- * @param apply used to display or hide the background color
+ * \param apply used to display or hide the background color
  */
 void MTreeWidgetItem::highlight(bool apply)
 {
@@ -59,7 +59,7 @@ void MTreeWidgetItem::highlight(bool apply)
 
 /**
  * returns a currently selected QTreeWidgetItem, casts it to an MTreeWidgetItem
- * @return MTreeWidget item
+ * \return MTreeWidget item
  */
 MTreeWidgetItem* MTreeWidget::selected()
 {

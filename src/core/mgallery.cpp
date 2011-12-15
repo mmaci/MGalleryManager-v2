@@ -9,8 +9,8 @@ namespace core
 {
 /**
  * constructor
- * @param info
- * @param parent
+ * \param info
+ * \param parent
  */
 MGallery::MGallery(MGallery* parent) :
     MObject(parent)
@@ -20,8 +20,8 @@ MGallery::MGallery(MGallery* parent) :
 
 /**
  * constructor
- * @param info
- * @param parent
+ * \param info
+ * \param parent
  */
 MGallery::MGallery(MGalleryInfo info, MGallery* parent) :
     MObject(parent)
@@ -45,8 +45,8 @@ MGallery::~MGallery()
 }
 
 /**
- * @param info
- * @return
+ * \param info
+ * \return
  */
 MPhoto* MGallery::find(QFileInfo info)
 {
@@ -64,8 +64,8 @@ MPhoto* MGallery::find(QFileInfo info)
 }
 
 /**
- * @param info
- * @return
+ * \param info
+ * \return
  */
 MGallery* MGallery::insert(MGalleryInfo info)
 {
@@ -94,8 +94,8 @@ void MGallery::insert(MObject* object)
 }
 
 /**
- * @param info
- * @return
+ * \param info
+ * \return
  */
 MPhoto* MGallery::insert(MPhotoInfo info)
 {

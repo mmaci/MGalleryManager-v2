@@ -2,6 +2,7 @@
 #define MPROJECT_H
 
 #include <set>
+#include <memory>
 
 #include <QFileInfo>
 
@@ -22,16 +23,15 @@ namespace core
 	    unsigned int const generateId();
 
 	    MPhoto* find(QFileInfo fileInfo);
-	    MGallery* base(){ return _base; }
-	    void setBase(MGallery* base)
-	    {
-		delete _base;
-		_base = base;
-	    }
+	    MGallery* base() const { return _base; }
+	    std::string path() const { return _path; }
+	    void setPath(std::string path){ _path = path; }
+	    void setBase(MGallery* base);
 
 	private:
 	    MGallery* _base;
 	    unsigned int _maxid;
+	    std::string _path;
     };
 }
 

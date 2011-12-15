@@ -40,7 +40,7 @@ class MPhotoInfo
 	void setDescription(std::string description){ _description = description; }
 
 	void setExif(unsigned int id, std::string content);
-	std::string getExif(unsigned int id) const { return _exif[id]; }
+	std::string getExif(unsigned int id) const { return id < MAX_EXIF_DATA ? _exif[id] : std::string(); }
 
 	void trimSpaces(char* buffer);
 	void loadExifData();

@@ -57,8 +57,9 @@ namespace gui
 	    void createGallery();
 	    void refreshObjectGrid(QModelIndex index);
 
-	    void saveAsDialog();
-	    void load();
+	    void handleSave();
+	    void handleSaveAs();
+	    void handleLoad();
 
 	private:
 	    void setupGui(QMainWindow* mainWindow);
@@ -87,13 +88,13 @@ namespace gui
 	    QPushButton*	_createGalleryButton;
 
 	    QTabWidget*		_tabWidget;
-	    QWidget* projectViewWidget;
+	    QWidget*		_projectViewWidget;
+	    MTreeWidget*	_projectWidget;
 	    QTableWidget*	_detailsWidget;
 
 	    QPushButton* pushButton;
 	    QPushButton*	_removeButton;
 
-	    MTreeWidget*	_projectWidget;
 
 	    QMenuBar*		_menuBar;
 	    QMenu*		_menuProject;
