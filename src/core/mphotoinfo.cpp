@@ -40,7 +40,9 @@ void MPhotoInfo::setExif(unsigned int id, std::string content)
  */
 void MPhotoInfo::loadExifData()
 {
-    if (ExifData* exifData = exif_data_new_from_file(_path.c_str()))
+    ExifData* exifData = exif_data_new_from_file(_path.c_str());
+    std::auto_ptr<ExifData> exifDataPtr(exifData);
+    if (exifDataPtr.get())
     {
 	ExifIfd ifd;
 	ExifTag tag;
@@ -75,27 +77,10 @@ void MPhotoInfo::loadExifData()
 		    break;
 	    }
 
-	    std::string data = loadExifDataSpecific(exifData, EXIF_IFD_EXIF, EXIF_TAG_ISO_SPEED_RATINGS);
+	    std::string data = loadExifDataSpecific(exifDataPtr.get(), ifd, tag);
 	    if (data != "")
 		setExif(i, data);
-	}
-	// unloads exif data
-	exif_data_unref(exifData);
-    }
-}
-
-/**
- * \brief trims the buffer when we get an empty char
- */
-void MPhotoInfo::trimSpaces(char* buffer)
-{
-    for (int i = 0; i < 1024; ++i)
-    {
-	if (buffer[i] == ' ')
-	{
-	    buffer[i] = 0;
-	    break;
-	}
+	}	
     }
 }
 
@@ -104,17 +89,32 @@ void MPhotoInfo::trimSpaces(char* buffer)
  */
 std::string MPhotoInfo::loadExifDataSpecific(ExifData* exifData, ExifIfd ifd, ExifTag tag)
 {
-    if (ExifEntry* exifEntry = exif_content_get_entry(exifData->ifd[ifd], tag))
+    ExifEntry* exifEntry;
+    exifEntry = exif_content_get_entry(exifData->ifd[ifd], tag);
+    std::auto_ptr<ExifEntry> exifEntryPtr(exifEntry);
+
+    if (!exifEntryPtr.get())
+	return std::string();
+
+    char buffer[1024];
+    exif_entry_get_value(exifEntryPtr.get(), buffer, sizeof(buffer));
+    trimSpaces(buffer);
+
+    return std::string(buffer);
+}
+
+/**
+ * \brief trims the buffer when we get an empty char
+ */
+void MPhotoInfo::trimSpaces(char* buffer)
+{
+    char *s = buffer-1;
+    for (; *buffer; ++buffer)
     {
-	char buffer[1024];
-	exif_entry_get_value(exifEntry, buffer, sizeof(buffer));
-	exif_entry_unref(exifEntry);
-
-	trimSpaces(buffer);
-	return std::string(buffer);
+	if (*buffer != ' ')
+	    s = buffer;
     }
-
-    return std::string();
+    *++s = 0;
 }
 
 }

@@ -3,7 +3,9 @@
 #define MAINWINDOW_H
 
 #include <string>
+#include <vector>
 
+#include <QHeaderView>
 #include <QMainWindow>
 #include <QAction>
 #include <QApplication>
@@ -24,6 +26,7 @@
 #include <QInputDialog>
 #include <QErrorMessage>
 #include <QFileDialog>
+#include <QTableWidget>
 
 namespace core
 {
@@ -62,7 +65,7 @@ namespace gui
 	    void setupFileSystemView(QGridLayout* layout);
 	    void setupMenu(QMainWindow* mainWindow);
 	    void setupTabs(QGridLayout* layout);
-	    void setupDetailsTab(QTabWidget* tab);
+	    void setupDetails(QGridLayout* layout);
 	    void setupProjectTab(QTabWidget* tab);
 	    void setupObjectGrid(QWidget* parent);
 
@@ -85,7 +88,7 @@ namespace gui
 
 	    QTabWidget*		_tabWidget;
 	    QWidget* projectViewWidget;
-	    QWidget* detailsWidget;
+	    QTableWidget*	_detailsWidget;
 
 	    QPushButton* pushButton;
 	    QPushButton*	_removeButton;

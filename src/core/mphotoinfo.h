@@ -2,6 +2,7 @@
 #define MPHOTOINFO_H
 
 #include <string>
+#include <memory>
 #include <QFileInfo>
 
 #include <libexif/exif-data.h>

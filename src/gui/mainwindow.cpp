@@ -31,7 +31,7 @@ gui::MainWindow::~MainWindow()
     delete _projectWidget;
     delete projectViewWidget;
     // delete details tab
-    delete detailsWidget;
+    delete _detailsWidget;
     delete _tabWidget;
     // delete menu
     delete _menuProject;
@@ -66,7 +66,7 @@ void gui::MainWindow::setupGui(QMainWindow* mainWindow)
 
     _baseGridWidget = new QWidget(_centralWidget);	
 	_baseGridWidget->setObjectName(QString::fromUtf8("_baseGridWidget"));
-	_baseGridWidget->setGeometry(QRect(0, 0, 271, 561));
+	_baseGridWidget->setGeometry(QRect(0, 0, 271, 721));
 
     _baseGrid = new QGridLayout(_baseGridWidget);	
 	_baseGrid->setObjectName(QString::fromUtf8("_baseGrid"));
@@ -75,6 +75,7 @@ void gui::MainWindow::setupGui(QMainWindow* mainWindow)
     setupMenu(mainWindow);
     setupFileSystemView(_baseGrid);
     setupTabs(_baseGrid);
+    setupDetails(_baseGrid);
     setupObjectGrid(_centralWidget);
 
     mainWindow->setCentralWidget(_centralWidget);
@@ -224,7 +225,65 @@ void gui::MainWindow::refreshObjectGrid(QModelIndex index)
 {
     // index isn't needed because when we double click on an item, we have it selected, so we just try to load the currently selected item
     // safechecks in load
-    _objectGridWidget->load(_projectWidget->selected()->object());
+    core::MObject* object = _projectWidget->selected()->object();
+    _objectGridWidget->load(object);
+
+    // we also need to set proper detail info
+    _detailsWidget->clearContents();
+    if (core::MPhoto* photo = object->toPhoto())
+    {
+	std::cout << "loading exif" << std::endl;
+	core::MPhotoInfo* info = photo->info();
+	typedef std::pair<QTableWidgetItem*, QTableWidgetItem*> ItemPair;
+	std::vector<ItemPair> items;
+	for (int i = 0; i < MAX_EXIF_DATA; ++i)
+	{
+
+	    std::string data = info->getExif(i);
+	    if (data == "")
+		continue;
+
+	    std::cout << "loading " << data << std::endl;
+	    QTableWidgetItem* value = new QTableWidgetItem(QString(data.c_str()));
+	    QTableWidgetItem* label;
+	    switch (i)
+	    {
+		case EXIF_ISO:
+		    label = new QTableWidgetItem(QString("ISO"));
+		    break;
+
+		case EXIF_EXPOSURE_TIME:
+		    label = new QTableWidgetItem(QString("Exposure Time"));
+		    break;
+
+		case EXIF_CAMERA:
+		    label = new QTableWidgetItem(QString("Camera"));
+		    break;
+
+		case EXIF_FNUMBER:
+		    label = new QTableWidgetItem(QString("F-number"));
+		    break;
+
+		case EXIF_FOCAL_LENGTH:
+		    label = new QTableWidgetItem(QString("Focal Length"));
+		    break;
+	    }
+	    items.push_back(std::make_pair(label, value));
+	}
+
+	if (items.size())
+	{
+	    _detailsWidget->setRowCount(items.size());
+	    std::vector<ItemPair>::iterator it;
+	    int i = 0;
+	    for (it = items.begin(); it != items.end(); ++it, ++i)
+	    {
+		_detailsWidget->setItem(i, 0, (*it).first);
+		_detailsWidget->setItem(i, 1, (*it).second);
+	    }
+	}
+	_detailsWidget->sortByColumn(0, Qt::AscendingOrder);
+    }
 }
 
 void gui::MainWindow::removeItemFromProject()
@@ -351,7 +410,6 @@ void gui::MainWindow::setupTabs(QGridLayout* layout)
     _tabWidget->setObjectName(QString::fromUtf8("_tabWidget"));
 
     setupProjectTab(_tabWidget);
-    setupDetailsTab(_tabWidget);
 
     _removeButton = new QPushButton(_baseGridWidget);
     _removeButton->setObjectName(QString::fromUtf8("removeButton"));
@@ -388,11 +446,19 @@ void gui::MainWindow::setupProjectTab(QTabWidget* tab)
     connect(_projectWidget, SIGNAL(clicked(QModelIndex)), this, SLOT(refreshObjectGrid(QModelIndex)));
 } // ENDOF gui::MainWindow::setupProjectTab
 
-void gui::MainWindow::setupDetailsTab(QTabWidget* tab)
+void gui::MainWindow::setupDetails(QGridLayout* layout)
 {
-    detailsWidget = new QWidget();
-	detailsWidget->setObjectName(QString::fromUtf8("detailsWidget"));
+    _detailsWidget = new QTableWidget(_baseGridWidget);
+	_detailsWidget->setObjectName(QString::fromUtf8("_detailsWidget"));
+	_detailsWidget->resize(261, 200);
+	_detailsWidget->setColumnCount(2);
 
-    tab->addTab(detailsWidget, QString());
-    tab->setTabText(tab->indexOf(detailsWidget), QApplication::translate("MainWindow", "Details", 0, QApplication::UnicodeUTF8));
-} // ENDOF gui::MainWindow::setupDetailsTab
+    QStringList headers;
+	headers << "EXIF" << "value";
+
+    _detailsWidget->setHorizontalHeaderLabels(headers);
+    _detailsWidget->verticalHeader()->setResizeMode(QHeaderView::Stretch);
+    _detailsWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+
+    layout->addWidget(_detailsWidget, 5, 0);
+} // ENDOF gui::MainWindow::setupDetails
