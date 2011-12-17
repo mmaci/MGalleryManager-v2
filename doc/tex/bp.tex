@@ -1,0 +1,804 @@
+%% History:
+% Pavel Tvrdik (26.12.2004)
+%  + initial version for PhD Report
+%
+% Daniel Sykora (27.01.2005)
+%
+% Michal Valenta (3.12.2008)
+% rada zmen ve formatovani (diky M. Duškovi, J. Holubovi a J. Žďárkovi)
+% sjednoceni zdrojoveho kodu pro anglickou, ceskou, bakalarskou a diplomovou praci
+
+% One-page layout: (proof-)reading on display
+%%%% \documentclass[11pt,oneside,a4paper]{book}
+% Two-page layout: final printing
+\documentclass[11pt,twoside,a4paper]{book}   
+%=-=-=-=-=-=-=-=-=-=-=-=--=%
+% The user of this template may find useful to have an alternative to these 
+% officially suggested packages:
+\usepackage[czech, english]{babel}
+\usepackage[T1]{fontenc} % pouzije EC fonty 
+% pripadne pisete-li cesky, pak lze zkusit take:
+% \usepackage[OT1]{fontenc} 
+\usepackage[utf8]{inputenc}
+%=-=-=-=-=-=-=-=-=-=-=-=--=%
+% In case of problems with PDF fonts, one may try to uncomment this line:
+%\usepackage{lmodern}
+%=-=-=-=-=-=-=-=-=-=-=-=--=%
+%=-=-=-=-=-=-=-=-=-=-=-=--=%
+% Depending on your particular TeX distribution and version of conversion tools 
+% (dvips/dvipdf/ps2pdf), some (advanced | desperate) users may prefer to use 
+% different settings.
+% Please uncomment the following style and use your CSLaTeX (cslatex/pdfcslatex) 
+% to process your work. Note however, this file is in UTF-8 and a conversion to 
+% your native encoding may be required. Some settings below depend on babel 
+% macros and should also be modified. See \selectlanguage \iflanguage.
+% \usepackage{czech}  %%%%%\usepackage[T1]{czech} %%%%[IL2] [T1] [OT1]
+%=-=-=-=-=-=-=-=-=-=-=-=--=%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Styles required in your work follow %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+%\usepackage{indentfirst} %1. odstavec jako v cestine.
+
+\usepackage{k336_thesis_macros} % specialni makra pro formatovani DP a BP
+ % muzete si vytvorit i sva vlastni v souboru k336_thesis_macros.sty
+ % najdete  radu jednoduchych definic, ktere zde ani nejsou pouzity
+ % napriklad: 
+ % \newcommand{\bfig}{\begin{figure}\begin{center}}
+ % \newcommand{\efig}{\end{center}\end{figure}}
+ % umoznuje pouzit prikaz \bfig namisto \begin{figure}\begin{center} atd.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Zvolte jednu z moznosti 
+% Choose one of the following options
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \newcommand\TypeOfWork{Diplomová práce} \typeout{Diplomova prace}
+% \newcommand\TypeOfWork{Master's Thesis}   \typeout{Master's Thesis} 
+\newcommand\TypeOfWork{Bakalářská práce}  \typeout{Bakalarska prace}
+% \newcommand\TypeOfWork{Bachelor's Project}  \typeout{Bachelor's Project}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Zvolte jednu z moznosti 
+% Choose one of the following options
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% nabidky jsou z: http://www.fel.cvut.cz/cz/education/bk/prehled.html
+
+\newcommand\StudProgram{Elektrotechnika a informatika, dobíhající, Bakalářský}
+% \newcommand\StudProgram{Elektrotechnika a informatika, dobíhající, Magisterský}
+% \newcommand\StudProgram{Elektrotechnika a informatika, strukturovaný, Bakalářský}
+% \newcommand\StudProgram{Elektrotechnika a informatika, strukturovaný, Navazující magisterský}
+% \newcommand\StudProgram{Softwarové technologie a management, Bakalářský}
+% English study:
+% \newcommand\StudProgram{Electrical Engineering and Information Technology}  % bachelor programe
+% \newcommand\StudProgram{Electrical Engineering and Information Technology}  %master program
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Zvolte jednu z moznosti 
+% Choose one of the following options
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% nabidky jsou z: http://www.fel.cvut.cz/cz/education/bk/prehled.html
+
+\newcommand\StudBranch{Výpočetní technika}   % pro program EaI bak. (dobihajici i strukt.)
+% \newcommand\StudBranch{Výpočetní technika}   % pro prgoram EaI mag. (dobihajici i strukt.)
+% \newcommand\StudBranch{Softwarové inženýrství}            %pro STM
+% \newcommand\StudBranch{Web a multimedia}                  % pro STM
+% \newcommand\StudBranch{Computer Engineering}              % bachelor programe
+% \newcommand\StudBranch{Computer Science and Engineering}  % master programe
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Vyplnte nazev prace, autora a vedouciho
+% Set up Work Title, Author and Supervisor
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand\WorkTitle{Galerie fotografií s exportem na webové stránky }
+\newcommand\FirstandFamilyName{Pavel Macenauer}
+\newcommand\Supervisor{Doc. Ing. Jan Janoušek CSc.}
+
+
+% Pouzijete-li pdflatex, tak je prijemne, kdyz bude mit vase prace
+% funkcni odkazy i v pdf formatu
+\usepackage[
+pdftitle={\WorkTitle},
+pdfauthor={\FirstandFamilyName},
+bookmarks=true,
+colorlinks=true,
+breaklinks=true,
+urlcolor=red,
+citecolor=blue,
+linkcolor=blue,
+unicode=true,
+]
+{hyperref}
+
+
+
+% Extension posted by Petr Dlouhy in order for better sources reference (\cite{} command) especially in Czech.
+% April 2010
+% See comment over \thebibliography command for details.
+
+\usepackage[square, numbers]{natbib}             % sazba pouzite literatury
+%\usepackage{url}
+%\DeclareUrlCommand\url{\def\UrlLeft{<}\def\UrlRight{>}\urlstyle{tt}}  %rm/sf/tt
+%\renewcommand{\emph}[1]{\textsl{#1}}    % melo by byt kurziva nebo sklonene,
+\let\oldUrl\url
+\renewcommand\url[1]{<\texttt{\oldUrl{#1}}>}
+
+
+
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Zvolte jednu z moznosti 
+% Choose one of the following options
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\selectlanguage{czech}
+%\selectlanguage{english} 
+
+% prikaz \typeout vypise vyse uvedena nastaveni v prikazovem okne
+% pro pohodlne ladeni prace
+
+
+\iflanguage{czech}{
+	 \typeout{************************************************}
+	 \typeout{Zvoleny jazyk: cestina}
+	 \typeout{Typ prace: \TypeOfWork}
+	 \typeout{Studijni program: \StudProgram}
+	 \typeout{Obor: \StudBranch}
+	 \typeout{Jmeno: \FirstandFamilyName}
+	 \typeout{Nazev prace: \WorkTitle}
+	 \typeout{Vedouci prace: \Supervisor}
+	 \typeout{***************************************************}
+	 \newcommand\Department{Katedra počítačů}
+	 \newcommand\Faculty{Fakulta elektrotechnická}
+	 \newcommand\University{České vysoké učení technické v Praze}
+	 \newcommand\labelSupervisor{Vedoucí práce}
+	 \newcommand\labelStudProgram{Studijní program}
+	 \newcommand\labelStudBranch{Obor}
+}{
+	 \typeout{************************************************}
+	 \typeout{Language: english}
+	 \typeout{Type of Work: \TypeOfWork}
+	 \typeout{Study Program: \StudProgram}
+	 \typeout{Study Branch: \StudBranch}
+	 \typeout{Author: \FirstandFamilyName}
+	 \typeout{Title: \WorkTitle}
+	 \typeout{Supervisor: \Supervisor}
+	 \typeout{***************************************************}
+	 \newcommand\Department{Department of Computer Science and Engineering}
+	 \newcommand\Faculty{Faculty of Electrical Engineering}
+	 \newcommand\University{Czech Technical University in Prague}
+	 \newcommand\labelSupervisor{Supervisor}
+	 \newcommand\labelStudProgram{Study Programme} 
+	 \newcommand\labelStudBranch{Field of Study}
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%    Poznamky ke kompletaci prace
+% Nasledujici pasaz uzavrenou v {} ve sve praci samozrejme 
+% zakomentujte nebo odstrante. 
+% Ve vysledne svazane praci bude nahrazena skutecnym 
+% oficialnim zadanim vasi prace.
+{
+\pagenumbering{roman} \cleardoublepage \thispagestyle{empty}
+\chapter*{Na tomto místě bude oficiální zadání vaší práce}
+\begin{itemize}
+\item Toto zadání je podepsané děkanem a vedoucím katedry,
+\item musíte si ho vyzvednout na studiijním oddělení Katedry počítačů na Karlově náměstí,
+\item v jedné odevzdané práci bude originál tohoto zadání (originál zůstává po obhajobě na katedře),
+\item ve druhé bude na stejném místě neověřená kopie tohoto dokumentu (tato se vám vrátí po obhajobě).
+\end{itemize}
+\newpage
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%    Titulni stranka / Title page 
+
+\coverpagestarts
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%    Podekovani / Acknowledgements 
+
+\acknowledgements
+\noindent
+Zde můžete napsat své poděkování, pokud chcete a máte komu děkovat.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%   Prohlaseni / Declaration 
+
+\declaration{V~Praze dne 15.\,5.\,2008}
+%\declaration{In Kořenovice nad Bečvárkou on May 15, 2008}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%    Abstract 
+ 
+\abstractpage
+\noindent 
+The thesis deals with the implementation of an application called GalleryManager used for multiple-photo management, their organization, editing and also export into a presentation. It is a multiplatform graphical interface application allowing the creation of a tree-structured project consisting of galleries, photos and then editing them both individually and massively. Output is in the form of a web presentation. Emphasis is mainly on the speed of photo processing and efficiency of the algorithms.
+
+\indent 
+The application should be designed in a way, that it allows to add additional functionalities to the extent of a complete graphical suite for photo editing. Input format is mainly JPEG and individual adjustments are processed in an 8-bit RGB colour space.
+
+% Prace v cestine musi krome abstraktu v anglictine obsahovat i
+% abstrakt v cestine.
+\vglue60mm
+
+\noindent{\Huge \textbf{Abstrakt}}
+\vskip 2.75\baselineskip
+
+\noindent 
+Práce se zabývá implementací programu GalleryManager, sloužícího k hromadné správě fotografií, jejich organizaci, úpravám a následně i exportu do podoby prezentace. Jedná se o multiplatformní grafickou aplikaci, která umožňuje vytvořit si vlastní stromově strukturovaný projekt tvořený galeriemi, fotografiemi a každou pak jak samostnatně, tak i hromadně zpracovávat. Výstupem je webová prezentace. Důraz je kladen predevším na rychlost zpracování fotografií a efektivitu použitých algoritmů.
+
+\indent 
+Program by měl být navržen tak, aby do něj šlo přidávat i další funkce až do podoby kompletního grafického studia ke zpracování fotografií. Vstupním formátem fotografií je především JPEG, samotné úpravy jsou pak prováděny v 8-bitovém RGB prostoru.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Obsah / Table of Contents 
+
+\tableofcontents
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Seznam obrazku / List of Figures 
+
+\listoffigures
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Seznam tabulek / List of Tables
+
+\listoftables
+
+
+%**************************************************************
+
+\mainbodystarts
+% horizontalní mezera mezi dvema odstavci
+%\parskip=5pt
+%11.12.2008 parskip + tolerance
+\normalfont
+\parskip=0.2\baselineskip plus 0.2\baselineskip minus 0.1\baselineskip
+
+% Odsazeni prvniho radku odstavce resi class book (neaplikuje se na prvni 
+% odstavce kapitol, sekci, podsekci atd.) Viz usepackage{indentfirst}.
+% Chcete-li selektivne zamezit odsazeni 1. radku nektereho odstavce,
+% pouzijte prikaz \noindent.
+
+%**************************************************************
+
+% Pro snadnejsi praci s vetsimi texty je rozumne tyto rozdelit
+% do samostatnych souboru nejlepe dle kapitol a tyto potom vkladat
+% pomoci prikazu \include{jmeno_souboru.tex} nebo \include{jmeno_souboru}.
+% Napr.:
+% \include{1_uvod}
+% \include{2_teorie}
+% atd...
+
+%*****************************************************************************
+\chapter{Úvod}
+
+\noindent 
+V současné době je na trhu velké množství grafických editorů. Od základních, integrovaných přímo do operačních systému jako Malování v Microsoft Windows po pokročilé produkty jako Adobe Photoshop pro Windows nebo GIMP pro Linux. Většina z nich se však soustředí na složité a časově náročné úpravy samostatných fotografií a je značně omezena na konkrétní operační systém. Výstupem je vždy opět jen zpracovaná fotografie.
+
+\indent
+Další skupinou programů jsou takové, které distribují především jednotlivé webové servery jako Rajče.cz. Umožňují vytvářet a nahrát jednotlivá alba na daný server. Nemusíte se téměř o nic starat, aplikace si fotografii zmenší, následně ji můžete i natočit, přidat jmeno či popisek a na webu pak naleznete své galerie jako jednotlivé prezentace. Omezení je na druhou stranu v tom, že samotné fotografie nelze nijak upravovat a Vaše prezentace je omezena na cizí internetový server.
+
+\indent
+Fotografie většinou pořizujeme jako celé série, často bychom je chtěli roztřídit i na podkategorie. GalleryManager je umožňuje zatřídit do stromu ve formě galerií s popisky a názvy o libovolné hloubce, tak aby vypovídaly celý svůj příběh, následně je i co nejefektiněji, hromadně nebo jednotlivě zpracovávat. Navíc by program měl být multiplatformní, tak aby šel distribuovat pro všechny běžné operační systémy.
+
+\indent
+Tato práce je implementační, nikoliv rešeršní, proto dokumentace bude popsána především z hlediska jak jsou jednotlivé její části implementovány. Nebude kladen důraz na teoretické vysvětlení funkčnosti jednotlivých knihoven.
+
+\indent
+Svou podstatou je GalleryManager navržen a realizován tak, aby do budoucna šlo program rozšiřovat až do podoby plnohodnotného grafického studia pro editaci a správu fotografií a možná i jiných médií. Nejedná a nikdy se nebude jednat o konečný produkt.
+
+%*****************************************************************************
+\chapter{Popis problému, specifikace cíle}
+\section{Cíle práce}
+\noindent
+Hlavním cílem této práce je vytvořit framework pro grafický editor ke správě skupin fotografií a implementovat základní funkcionality, tak aby byl program použitelný pro základní grafické úpravy a následně i výstup v podobě prezentace.
+
+Samotné téma přesahuje rozsah bakalářské práce i časové možnosti jednoho člověka. Vytyčené cíle jsou tedy následující:
+
+\begin{itemize}
+\item Grafické uživatelské rozhraní.
+\item Implementace vnitřní struktury pro uchovávání a manipulaci s informacemi pro fotografie a galerie.
+\item Možnost základních grafických úprav fotografií - rotace, zmenšení/zvětšení, jas, kontrast, převod do černobílé, sytost.
+\item Ukládání v univerzálním formátu XML.
+\item Výstup v podobě webové prezentace.
+\end{itemize}
+
+\section{Popis struktury práce}
+\noindent
+\textit{Přesně nechápu co zde napsat jiného, než v analýze/návrhu řešení.}
+
+\section{Existující implementace}
+\noindent
+Nejznámějším softwarem pro úpravu jednotlivých fotografií, ale i pro tvorbu grafiky je bezpochyby Adobe Photoshop od Adobe Systems Inc. Tento program umožňuje obrovské možnosti a to i do té míry, aby jednotlivé úpravy byly ukládány jako samostatné instance, ke kterým se grafik může v budoucnu vracet. Se samotným Photoshopem, na kterém pracují teamy desítek až stovek lidí, nelze tuto práci srovnávat. Nicméně zajímavé je, že Adobe poskytuje open-source produkty, mezi kterými je i C++ knihovna GIL\label{Generic Image Library} ke zpracování obrazu, zahrnutá v knihovnách Boost, kterou do jisté míry Adobe integruje i do svých produktů. Podobnou aplikací z rodiny grafických editorů je ještě Zoner Photo Studio, které nabízí podobné možnosti jako Adobe Photoshop.
+
+\indent
+Druhou skupinou existujících implementací jsou programy sloužící především k synchronizaci s webovými galeriemi. Jejich zástupcemi jsou Rajče.cz a Google Picasa. Rajče.cz distribuje software, který je synchronizován s jeho účtem na serveru http://www.rajce.cz. Za uživatele zmenší fotografie na velikost náhledů, většinou je i automaticky natočí, případně tu možnost má i sám uživatel. Následně si uživatel fotografie a galerie popíše a synchronizuje s webovou stránkou.
+
+\indent
+Posledním a nejpodobnějším softwarem je Google Picasa, který krom synchronizace se socíální sítí Google+ umožnuje i fotografie editovat a popisovat. Galerie se zde vytvářejí přímo v podobě systémových složek, které si Picasa neustále za svého běhu indexuje. Zajímavé je, že každou chvíli si určitou část využívané paměti uvolní a nezabírá tak obrovské množství paměti, jaké by člověk očekával od programu, který výtváři náhledy všech fotografií na pevném disku. Hlavním rozdílem oproti této práci je způsob pohledu na galerie. Picasa neuvažuje galerie jako celky s vysokou informační hodnotou, vypovídající o fotografiích jako o reportáži. Naopak je bere čistě jako složky napěchované fotografiemi. My se budeme snažit o export prezentace do takové podoby, která bude o albu vypovídat jakýsi příběh.
+
+\indent
+Žádný z těchto programů bohužel nedistribuje své zdrojové kódy, proto zdrojem informací můžou být pouze uživatelské zkušenosti s danými aplikacemi.
+
+%*****************************************************************************
+
+\bibliographystyle{csplainnat}
+%bibliographystyle{plain}
+%\bibliographystyle{psc}
+
+\chapter{Analýza a návrh řešení}
+\section{Návrh}
+
+\noindent
+Program umožňuje hned několik nezávislých funkcionalit, které je třeba řešit nezávisle jako moduly, tak aby se navzájem neovlivňovaly a při jednotlivých dílčích změnách se nemusely upravovat zbylé části programu. Jsou jimi grafické uživatelské rozhraní, jádro uchovávající informace o jednotlivých fotografiích a galeriích, aparát pro zpracovávání fotografií a výstup, tedy import/export projektu. Návrhem každého modulu se budeme zabývat samostatně.
+
+\indent
+Aplikace bude realizována v programovacím jazyku C++ z důvodu objektového přístupu a zároveň vysoké výkonnosti. Zároveň disponuje i velkým množstvím knihoven pro práci s grafickým rozhraním a zpracováním obrazu.
+
+\indent
+Ke tvorbě grafického uživatelského rozhraní, dále již GUI\footnote{Graphical User Interface}, je použit framework Qt. K jeho výběru vedlo hned několik výhod. Je volně ke stažení pod licencí LGPL v2.1\footnote{GNU Lesser General Public License} umožnující volné používání pro nekomerční účely. Z programátorského hlediska disponuje přehlednou dokumentací, je multiplatformní, tudíž GUI a signály nejsou vázány na operační systém. Dále je možné vykreslovat obraz po jednotlivých pixelech v barevném prostoru RGB. Úpravy fotografií je tedy možno provádět nezávisle a následně pouze vykreslit.
+
+\indent
+Knihovny Qt umožňují pouze jednoduché zpracování obrazu. Program by měl do budoucna, kvůli možnostem rozšířování, pracovat i ve více bitových barevných kanálech, krom 8-bit i 16-bit a v jiných barevných prostorech, nejen RGB, jako LAB či CMYK. Zpracování obrazu tedy probíhá především za využití standartního C++ a knihoven Boost, především GIL\footnote{Generic Image Library od Adobe Systems Inc.}, které umožnuje daleko vyšší režii nad zpracováním obrazu. Informace o souboru a EXIF údaje fotografie jsou úzce spjaty se se samotnou fotografií. Na jejich základu pak můžeme provádět i samotné úpravy, proto je vhodné je spojit do společné struktury.
+
+\indent
+Poslední částí a výstupem z programu je export. Framework Qt obsahuje třídy ke zpracovávání a generování validního XML, proto je do něj projekt ukládán a následně i načítán. Dalším výstupem je webová stránka, která je generována vždy stejnou HTML šablonou. Její design pak ovlivňuje pouze přiložený kaskádový styl, který si může uživatel sám upravovat.
+
+%*****************************************************************************
+\chapter{Realizace}
+\noindent
+V následující kapitole rozebereme jednotlivé moduly aplikace a jejich implementaci.
+
+\section{Vnitřní informační struktura}
+\noindent
+Jednotlivé galerie můžou vždy obsahovat buď fotografie nebo další galerie, kde každá je reprezentována vlastní třídou - MGallery, MPhoto. Aby bylo možné uchovávat záznamy o obou třídách současně, dědí obě ještě MObject. Takto lze projekt jednoduše rožšířit o další entity, kterými můžou do budoucna být třeba filmy a implementovat tak třídu MMovie, aniž by se výrazně měnila vnitřní struktura.
+
+MPhoto a MGallery slouží především ke grafickému zpracování. Zeměpisné nebo i fotografické údaje o jednotlivých galeriích a fotografiích jsou řešeny samostatnými třídami. MObject obsahuje strukturu MGPSInfo se zeměpisnými informacemi, společnými jak pro fotografie, tak i pro galerie. Každá galerie a fotografie pak obsahuje ještě struktry MGalleryInfo a MPhotoInfo.
+
+\section{Grafické uživatelské rozhraní}
+\noindent
+K tvorbě uživatelského rozhraní byl použit framework Qt. Hlavní problémy, které zde musíme řešit, jsou propojení vnitřních struktur uchovávajících informace o fotografiích a galeriích do GUI tříd a vykreslování náhledů během provádění úprav.
+
+\indent
+Obsah celého projektu je zobrazován hned na několika místech. Nejprve je třeba zobrazit celou strukturu jako strom, tak aby šlo jednoduše přecházet mezi galeriemi a fotografiemi. Druhým místem je pak hlavní okno, ve kterém se zobrazují náhledy fotografií v aktivní galerii nebo editační prostředí, je-li aktivní pouze samostatná fotografie. Provedeme-li pak úpravu na jakémkoliv z těchto míst, je třeba ji aplikovat i na ostatní.
+
+\section{EXIF údaje fotografií}
+\noindent
+Většina digitálních fotoaparátů nebo smartphonů dnes ukládá informace o pořízeném snímku, jakými jsou čas, clonové číslo, použitý fotoaparát, objektiv i jeho ohnisko, přímo do fotografie ve formátu EXIF - Extensible File Format. Krom technických parametrů mezi nimi nechybí ani GPS informace, což umožňuje uživateli načítat spousty informací, aniž by je musel vlastnoručně zadávat.
+
+\indent
+K implementaci v prostředí C++ existují knihovny libexif a exiv2. Exiv2 je oproti libexif napsána v C++ a umožňuje číst i další standarty k uchovávání metadat - XMP\footnote{Extensible Metadata Platform - standart od Adobe Systems Inc. k ukládání informací především v PDF, fotografiích, grafice} a IPTC\footnote{Information Interchange Model od International Press Telecommunications Council je další ze standartů na úkládání dodatečných informací o souborech}. Její nevýhodou je, že obsahuje závislosti na jiných knihovnách, jmenovitě zlib, gettext, libiconv a Expat, čímž značně přesahuje měřítko ve kterém chceme implementovat podporu metadat a zvětšuje i velikost celé práce.
+
+\indent
+Další knihovnou je libexif\cite{libexif}, použítá mimojiné i v GalleryManageru a napsaná v C. Při integraci do moderního C++ prostředí toto výtváří úskalí především v konceptu C++, které už není zdaleka tak nízkoúrovňové jako C. Její výhodou je, že nepotřebuje žádné další závislosti. V rámci GalleryManageru chceme pouze zobrazovat základní fotografické parametry, kterými jsou především čas, clonové číslo a fotoaparát. Případná změna těchto dat by i narušovala pravdivost informací o pořízení fotografie, proto je libexif dostačující.
+
+\indent
+Abychom mohli načíst úspěšně všechna potřebná data, je třeba pochopit strukturu, ve které jsou ukládána. EXIF je založený na formátu JPEG. Data takového obrázku začínají sekvencí 0xFFD8 a končí 0xFFD9. Mimojiné uvnitř existují sekvence značené podobně, konkrétně 0xFF-- nazývané Markers. Application Markery (0xFFE0 - 0xFFEF) nám značí data zaznamenaná uživatelskými aplikaci. Exif začíná Application Markerem APP1 (0xFFE1), následují hlavičky a za nimi IFD0\footnote{Image File Directory} a IFD1. IFD0 nejdříve obsahuje informace jakými jsou šířka, výška, ale i offsety na jednotlivé informační položky mezi kterými je i tzv. ExifIFD, což je podsložka IFD0 obsahující veškeré dostupné fotografické informace. Offsety končí odkazem na IFD1 obsahující náhled obrázku. Dále následuje datová část na kterou ukazovaly jednotlivé offsety.
+
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|r|}
+\hline
+APP1 Marker & \\
+... & \\
+\hline
+IFD0 & Image width \\
+& Image height \\ 
+& ... \\
+& ExifIFD offset \\
+& GPS offset \\ 
+& IFD1 offset \\
+& Data \\
+\hline
+IFD1 & Compression \\
+& Resolution \\
+\hline
+\end{tabular}
+\end{center}
+\caption{struktura EXIF dat}
+\label{tab:tabexif}
+\end{table}
+
+
+%*****************************************************************************
+\chapter{Testování}
+
+\begin{itemize}
+ \item Způsob, průběh a výsledky testování.
+ \item Srovnání s existujícími řešeními, pokud jsou známy.
+\end{itemize} 
+
+
+%*****************************************************************************
+\chapter{Závěr}
+
+\begin{itemize}
+\item Zhodnocení splnění cílů DP/BP a  vlastního přínosu práce (při formulaci je třeba vzít v potaz zadání práce).
+\item Diskuse dalšího možného pokračování práce.
+\end{itemize} 
+
+\bibliography{reference}
+
+
+%*****************************************************************************
+% Seznam literatury je v samostatnem souboru reference.bib. Ten
+% upravte dle vlastnich potreb, potom zpracujte (a do textu
+% zapracujte) pomoci prikazu bibtex a nasledne pdflatex (nebo
+% latex). Druhy z nich alespon 2x, aby se poresily odkazy.
+
+% originally following specification for bibliography formating was used
+%\bibliographystyle{abbrv}
+
+% Here is an improvment by Petr Dlouhy (April 2010).
+% It is mainly for supervisors who expect Czech fomrating rules for references
+% Additional feature is live url addresses to sources from your pdf file
+% It requires the file csplainnat.bst (included in this sample zipfile).
+
+
+
+% M. Dušek radi:
+%\bibliographystyle{alpha}
+% kdy citace ma tvar [AutorRok] (napriklad [Cook97]). Sice to asi neni  podle ceske normy (BTW BibTeX stejne neodpovida ceske norme), ale je to nejprehlednejsi.
+% 3.5.2009 JZ polemizuje: BibTeX neobvinujte, napiste a poskytnete nam styl (.bst) splnujici citacni normu CSN/ISO.
+
+%*****************************************************************************
+%*****************************************************************************
+\appendix
+
+\chapter{Testování zaplnění stránky a odsazení odstavců}
+\textbf{\large Tato příloha nebude součástí vaší práce. 
+Slouží pouze jako příklad formátování textu.}
+
+\section*{}
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
+
+%*****************************************************************************
+\chapter{Pokyny a návody k formátování textu práce}
+\textbf{\large Tato příloha samozřejmě nebude součástí vaší práce. Slouží pouze jako příklad formátování textu.}
+
+Používat se dají všechny příkazy systému \LaTeX. Existuje velké množství volně přístupné dokumentace, tutoriálů, příruček a dalších materiálů v elektronické podobě. Výchozím bodem, kromě Googlu, může být stránka CSTUG (Czech Tech Users Group) \cite{CSTUG}. Tam najdete odkazy na další materiály.  Vetšinou dostačující a přehledně organizovanou elektronikou dokumentaci najdete například na \cite{latexdocweb} nebo \cite{latexwiki}.
+
+Existují i různé nadstavby nad systémy \TeX{} a \LaTeX, které výrazně usnadní psaní textu zejména začátečníkům. Velmi rozšířený v Linuxovém prostředí je systém Kile.
+
+
+\section{Vkládání obrázků}
+Obrázky se umísťují do plovoucího prostředí \verb|figure|. Každý obrázek by měl obsahovat \textbf{název} (\verb|\caption|) a \textbf{návěští} (\verb|\label|). Použití příkazu pro vložení obrázku \\\verb|\includegraphics| je podmíněno aktivací (načtením) balíku graphicx příkazem\\ \verb|\usepackage{graphicx}|.
+
+Budete-li zdrojový text zpracovávat pomocí programu \verb|pdflatex|, očekávají se obrázky s příponou \verb|*.pdf|\footnote{pdflatex umí také formáty PNG a JPG.}, použijete-li k formátování \verb|latex|, očekávají se obrázky s příponou \verb|*.eps|.\footnote{Vzájemnou konverzi mezi snad všemi typy obrazku včetně změn vekostí a dalších vymožeností vám může zajistit balík ImageMagic  (http://www.imagemagick.org/script/index.php). Je dostupný pod Linuxem, Mac OS i MS Windows. Důležité jsou zejména příkazy convert a identify.}
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=5cm]{figures/LogoCVUT}
+\caption{Popiska obrázku}
+\label{fig:logo}
+\end{center}
+\end{figure}
+
+Příklad vložení obrázku:
+\begin{verbatim}
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=5cm]{figures/LogoCVUT}
+\caption{Popiska obrazku}
+\label{fig:logo}
+\end{center}
+\end{figure}
+\end{verbatim}
+
+\section{Kreslení obrázků}
+Zřejmě každý z vás má nějaký oblíbený nástroj pro tvorbu obrázků. Jde jen o to, abyste dokázali obrázek uložit v požadovaném formátu nebo jej do něj konvertovat (viz předchozí kapitola). Je zřejmě vhodné kreslit obrázky vektorově. Celkem oblíbený, na ovládání celkem jednoduchý a přitom dostatečně mocný je například program Inkscape.
+
+Zde stojí za to upozornit na kreslící programe Ipe \cite{ipe}, který dokáže do obrázku vkládat komentáře přímo v latexovském formátu (vzroce, stejné fonty atd.). Podobné věci umí na Linuxové platformě nástroj Xfig. 
+
+Za pozornost ještě stojí schopnost editoru Ipe importovat obrázek (jpg nebo bitmap) a krelit do něj latexovské popisky a komentáře. Výsledek pak umí exportovat přímo do pdf.
+
+\section{Tabulky}
+Existuje více způsobů, jak sázet tabulky. Například je možno použít prostředí \verb|table|, které je velmi podobné prostředí \verb|figure|. 
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{DTD} & \textbf{construction} & \textbf{elimination} \\
+\hline
+$\mid$ & \verb+in1|A|B a:sum A B+ & \verb+case([_:A]a)([_:B]a)ab:A+\\
+&\verb+in1|A|B b:sum A B+ & \verb+case([_:A]b)([_:B]b)ba:B+\\
+\hline
+$+$&\verb+do_reg:A -> reg A+&\verb+undo_reg:reg A -> A+\\
+\hline
+$*,?$& the same like $\mid$ and $+$ & the same like $\mid$ and $+$\\
+& with \verb+emtpy_el:empty+ & with \verb+emtpy_el:empty+\\
+\hline
+R(a,b) & \verb+make_R:A->B->R+ & \verb+a: R -> A+\\
+ & & \verb+b: R -> B+\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Ukázka tabulky}
+\label{tab:tab1}
+\end{table}
+
+Zdrojový text tabulky \ref{tab:tab1} vypadá takto:
+\begin{verbatim}
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|l|l|}
+\hline
+\textbf{DTD} & \textbf{construction} & \textbf{elimination} \\
+\hline
+$\mid$ & \verb+in1|A|B a:sum A B+ & \verb+case([_:A]a)([_:B]a)ab:A+\\
+&\verb+in1|A|B b:sum A B+ & \verb+case([_:A]b)([_:B]b)ba:B+\\
+\hline
+$+$&\verb+do_reg:A -> reg A+&\verb+undo_reg:reg A -> A+\\
+\hline
+$*,?$& the same like $\mid$ and $+$ & the same like $\mid$ and $+$\\
+& with \verb+emtpy_el:empty+ & with \verb+emtpy_el:empty+\\
+\hline
+R(a,b) & \verb+make_R:A->B->R+ & \verb+a: R -> A+\\
+ & & \verb+b: R -> B+\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Ukázka tabulky}
+\label{tab:tab1}
+\end{table}
+\begin{table}
+\end{verbatim}
+
+\section{Odkazy v textu}
+\subsection{Odkazy na literaturu}
+Jsou realizovány příkazem \verb|\cite{odkaz}|. 
+
+Seznam literatury je dobré zapsat do samostatného souboru a ten pak zpracovat programem bibtex (viz soubor \verb|reference.bib|). Zdrojový soubor pro \verb|bibtex| vypadá například takto:
+\begin{verbatim}
+@Article{Chen01,
+  author  = "Yong-Sheng Chen and Yi-Ping Hung and Chiou-Shann Fuh",
+  title   = "Fast Block Matching Algorithm Based on 
+             the Winner-Update Strategy",
+  journal = "IEEE Transactions On Image Processing",
+  pages   = "1212--1222",
+  volume  =  10,
+  number  =   8,
+  year    = 2001,
+}
+
+@Misc{latexdocweb,
+  author  = "",
+  title   = "{\LaTeX} --- online manuál",
+  note    = "\verb|http://www.cstug.cz/latex/lm/frames.html|",
+  year    = "",
+}
+...
+\end{verbatim}
+
+%11.12.2008, 3.5.2009
+\textbf{Pozor:} Sazba názvů odkazů je dána Bib\TeX{} stylem\\ (\verb|\bibliographystyle{abbrv}|). 
+%Budete-li používat české prostředí (\verb|\usepackage[czech]{babel}|), 
+Bib\TeX{} tedy obvykle vysází velké pouze počáteční písmeno z názvu zdroje, 
+ostatní písmena zůstanou malá bez ohledu na to, jak je napíšete. 
+Přesněji řečeno, styl může zvolit pro každý typ publikace jiné konverze. 
+Pro časopisecké články třeba výše uvedené, jiné pro monografie (u nich často bývá 
+naopak velikost písmen zachována).
+
+Pokud chcete Bib\TeX u napovědět, která písmena nechat bez konverzí 
+(viz \texttt{title = "\{$\backslash$LaTeX\} -{}-{}- online manuál"} 
+v~předchozím příkladu), je nutné příslušné písmeno (zde celé makro) uzavřít 
+do složených závorek. Pro přehlednost je proto vhodné celé parametry 
+uzavírat do uvozovek (\texttt{author = "\dots"}), nikoliv do složených závorek.
+
+Odkazy na literaturu ve zdrojovém textu se pak zapisují:
+\begin{verbatim}
+Podívejte se na \cite{Chen01}, 
+další detaily najdete na \cite{latexdocweb}
+\end{verbatim}
+
+Vazbu mezi soubory \verb|*.tex| a \verb|*.bib| zajistíte příkazem 
+\verb|\bibliography{}| v souboru \verb|*.tex|.  V našem případě tedy zdrojový 
+dokument \verb|thesis.tex| obsahuje příkaz\\
+\verb|\bibliography{reference}|.
+
+Zpracování zdrojového textu s odkazy se provede postupným voláním programů\\
+\verb|pdflatex <soubor>| (případně \verb|latex <soubor>|), \verb|bibtex <soubor>| 
+a opět\\ \verb|pdflatex <soubor>|.\footnote{První volání \texttt{pdflatex} 
+vytvoří soubor s~koncovkou \texttt{*.aux}, který je vstupem pro program 
+\texttt{bibtex}, pak je potřeba znovu zavolat program \texttt{pdflatex} 
+(\texttt{latex}), který tentokrát zpracuje soubory s příponami \texttt{.aux} a 
+\texttt{.tex}. 
+Informaci o případných nevyřešených odkazech (cross-reference) vidíte přímo při 
+zpracovávání zdrojového souboru příkazem \texttt{pdflatex}. Program \texttt{pdflatex} 
+(\texttt{latex}) lze volat vícekrát, pokud stále vidíte nevyřešené závislosti.}
+
+
+Níže uvedený příklad je převzat z dříve existujících pokynů studentům, kteří 
+dělají svou diplomovou nebo bakalářskou práci v~Grafické skupině.\footnote{Několikrát 
+jsem byl upozorněn, že web s těmito pokyny byl zrušen, proto jej zde přímo necituji. 
+Nicméně příklad sám o sobě dokumentuje obecně přijímaný konsensus ohledně citací 
+v~bakalářských a diplomových pracích na KP.} Zde se praví:
+\begin{small}
+\begin{verbatim}
+...
+j) Seznam literatury a dalších použitých pramenů, odkazy na WWW stránky, ...
+ Pozor na to, že na veškeré uvedené prameny se musíte v textu práce 
+ odkazovat -- [1]. 
+Pramen, na který neodkazujete, vypadá, že jste ho vlastně nepotřebovali 
+a je uveden jen do počtu. Příklad citace knihy [1], článku v časopise [2], 
+stati ve sborníku [3] a html odkazu [4]: 
+[1] J. Žára, B. Beneš;, and P. Felkel. 
+     Moderní počítačová grafika. Computer Press s.r.o, Brno, 1 edition, 1998. 
+     (in Czech). 
+[2] P. Slavík. Grammars and Rewriting Systems as Models for Graphical User 
+     Interfaces. Cognitive Systems, 4(4--3):381--399, 1997. 
+[3] M. Haindl, Š. Kment, and P. Slavík. Virtual Information Systems. 
+     In WSCG'2000 -- Short communication papers, pages 22--27, Pilsen, 2000. 
+     University of West Bohemia. 
+[4] Knihovna grafické skupiny katedry počítačů: 
+     http://www.cgg.cvut.cz/Bib/library/ 
+\end{verbatim}
+\end{small}
+\ldots{} abychom výše citované odkazy skutečně našli v (automaticky generovaném) seznamu literatury tohoto textu, musíme je nyní alespoň jednou citovat: Kniha \cite{kniha}, článek v~časopisu \cite{clanek}, příspěvek na konferenci \cite{sbornik}, www odkaz \cite{www}.
+
+Ještě přidáme další ukázku citací online zdrojů podle české normy. Odkaz na wiki o frameworcich \cite{wiki:framework} a ORM \cite{wiki:orm}. Použití viz soubor \verb|reference.bib|. V seznamu literatury by nyní měly být živé odkazy na zdroje. V \verb|reference.bib| je zcela nový typ publikace. Detaily dohledal a dodal Petr Dlouhý v dubnu 2010. Podrobnosti najdete ve zdrojovém souboru tohoto textu v komentáři u příkazu \verb|\thebibliography|.
+
+\subsection{Odkazy na obrázky, tabulky a kapitoly}
+\begin{itemize}
+\item Označení místa v textu, na které chcete později čtenáře práce odkázat, se provede příkazem \verb|\label{navesti}|. Lze použít v prostředích \verb|figure| a  \verb|table|, ale též za názvem kapitoly nebo podkapitoly.
+\item Na návěští se odkážeme příkazem \verb|\ref{navesti}| nebo \verb|\pageref{navesti}|.
+\end{itemize}
+
+\section{Rovnice, centrovaná, číslovaná matematika}
+Jednoduchý matematický výraz zapsaný přímo do textu se vysází pomocí prostředí \verb|math|, resp. zkrácený zápis pomocí uzavření textu rovnice mezi znaky \verb|$|.
+
+Kód \verb|$ S = \pi * r^2 $| bude vysázen takto: $ S = \pi * r^2 $.
+
+Pokud chcete nečíslované rovnice, ale umístěné centrovaně na samostatné řádky, pak lze použít prostředí \verb|displaymath|, resp. zkrácený zápis pomocí uzavření textu rovnice mezi znaky \verb|$$|. Zdrojový kód: 
+\begin{verb}
+|$$ S = \pi * r^2 $$|
+\end{verb}
+bude pak vysázen takto:
+$$ S = \pi * r^2 $$
+
+Chcete-li mít rovnice číslované, je třeba použít prostředí \verb|eqation|. Kód:
+\begin{verbatim}
+\begin{equation}
+  S = \pi * r^2
+\end{equation}
+
+\begin{equation}
+  V = \pi * r^3
+\end{equation}
+\end{verbatim}
+je potom vysázen takto:
+\begin{equation}
+  S = \pi * r^2
+\end{equation}
+
+\begin{equation}
+  V = \pi * r^3
+\end{equation}
+
+\section{Kódy programu}
+Chceme-li vysázet například část zdrojového kódu programu (bez formátování), hodí se prostředí \verb|verbatim|: 
+\begin{verbatim}
+         (* nickname2 *)
+Lego> Refine in1
+             (do_reg (nickname1 h));
+Refine by  in1 (do_reg (nickname1 h))
+   ?4 : pcdata
+   ?5 : pcdata
+          (* surname2 *)
+Lego> Refine surname1 h;
+Refine by  surname1 h
+   ?5 : pcdata
+          (* email2 *)
+Lego> Refine undo_reg (email1 h);
+Refine by  undo_reg (email1 h)
+*** QED ***
+\end{verbatim}
+
+\section{Další poznámky}
+\subsection{České uvozovky}
+V souboru \verb|k336_thesis_macros.tex| je příkaz \verb|\uv{}| pro sázení českých uvozovek. \uv{Text uzavřený do českých uvozovek.}
+
+% JZ: 3.5.2009 \chapter z book zajistí automaticky
+%\subsection{Začátky kapitol na liché stránky}
+%Ve výsledném textu je dobré, když každá kapitola začíná na liché stránce. Tedy použijte:
+%\begin{verbatim}
+%  \cleardoublepage\include{1_uvod}
+%  \cleardoublepage\include{2_teorie}
+%   atd.\ldots{}
+%\end{verbatim}
+
+%*****************************************************************************
+\chapter{Seznam použitých zkratek}
+
+\begin{description}
+\item[CMYK] Cyan Magenta Yellow Black
+\item[EXIF] Exchangeable Image File Format
+\item[GUI] Graphical User Interface
+\item[HSV] Hue Saturation Value
+\item[RGB] Red Green Blue
+\item[LGPL] GNU Lesser General Public License
+\item[IPTC] Information Interchange Model - International Press Telecommunications Council
+\item[XMP] Extensible Metadata Platform
+
+
+\end{description}
+\vdots
+
+%*****************************************************************************
+\chapter{UML diagramy}
+\textbf{\large Tato příloha není povinná a zřejmě se neobjeví v každé práci. Máte-li ale větší množství podobných diagramů popisujících systém, není nutné všechny umísťovat do hlavního textu, zvláště pokud by to snižovalo jeho čitelnost.}
+
+%*****************************************************************************
+\chapter{Instalační a uživatelská příručka}
+\textbf{\large Tato příloha velmi žádoucí zejména u softwarových implementačních prací.}
+
+%*****************************************************************************
+\chapter{Obsah přiloženého CD}
+\textbf{\large Tato příloha je povinná pro každou práci. Každá práce musí totiž obsahovat přiložené CD. Viz dále.}
+
+Může vypadat například takto. Váš seznam samozřejmě bude odpovídat typu vaší práce. (viz \cite{infodp}):
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=14cm]{figures/seznamcd}
+\caption{Seznam přiloženého CD --- příklad}
+\label{fig:seznamcd}
+\end{center}
+\end{figure}
+
+Na GNU/Linuxu si strukturu přiloženého CD můžete snadno vyrobit příkazem:\\ 
+\verb|$ tree . >tree.txt|\\
+Ve vzniklém souboru pak stačí pouze doplnit komentáře.
+
+Z \textbf{README.TXT} (případne index.html apod.)  musí být rovněž zřejmé, jak programy instalovat, spouštět a jaké požadavky mají tyto programy na hardware.
+
+Adresář \textbf{text}  musí obsahovat soubor s vlastním textem práce v PDF nebo PS formátu, který bude později použit pro prezentaci diplomové práce na WWW.
+
+\end{document}
