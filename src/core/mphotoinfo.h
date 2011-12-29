@@ -9,11 +9,12 @@
 
 enum Exif
 {
+    EXIF_CAMERA,
+    // lens
+    EXIF_FOCAL_LENGTH,
     EXIF_ISO,
     EXIF_EXPOSURE_TIME,
     EXIF_FNUMBER,
-    EXIF_CAMERA,
-    EXIF_FOCAL_LENGTH,
 
     MAX_EXIF_DATA
 };

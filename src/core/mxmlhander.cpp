@@ -125,7 +125,6 @@ void MXMLHandler::readXML()
 		    _currentPhoto->load(_reader.text().toString().toStdString());
 		}
 	    }
-
 	}
 
 	if (_reader.error())

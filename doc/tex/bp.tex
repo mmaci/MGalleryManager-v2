@@ -48,7 +48,7 @@
  % \newcommand{\bfig}{\begin{figure}\begin{center}}
  % \newcommand{\efig}{\end{center}\end{figure}}
  % umoznuje pouzit prikaz \bfig namisto \begin{figure}\begin{center} atd.
-
+\usepackage{amssymb,amsmath}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Zvolte jednu z moznosti 
@@ -211,7 +211,7 @@ Zde můžete napsat své poděkování, pokud chcete a máte komu děkovat.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%   Prohlaseni / Declaration 
 
-\declaration{V~Praze dne 15.\,5.\,2008}
+\declaration{V~Praze dne 16.\,12.\,2011}
 %\declaration{In Kořenovice nad Bečvárkou on May 15, 2008}
 
 
@@ -277,79 +277,170 @@ Program by měl být navržen tak, aby do něj šlo přidávat i další funkce 
 % atd...
 
 %*****************************************************************************
+
 \chapter{Úvod}
 
-\noindent 
-V současné době je na trhu velké množství grafických editorů. Od základních, integrovaných přímo do operačních systému jako Malování v Microsoft Windows po pokročilé produkty jako Adobe Photoshop pro Windows nebo GIMP pro Linux. Většina z nich se však soustředí na složité a časově náročné úpravy samostatných fotografií a je značně omezena na konkrétní operační systém. Výstupem je vždy opět jen zpracovaná fotografie.
+\noindent
+V současné době je na trhu velké množství grafických editorů, programů ke správě fotografií a těch, které kombinují obojí. Z komerčních produktů je zastupují Adobe Photoshop a Adobe Lightroom od Adobe Systems Inc. či Zoner Photo Studio. Z těch nekomerčních je to především Google Picassa nebo IrfanView. Některé z nich za sebou mají již desítky let vývoje, teamy vývojářů, a tak jim nelze příliš konkurovat.
 
 \indent
-Další skupinou programů jsou takové, které distribují především jednotlivé webové servery jako Rajče.cz. Umožňují vytvářet a nahrát jednotlivá alba na daný server. Nemusíte se téměř o nic starat, aplikace si fotografii zmenší, následně ji můžete i natočit, přidat jmeno či popisek a na webu pak naleznete své galerie jako jednotlivé prezentace. Omezení je na druhou stranu v tom, že samotné fotografie nelze nijak upravovat a Vaše prezentace je omezena na cizí internetový server.
+GalleryManager je jednoduchým grafickým editorem zaměřeným na správu fotografií, jejich organizaci a především dokumentaci. Není tak cílem implementovat pokročilé algoritmy pro úpravu fotografií, kterých by bylo potřeba při úpravě pro média, kde je hlavním požadavkem vysoká kvalita. Naopak je kladen důraz na rychlost a efektivitu pro potřeby webové prezentace.
 
 \indent
-Fotografie většinou pořizujeme jako celé série, často bychom je chtěli roztřídit i na podkategorie. GalleryManager je umožňuje zatřídit do stromu ve formě galerií s popisky a názvy o libovolné hloubce, tak aby vypovídaly celý svůj příběh, následně je i co nejefektiněji, hromadně nebo jednotlivě zpracovávat. Navíc by program měl být multiplatformní, tak aby šel distribuovat pro všechny běžné operační systémy.
+Dokumentární nebo reportážní fotografové, pro které je GalleryManager zaměřen, nespravují své fotografie jednotlivě, ale jako celé série. Fotografie dnes již kromě obrazových dat obsahují i velké množství dodatečných informací. Nejedná se už pouze o nastavení, se kterým byla pořízena, ale i o geografické údaje, pomocí kterých lze lokalizovat místa na mapách.
 
 \indent
-Tato práce je implementační, nikoliv rešeršní, proto dokumentace bude popsána především z hlediska jak jsou jednotlivé její části implementovány. Nebude kladen důraz na teoretické vysvětlení funkčnosti jednotlivých knihoven.
+Aktuálně je aplikace navržena tak, aby výstupem byla nezávislá webová stránka, kterou lze rovnou použít pro prezentaci na internetu. Do budoucna by měla být rozšiřitelná natolik, že se stane součástí redakčního systému serveru PhotographicAtlas.com, což nám žádná z již existujících aplikací neumožní.
 
 \indent
-Svou podstatou je GalleryManager navržen a realizován tak, aby do budoucna šlo program rozšiřovat až do podoby plnohodnotného grafického studia pro editaci a správu fotografií a možná i jiných médií. Nejedná a nikdy se nebude jednat o konečný produkt.
+Tato práce je implementační, nikoliv rešeršní, proto dokumentace bude popsána především z programátorského hlediska, popisující postup při tvorbě aplikace a možnosti použitých knihoven. Vzhledem k tomu, že bych se i do budoucna chtěl věnovat úpravám obrazu a nadále rozšířit aplikaci do podoby plnohodnotného grafického studia, budou popsány jednotlivé algoritmy pro úpravu fotografií, jejich výhody, nevýhody a srovnání s jinými obecně známými.
 
 %*****************************************************************************
+
 \chapter{Popis problému, specifikace cíle}
 \section{Cíle práce}
-\noindent
-Hlavním cílem této práce je vytvořit framework pro grafický editor ke správě skupin fotografií a implementovat základní funkcionality, tak aby byl program použitelný pro základní grafické úpravy a následně i výstup v podobě prezentace.
 
-Samotné téma přesahuje rozsah bakalářské práce i časové možnosti jednoho člověka. Vytyčené cíle jsou tedy následující:
+\noindent
+Hlavním cílem této práce je vytvořit grafický editor, který bude umožňovat organizovat, popisovat a nakonec exportovat fotografie do podoby webové prezentace. Nejedná se o práci, která bude prezentována jako hotový program, ale spíše jako framework, na základě kterého půjde vybudovat plnohodnotnou grafickou aplikaci pro správu a dokumentaci fotografií.
+
+\indent
+Zpracování obrazu a informací spojených s fotografií je natolik rozsáhlé téma, že přesahuje rozsah bakalářské práce, časové možnosti a i znalosti jediného člověka. Vytyčené cíle, které by měla aplikace obsahovat jsou tedy následující:
 
 \begin{itemize}
-\item Grafické uživatelské rozhraní.
-\item Implementace vnitřní struktury pro uchovávání a manipulaci s informacemi pro fotografie a galerie.
-\item Možnost základních grafických úprav fotografií - rotace, zmenšení/zvětšení, jas, kontrast, převod do černobílé, sytost.
-\item Ukládání v univerzálním formátu XML.
-\item Výstup v podobě webové prezentace.
+\item grafické uživatelské rozhraní
+\item víceúrovňová struktura galerií a fotografií
+\item možnost každou galerii a fotografii popisovat, do budoucna by měla být struktura přizpůsobena, aby šla rozšiřovat
+\item automatické vkládání informací z EXIF údajů fotografie
+\item základní grafické úpravy - jas, kontrast, transformace obrazu, ...
+\item export projektu do standartních formátů - XML, HTML+CSS a možnost ho ukládat a opět načítat
+\item multiplatformní podpora
 \end{itemize}
 
-\section{Popis struktury práce}
+\section{Podoba práce vzhledem k vytyčeným cílům}
 \noindent
-\textit{Přesně nechápu co zde napsat jiného, než v analýze/návrhu řešení.}
+Jedná se o standartní grafickou aplikaci psanou v jazyce C++. Průběh práce s programem, při zpracování fotografií, vzhledem k vytyčeným cílům vypadá takto:
+\begin{itemize}
+\item vytvoří se prázdný projekt
+\item v projektu půjde vytvářet galerie, které se pojmenují a bude možnost připsat popisek
+\item do galerií se nahrají fotografie nebo vytvoří další podgalerie
+\item během importu fotografií se načtou a zobrazí EXIF informace, budou-li je obsahovat
+\item informace každé fotografie nebo galerie půjde měnit
+\item při zobrazení fotografie se zobrazí v plném rozlišení a bude možno ji upravovat
+\item projekt lze ukládat ve formátu XML
+\item projekt lze exportovat ve formátu HTML, při čemž vzhled se určí pomocí vložené CSS šablony
+\item CSS lze libovolně vytvářet na základě popsané HTML struktury a tak vkládat vlastní design
+\end{itemize}
 
 \section{Existující implementace}
 \noindent
-Nejznámějším softwarem pro úpravu jednotlivých fotografií, ale i pro tvorbu grafiky je bezpochyby Adobe Photoshop od Adobe Systems Inc. Tento program umožňuje obrovské možnosti a to i do té míry, aby jednotlivé úpravy byly ukládány jako samostatné instance, ke kterým se grafik může v budoucnu vracet. Se samotným Photoshopem, na kterém pracují teamy desítek až stovek lidí, nelze tuto práci srovnávat. Nicméně zajímavé je, že Adobe poskytuje open-source produkty, mezi kterými je i C++ knihovna GIL\label{Generic Image Library} ke zpracování obrazu, zahrnutá v knihovnách Boost, kterou do jisté míry Adobe integruje i do svých produktů. Podobnou aplikací z rodiny grafických editorů je ještě Zoner Photo Studio, které nabízí podobné možnosti jako Adobe Photoshop.
+Již existující implementace existují v několika kategoriích. Komerční, nekomerční, grafické editory a aplikace pro správu fotografií. Mezi komerční software patří především zástupci rodiny produktů Adobe Systems Inc. - Adobe Photoshop, jeho odlehčená verze Adobe Photoshop Elements a Adobe Lightroom. Následně do nižší cenové kategorie zapadá Zoner Photo Studio, populární především v České Republice. Od komerčních aplikací, které se zabývají především pokročilými úpravami obrazu, se nekomerční soustředí spíše na organizaci a prohlížení fotografií. K nim lze zařadit Google Picassa, IrfanView a software přiložený ke správě uživatelského účtu na Rajce.cz. Žádný z těchto programů nedistribuje své zdrojové kódy, proto jediným zdrojem informací jsou uživatelské zkušenosti se samotnými aplikacemi.
+
+\subsection{Komerční software}
+\noindent
+Nejznámějším specializovaným softwarem pro úpravu jednotlivých fotografií, ale i pro tvorbu grafiky je bezpochyby Adobe Photoshop od Adobe Systems Inc. Tento program umožňuje obrovské možnosti zpracování obrazu na úrovní až 32-bitové barevné hloubky a v současné době nemá na trhu grafických aplikací konkurenci. Mimojiné existuje i jeho odlehčená varianta Adobe Photoshop Elements, která neobsahuje tolik specializovaných funkcí pro úpravu obrazu. 
 
 \indent
-Druhou skupinou existujících implementací jsou programy sloužící především k synchronizaci s webovými galeriemi. Jejich zástupcemi jsou Rajče.cz a Google Picasa. Rajče.cz distribuje software, který je synchronizován s jeho účtem na serveru http://www.rajce.cz. Za uživatele zmenší fotografie na velikost náhledů, většinou je i automaticky natočí, případně tu možnost má i sám uživatel. Následně si uživatel fotografie a galerie popíše a synchronizuje s webovou stránkou.
+Zajímavější aplikací je Adobe Lightroom. Neumožňuje tolik pokročilých úprav, jako právě Photoshop, ale lze v něm zpracovávat více fotografií naráz, ty následně organizovat, upravovat jejich fotografické informace a výsledný projekt i exportovat. Nevýhodou je, že jej nelze integrovat do vlastních projektů a napojit ho na vlastní webový server, k čemuž je GalleryManager do budoucna zamýšlen.
 
 \indent
-Posledním a nejpodobnějším softwarem je Google Picasa, který krom synchronizace se socíální sítí Google+ umožnuje i fotografie editovat a popisovat. Galerie se zde vytvářejí přímo v podobě systémových složek, které si Picasa neustále za svého běhu indexuje. Zajímavé je, že každou chvíli si určitou část využívané paměti uvolní a nezabírá tak obrovské množství paměti, jaké by člověk očekával od programu, který výtváři náhledy všech fotografií na pevném disku. Hlavním rozdílem oproti této práci je způsob pohledu na galerie. Picasa neuvažuje galerie jako celky s vysokou informační hodnotou, vypovídající o fotografiích jako o reportáži. Naopak je bere čistě jako složky napěchované fotografiemi. My se budeme snažit o export prezentace do takové podoby, která bude o albu vypovídat jakýsi příběh.
+Především v České Republice se využívá ještě Zoner Photo Studia, které nemá tolik možností je podobné spíše Adobe Photoshopu, neobsahuje ale tolik funkcí a je pro uživatele atraktivní spíše svou jednoduchostí, cenou a českým autorem.
 
 \indent
-Žádný z těchto programů bohužel nedistribuje své zdrojové kódy, proto zdrojem informací můžou být pouze uživatelské zkušenosti s danými aplikacemi.
+Každá z těchto aplikací je zaměřena především na úpravy obrazu, které jsou u GalleryManageru pouze doplňkem. Budeme tak porovnávat výstup z těchto programů a z naší implementace na vzorových fotografiích především z hlediska obrazové kvality upravených fotografií.
+
+\subsection{Nekomerční software}
+\noindent
+Druhou skupinou existujících implementací je nekomerční software, který slouží především jako podpora nebo nadstavba služeb poskytovaných webovými servery. Česká webová stránka rajce.cz umožňuje uživatelům sdílet své fotografie v podobě galerií. Ke svému účtu poskytuje software, pomocí kterého si uživatel vytvoří galerii, pojmenuje ji, popíše a na svém počítači vybere fotografie, které do něj chce vložit. Program pak už samotné fotografie zmenší na velikost náhledů ve webové prezentaci na internetových stránkách www.rajce.cz. Samotné fotografie lze pouze otočit po 90-ti stupních a pojmenovat. Není možné je jakkoliv jinak upravovat nebo číst jejich EXIF údaje v širším měřítku.
+
+\indent
+IrfanView je naopak spíše jednoduchým prohlížečem fotografií. Umožňuje oproti komerčnímu softwaru pouze základní grafické úpravy. Jeho hlavní předností a záměrem je zobrazovat fotografie, proto podporuje většinu dnes používaných grafických formátu a umožňuje spustit slideshow prezentaci.
+
+\indent
+Posledním a nejpodobnějším softwarem je Google Picasa, který je se spuštěním sociální sítě Google+ je využíván pro synchronizaci fotografií s vlastním uživatelským účtem, ale lze jej používat i samostatně pro grafické úpravy. Galerie se zde vytvářejí přímo v podobě systémových složek, které si Picasa neustále za svého běhu indexuje. Uživatel tak má přehled o všech svých fotografiích na pevném disku. Zajímavé je, že každou chvíli si určitou část využívané paměti uvolní a nezabírá tak obrovské množství paměti, jaké by člověk očekával od programu, který si neustále vytváří náhledy.
+\indent
+Sociální sítě dnes slouží především k masovému sdílení vlastních informací. Stejným způsobem pohlíží i Picasa na fotografie. Je přizpůsobena pro běžného uživatele, kterému stačí jednoduché úpravy fotografií, může je synchronizovat s Google+ a prohlížet téměř každý dnes používaný formát. Neumožňuje číst velké množství EXIF informací a dokumentovat tak dostatečně své galerie.
 
 %*****************************************************************************
-
 \bibliographystyle{csplainnat}
 %bibliographystyle{plain}
 %\bibliographystyle{psc}
 
 \chapter{Analýza a návrh řešení}
-\section{Návrh}
-
+\section{Volba programovacích jazyků a knihoven}
 \noindent
-Program umožňuje hned několik nezávislých funkcionalit, které je třeba řešit nezávisle jako moduly, tak aby se navzájem neovlivňovaly a při jednotlivých dílčích změnách se nemusely upravovat zbylé části programu. Jsou jimi grafické uživatelské rozhraní, jádro uchovávající informace o jednotlivých fotografiích a galeriích, aparát pro zpracovávání fotografií a výstup, tedy import/export projektu. Návrhem každého modulu se budeme zabývat samostatně.
+GalleryManager je mimojiné i grafickým editorem. Jeden z požadavků je upravovat a obsluhovat velké množství fotografií současně. Potřebujeme tak co nejrychlejší jazyk s velkým množstvím dostupných knihoven, především pro tvorbu GUI, úpravu obrazu a čtění EXIF dat. Zároveň musí být objektově orienovaný a mapovat tak koncept reálného světa. Pro nás je důležité vytvářet strukturu galerií a fotografií, kde každá galerie v sobě může obsahovat opět další galerie a fotografie. 
+
+\indent 
+Zvolen byl programovací jazyk C++, který všechny tyto požadavky splňuje. Jeho nevýhodou je, že oproti výše-úrovňovým jazykům jako Java, se zde programátor musí starat o správu paměti a hodně funkcí, které by byly jinak obsaženy v základních knihovnách, psát ručně.
 
 \indent
-Aplikace bude realizována v programovacím jazyku C++ z důvodu objektového přístupu a zároveň vysoké výkonnosti. Zároveň disponuje i velkým množstvím knihoven pro práci s grafickým rozhraním a zpracováním obrazu.
+Jednotlivé použité knihovny je třeba analyzovat po částech aplikace, kde každá by měla být na druhé co nejméně závislá. Nechceme, aby docházelo k tomu, že při změně části kódu bude třeba přepisovat zbytek aplikace.
+
+\subsection{Grafické uživatelské rozhraní}
+\indent
+Ke tvorbě grafického uživatelského rozhraní je použit široce rozšířený framework Qt od Nokie. K jeho výběru vedlo hned několik výhod. Je volně ke stažení pod licencí LGPL v2.1, umožnující volné používání pro nekomerční účely. Z programátorského hlediska má přehlednou dokumentací, je multiplatformní, tudíž GUI a signály nejsou vázány na operační systém a umožňuje obrovské množství dalších funkcí spojených nejen s úpravou obrazu a GUI. Jeden z problémů, který musíme řešit, je vykreslování obrazu po provedení úpravy. Qt umožňuje vytvořit prázdný obraz a vykreslovat do něj pixel po pixelu, kterému se zadají pouze barevné informace.
+
+\subsection{Zpracování obrazu}
+\indent
+Knihovny Qt umožňují pouze jednoduché možnosti zpracování obrazu. Za jeden z cílů jsme si zvolili možnost do budoucna rozšiřovat GalleryManager směrem grafického editoru. Především tak pracovat i ve více bitových barevných hloubkách, krom 8-bit i 16-bit a v jiných barevných prostorech, nejen RGB, ale i LAB či CMYK. K načítání obrazových dat jsme tak zvolili open-source knihovnu Boost::GIL od Adobe, která je používána i v jeho komerčních produktech. To nám umožňuje daleko větší režii nad úpravou obrazu, než-li by nám poskytlo samotné Qt. Úpravy jsou pak z důvodu požadavků na efektivitu a vzdělávacích účelů, implementovány pomocí adekvátních algoritmů za pomoci Boost::GIL a standartního C++.
+
+\subsection{Čtení EXIF údajů}
+\noindent
+Většina digitálních fotoaparátů nebo smartphonů dnes ukládá metadata o pořízeném snímku, jakými jsou čas, clonové číslo, použitý fotoaparát, objektiv i jeho ohnisko, přímo do fotografie ve formátu EXIF. Krom technických parametrů mezi nimi nemusí chybět ani GPS informace, má-li dané zařízení možnost určovat vlastní polohu. Uživatel, ani programátor se tak nemusí starat o ruční vkládání dat, ale vše je získáváno přímo z fotografie.
 
 \indent
-Ke tvorbě grafického uživatelského rozhraní, dále již GUI\footnote{Graphical User Interface}, je použit framework Qt. K jeho výběru vedlo hned několik výhod. Je volně ke stažení pod licencí LGPL v2.1\footnote{GNU Lesser General Public License} umožnující volné používání pro nekomerční účely. Z programátorského hlediska disponuje přehlednou dokumentací, je multiplatformní, tudíž GUI a signály nejsou vázány na operační systém. Dále je možné vykreslovat obraz po jednotlivých pixelech v barevném prostoru RGB. Úpravy fotografií je tedy možno provádět nezávisle a následně pouze vykreslit.
+K implementaci v prostředí C++ existují knihovny libexif a exiv2. Exiv2 je oproti libexif napsána v C++ a umožňuje číst i další standarty k uchovávání metadat - XMP\footnote{Extensible Metadata Platform - standart od Adobe Systems Inc. k ukládání informací především v PDF, fotografiích, grafice} a IPTC\footnote{Information Interchange Model od International Press Telecommunications Council je další ze standartů na úkládání dodatečných informací o souborech}. Její nevýhodou je, že obsahuje závislosti na jiných knihovnách, jmenovitě zlib, gettext, libiconv a Expat, čímž značně přesahuje měřítko ve kterém chceme implementovat podporu metadat, zvětšuje i velikost celé práce a za cíl jsme si aktuálně zvolili číst pouze nejpoužívanější formát EXIF.
 
 \indent
-Knihovny Qt umožňují pouze jednoduché zpracování obrazu. Program by měl do budoucna, kvůli možnostem rozšířování, pracovat i ve více bitových barevných kanálech, krom 8-bit i 16-bit a v jiných barevných prostorech, nejen RGB, jako LAB či CMYK. Zpracování obrazu tedy probíhá především za využití standartního C++ a knihoven Boost, především GIL\footnote{Generic Image Library od Adobe Systems Inc.}, které umožnuje daleko vyšší režii nad zpracováním obrazu. Informace o souboru a EXIF údaje fotografie jsou úzce spjaty se se samotnou fotografií. Na jejich základu pak můžeme provádět i samotné úpravy, proto je vhodné je spojit do společné struktury.
+Druhou knihovnou, napsanou v jazyce C, je libexif\cite{libexif}, kterou používáme i v této práci. Při integraci do moderního C++ prostředí toto výtváří úskalí především v konceptu C++, které už není zdaleka tak nízkoúrovňové jako C. Její výhodou je, že nepotřebuje žádné další závislosti. U GalleryManageru požadujeme pouze zobrazení všech EXIF informací o fotografii, které by mohli uživatele zajímat. Knihovna je tak pro naše účely zcela dostačující.
+
+\subsection{Výstup z programu}
+\noindent
+Výstup z programu je ve 2 podobách. První z nich je ukládání samotného projektu do formátu, ze kterého půjde opět lehce načítat. K tomu je dnes hojně rozšířen jazyk XML. Výhodou využití frameworku Qt je, že v sobě zahrnuje i knihovny pro generování a čtení XML, pomocí kterých můžeme vygenerovat soubor obsahující všechny potřebné informace k uložení a zpětnému načtení celého projektu.
 
 \indent
-Poslední částí a výstupem z programu je export. Framework Qt obsahuje třídy ke zpracovávání a generování validního XML, proto je do něj projekt ukládán a následně i načítán. Dalším výstupem je webová stránka, která je generována vždy stejnou HTML šablonou. Její design pak ovlivňuje pouze přiložený kaskádový styl, který si může uživatel sám upravovat.
+Druhou a zajímavejší formou výstupu je vygenerování webové prezentace. HTML je velmi podobné XML, proto je použit opět stejný generátor, jako pro ukládání projektu, tentokráte pouze s HTML výstupem. Design prezentace je řešen už předem napsanými CSS styly, které se přiloží k webové stránce. CSS je zde zvoleno především z důvodu jeho rozšířenosti a nezávislosti na HTML kódu. Poskytneme tak pouze kostru webové stránky, které se design vytvoří dodatečně. Součástí práce bude jeden výchozí styl, další si budou mít možnost uživatelé vytvořit sami.
+
+
+\section{Prostředí pro vývoj aplikace}
+\noindent
+Ke tvorbě programu je použito volně dostupné vývojové prostředí Qt Creator běžící na platformě Windows, které plně poporuje značení C++ syntaxe a čtění obsahu jednotlivých tříd. Navíc obsahuje i integrovanou dokumentaci frameworku Qt. K jeho volbě vedla nejeden již zmíněná dokumentace frameworku Qt, ale i rychlost a jednoduchost používání, na rozdíl od běžně využívaného Microsoft Visual Studia, obsahujícího velké množsví funkcí, které programátor nevyužije. Jako C++ kompilátor využívá Qt Creator systém MinGW.
+
+\section{Správa a záloha kódu}
+\noindent
+Při tvorbě větších softwarových projektů je třeba spravovat vlastní kód. Především z důvodu, aby bylo vidět, jaké dílčí úkoly už jsou hotové a jaké je třeba stále dodělat, se založil veřejný repositář. Z důvodu jednoduché instalace, kvalitního zázemí internetového serveru github.com a možnosti založit si zdarma účet, jsme se přiklonili k reviznímu systému Git s grafickou nadstavbou pro Microsoft Windows GitTortoise \footnote{repositář je k nalezení na adrese https://github.com/macicek/MGalleryManager-v2}. Zdrojové kódy jsou volně k dispozici, aby nenarušovaly licenční podmínky používaných knihoven. Zároveň slouží repositář i k záloze dat v případě, že by došlo k jejich ztrátě v průběhu vypracovávání bakaláršké práce.
+
+\section{Struktura ukládaných informací}
+\noindent
+Základní strukturou celého programu je projekt. Ten následně obsahuje libovolné množství galerií, které v sobě můžou obsahovat další galerie nebo fotografie. Vytváříme tak stromovou strukturu galerií a fotografií o neomezené hloubce. Podmínkou je, že každá fotografie musí být součástí nějaké galerie.
+
+\indent
+Každá galerie nebo i fotografie o sobě obsahuje popisné informace, které získáváme ze dvou zdrojů. Prvním je pojmenování a popsání každé fotografie či galerie při jejím vytvoření nebo importu. Dalším zdrojem informací jsou EXIF data, ze kterých budeme zobrazovat clonové číslo, čas, ISO, model fotoaparátu, objektiv a jeho ohniskovou vzdálenost, tedy všechný potřebné, aby si uživatel udělal představu o parametrech nastavených při pořízení fotografie.
+
+\section{Zobrazování obsahu galerií a návrh GUI}
+\noindent
+Grafické uživatelské rozhraní je rozděleno na 2 části - levou a pravou. V levé nalezneme prvky pro správu projektu a zobrazování informací. Zároveň i  ovládací tlačítka k editaci, mazání, importu či vytváření nových galerií. V pravé se pak při kliknutí na danou galerii nebo fotografii (v levé části), zobrazí buď obsah galerie nebo prostředí pro editaci fotografie. Lépe vše popíše diagram \ref{fig:layout}.
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=7cm]{figures/layout}
+\caption{návrh rozložení aplikace}
+\label{fig:layout}
+\end{center}
+\end{figure}
+
+\indent
+V horní části aplikace se nachází menu, které obsahuje možnost ukládat a načítat projekt, export do podoby webové prezentace nebo pomoc odkazující na dokument, v případě, že by si uživatel nevěděl rady.
+
+\section{Dostupné grafické úpravy a práce s pamětí}
+\noindent
+Úprav, které můžeme aplikovat na obraz, je neomezené množsví. Musíme tak zvolit takové, které běžný uživatel spíše použije. Nejčastěji používanými úpravami jsou jas a kontrast, které jsou schopny oživit barvy a zvýraznit tak původně nezajímavou fotku. Dále GalleryManager implementuje úpravu sytosti. V případě, že umíme fotografie odsytit, můžeme jednoduše přidat možnost převodu do černobílé.
+
+\indent
+Nejsou to pouze barvy, které většinou chceme upravovat, často se jedná i o změnu velikosti, aby fotografie nezabírala tolik prostoru nebo rotaci, v případě že je ku příkladu horizont na křivo. Ke každé úpravě zároveň budeme chtít zachovávat její historii, aby ji šlo navrátit do původního stavu v případě, že se úprava nebude líbit.
+
+\indent
+Při zpracování obrazu se pracuje s obrovským množstvím dat, proto nastává problém v případě, že chceme upravovat velké množství fotografií současně a zároveň udržovat informace o jejich úpravách. Některé úpravy můžou být destruktivní, tudíž už není možno zrekonstruovat původní snímek zpětným použítím zvolené úpravy. Minimálním množstvím, které tak musíme ukládat je obraz každé úpravy tvořený všemi pixely. S každou další úpravou je méně pravděpodobné, že se uživatel vrátí zpět, proto omezíme počet uložených kroků na předem danou konstantu. Zároveň už není potřeba GUI prvků pro úpravu obrazu v případě, že pracujeme s jiným, proto uvolníme paměť vždy, když už editor nebudeme potřebovat. Naopak malé náhledy fotografií při zobrazení galerie zabírají minimum paměti a očekáváme, že galerií nebude tolik, ale bude mezi nimi uživatel často přecházet. Ponecháme tak veškeré náhledy v paměti až do vypnutí programu.
 
 %*****************************************************************************
 \chapter{Realizace}
@@ -370,25 +461,18 @@ K tvorbě uživatelského rozhraní byl použit framework Qt. Hlavní problémy,
 Obsah celého projektu je zobrazován hned na několika místech. Nejprve je třeba zobrazit celou strukturu jako strom, tak aby šlo jednoduše přecházet mezi galeriemi a fotografiemi. Druhým místem je pak hlavní okno, ve kterém se zobrazují náhledy fotografií v aktivní galerii nebo editační prostředí, je-li aktivní pouze samostatná fotografie. Provedeme-li pak úpravu na jakémkoliv z těchto míst, je třeba ji aplikovat i na ostatní.
 
 \section{EXIF údaje fotografií}
-\noindent
-Většina digitálních fotoaparátů nebo smartphonů dnes ukládá informace o pořízeném snímku, jakými jsou čas, clonové číslo, použitý fotoaparát, objektiv i jeho ohnisko, přímo do fotografie ve formátu EXIF - Extensible File Format. Krom technických parametrů mezi nimi nechybí ani GPS informace, což umožňuje uživateli načítat spousty informací, aniž by je musel vlastnoručně zadávat.
+\indent
+Abychom mohli načíst úspěšně všechna potřebná data, je třeba pochopit strukturu, ve které jsou ukládána. EXIF je založený na formátu JPEG. Data takového obrázku začínají sekvencí 0xFFD8 a končí 0xFFD9. Mimojiné uvnitř existují sekvence značené podobně, konkrétně 0xFF-- nazývané Markers. Markery od 0xFFE0 do  0xFFEF jsou nazývané Application Markers a značí data zaznamenaná uživatelskými aplikaci. EXIF začíná Application Markerem APP1 (0xFFE1), následují různé hlavičky a za nimi IFD0\footnote{Image File Directory} a IFD1, což jsou námi požadované EXIF informace. IFD0 obsahuje informace jakými jsou šířka, výška, ale i offsety na jednotlivé informační položky mezi kterými je i tzv. ExifIFD. To je podsložka IFD0 obsahující veškeré dostupné fotografické informace. Offsety končí odkazem na následující IFD, tedy IFD1 obsahující náhled obrázku. Dále pokračuje datová část na kterou ukazovaly jednotlivé offsety.
 
 \indent
-K implementaci v prostředí C++ existují knihovny libexif a exiv2. Exiv2 je oproti libexif napsána v C++ a umožňuje číst i další standarty k uchovávání metadat - XMP\footnote{Extensible Metadata Platform - standart od Adobe Systems Inc. k ukládání informací především v PDF, fotografiích, grafice} a IPTC\footnote{Information Interchange Model od International Press Telecommunications Council je další ze standartů na úkládání dodatečných informací o souborech}. Její nevýhodou je, že obsahuje závislosti na jiných knihovnách, jmenovitě zlib, gettext, libiconv a Expat, čímž značně přesahuje měřítko ve kterém chceme implementovat podporu metadat a zvětšuje i velikost celé práce.
-
-\indent
-Další knihovnou je libexif\cite{libexif}, použítá mimojiné i v GalleryManageru a napsaná v C. Při integraci do moderního C++ prostředí toto výtváří úskalí především v konceptu C++, které už není zdaleka tak nízkoúrovňové jako C. Její výhodou je, že nepotřebuje žádné další závislosti. V rámci GalleryManageru chceme pouze zobrazovat základní fotografické parametry, kterými jsou především čas, clonové číslo a fotoaparát. Případná změna těchto dat by i narušovala pravdivost informací o pořízení fotografie, proto je libexif dostačující.
-
-\indent
-Abychom mohli načíst úspěšně všechna potřebná data, je třeba pochopit strukturu, ve které jsou ukládána. EXIF je založený na formátu JPEG. Data takového obrázku začínají sekvencí 0xFFD8 a končí 0xFFD9. Mimojiné uvnitř existují sekvence značené podobně, konkrétně 0xFF-- nazývané Markers. Application Markery (0xFFE0 - 0xFFEF) nám značí data zaznamenaná uživatelskými aplikaci. Exif začíná Application Markerem APP1 (0xFFE1), následují hlavičky a za nimi IFD0\footnote{Image File Directory} a IFD1. IFD0 nejdříve obsahuje informace jakými jsou šířka, výška, ale i offsety na jednotlivé informační položky mezi kterými je i tzv. ExifIFD, což je podsložka IFD0 obsahující veškeré dostupné fotografické informace. Offsety končí odkazem na IFD1 obsahující náhled obrázku. Dále následuje datová část na kterou ukazovaly jednotlivé offsety.
-
+Při čtení EXIFů musíme nejdříve zvolit správné IFD, ve kterém vybereme potřebný tag. Samotné čtení už za nás řeší funkce knihovny libexif \verb|exif_content_get_entry|.
 
 \begin{table}
 \begin{center}
 \begin{tabular}{|l|r|}
 \hline
-APP1 Marker & \\
-... & \\
+& APP1 Marker\\
+& ... \\
 \hline
 IFD0 & Image width \\
 & Image height \\ 
@@ -406,6 +490,112 @@ IFD1 & Compression \\
 \caption{struktura EXIF dat}
 \label{tab:tabexif}
 \end{table}
+
+\section{Úprava fotografií}
+\noindent
+Při rozkliknutím detailů jednotlivých fotografií umožňuje GalleryManager grafické úpravy. Ty probíhají nad 8-bitovým RGB prostorem\footnote{Každá barva (červená, zelená, modrá) má 256 úrovní (od 0 do 255), můžeme tedy nakombinovat až $256^{3}=16777216$ různých barev.}. Ke zpracování obrazu jsme zvolili knihovnu boost::GIL\cite{boostgil} od Adobe Systems Inc. GIL nám umožnuje nahlížet na fotografii pomocí dvou datových typů, jako obraz, čili image nebo jako pohled - view. Obraz obsahuje kompletní informace o fotografii, kdežto pohled je pouze jednoduchá struktura uchovávající informace o samotných pixelech. Je proto daleko výhodnější provádět úpravy nad pohledem.
+
+\indent
+Jak již bylo zmíněno, GUI je řešeno pomocí frameworku Qt, který také obsahuje třídy pro práci s obrazem, ty jsou ale velice omezené a pro budoucí rozšířování práce nedostatečné. Propojení mezi zpracováním obrazu a vykreslováním náhledu je řešeno přes zkopírování jednotlivých pixelů z obrazu v boost::GIL do QImage, Qt třídy vymezené pro práci s obrazem. QImage už lze jednoduše zobrazit v GUI.
+
+\indent
+GalleryManager umožňuje následující úpravy - kontrast, jas, změna sytosti, otočení, transformace velikosti a převod do černobílé.
+
+\subsection{Kontrast}
+\noindent
+Kontrast nám určuje viditelnost věcí, tedy rozdíl v jasu jednotlivých barev obrazu. GalleryManager využívá následujícího výpočtu na množině reálných čísel: pro každý pixel zvlášť vezme jeho hodnoty RGB, které se pohybují v rozmezí 0 až 255. Od nich odečtě 127 (polovinu maximální hodnoty 255). Vyjde nám odchylka od střední hodnoty. Tu pak vynásobíme koeficientem, kterým chceme změnit kontrast, a k výsledku opět přičteme 127. Ten je převeden zpět na celé číslo a omezen na hodnotu v intervalu <0, 255>. Pokud výsledek před převodem neležel v tomto intervalu, dochází ke ztrátě barevné informace. V extrémních případech, využijeme-li obrovského koeficientu kontrastu, narostou nebo naopak klesnou jednotlivé barevné složky pixelu natolik, že můžou dosahovat pouze hodnot 0 nebo 255. Z původních různobarevných ploch tak vznikají plochy jednobarevné a zpětným snížením kontrastu už nelze vrátit obraz do původního stavu.
+
+\subsection{Jas}
+\noindent
+Jas se také označuje jako světlost obrazu, tedy jak blízko jsou jednotlivé barvy bílé. Jeho implementace je celkem jednoduchá. RGB je aditivní barevný model, kde jednotlivé barvy přičítáme. Na rozdíl na příklad od CMY(K), kde je naopak odečítáme. U RGB to znamená, že při nulových hodnotách barev (0, 0, 0) dostáváme černou. Naopak při maximálních hodnotách (255, 255, 255) bílou. Jas tak zvyšujeme přičítáním zvolené konstanty ke všem třem složkám a snižujeme odečítáním.
+
+\subsection{Sytost a převod do černobílé}
+\noindent
+Lidské oko vnímá sytost každé barvy jinak, proto musíme každou měnit v poměru ke koeficientu, kterým ji člověk vnímá. Toto zjednodušuje barevný model HSV\footnote{Hue Saturation Value - Odstín Sytost Hodnota}\cite{graphmodel}, který má sytost jako jednu ze svých složek. Stačí tak převést každý pixel do barevného prostoru HSV, upravit sytost a převést zpět.
+
+\indent
+HSV modeluje způsob, kterým pracují výtvarníci. Nejprve vyberou odstín barvy, který chtějí použít a následně přimíchávají černou nebo bílou, ke ztmavení resp. zesvětlení. Výběr odstínu můžeme pozorovat na obrázku \ref{fig:hsv}, kde odstín H je dán úhlem a sytost S vzdáleností od středu.
+
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=6cm]{figures/hsv}
+\caption{hodnoty HS barevného prostoru HSV}
+\label{fig:hsv}
+\end{center}
+\end{figure}
+
+\indent
+Převod do HSV nicméně není bezproblémový. Můžeme si všimnout, že v případě, kdy je vzdálenost od středu (sytost) nulová, není možné určit odstín a taková barva je nedefinovaná. K tomu dochází v případě, že se jedná o odstín šedé. V modelu RGB tak mají dílčí barevné složky stejné hodnoty. Převod nám nejlépe popíše následující pseudokód:
+
+\begin{verbatim}
+min         = min(red, green, blue)
+max         = max(red, green, blue)
+
+value       = max
+saturation  = (max-min)/max
+
+if saturation == 0
+    hue = UNDEFINED
+else
+    diff = max - min
+    if max == red
+        hue = (green - blue) / diff
+    else
+    if max == green
+        hue = 2 + (blue - red) / diff
+    else
+    if max == blue
+        hue = 4 + (red - green) / diff
+
+    hue = hue * 60
+    if hue < 0
+        hue = hue + 360
+\end{verbatim}
+
+\indent
+Můžeme pozorovat, že při určování odstínu dělíme rozdílem maximální a minimální hodnoty RGB. V případě šedé jsou všechny tři barvy stejné a rozdíl je nulový. V definičním oborou reálných čísel tak není výpočet definován.
+
+\indent
+Sytost se mimojiné dá chápat i jako intenzita nebo čirost dané barvy, jinými slovy ji lze snižovat přidáváním bílé, kdy se barva stává zakalenější. Hodnota V naopak jako odchylka od černé, jejíž přídáváním získáváme intenzivnější dojem. Na základě maximální hodnoty RGB pak určíme v jaké třetine barevného kola se barva nachází. Kterým směrem a o jakou hodnotu barvu posuneme určíme rozdílem sousedních barev.
+
+\indent
+Převod do černobílé se provádí snížením sytosti na nulu. U barev, které mají jednu RGB složku nulovou a další 255, tedy maximální, dostaneme vždy bílou. Na \ref{fig:hsv} se jedná o barvy na okraji šestiúhelníku. Nevýhodu tohoto přístupu i přes jeho matematickou správnost je, že tak vznikají bílé plochy, které lidské oko vnímá jako vypálené.
+
+\subsection{Rotace a transformace}
+\indent
+Rotace je v GalleryManageru řešena přes maticové násobení za pomoci matematického rozšíření knihovny boost::GIL. Nejprve je třeba vygenerovat rotační matici \cite{wiki:rotation}, kterou následně ponásobíme jednotlivé souřadnice. Nastává však problém, že rotace probíhá kolem souřadnic [0, 0], tedy dolního-levého rohu a obraz se dostane mimo plátno. Musíme tak nejprve přízpůsobit velikost plátna a výsledek následně i posunout.
+
+\indent
+Boost::GIL využívá matic 3x2, které jsou ve skutečnosti maticemi 3x3, kde poslední řádek je vždy [0 0 1], protože veškeré úpravy probíhají ve 2D prostoru. To nám umožňuje provádět nejen rotaci, ale i translaci pomocí maticového násobení. Stačí tak vygenerovat jednu transformační matici, kterou aplikujeme na každou souřadnici \cite{wiki:affine}. Výpočet probíhá následovně:
+$$
+\begin{bmatrix}
+cos\alpha & -sin\alpha & 0 \\
+sin\alpha & cos\alpha & 0 \\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+1 & 0 & t_{x} \\
+0 & 1 & t_{y} \\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+x \\
+y \\
+0
+\end{bmatrix}
+$$
+
+\indent
+Hodnoty $t_{x}$ a $t_{y}$ se získávají funkcemi sin a cos na základě toho, jak se každý roh plátna natočil. Výpočet je různý pro každý kvartál rotace.
+
+\indent 
+Při transformaci obrazu, tedy změně jeho velikosti, dochází k jeho deformaci. Je tedy třeba vypočítat výslednou barvu každého nového pixelu. K tomu existuje více metod, kde každá má své výhody i nevýhody. GalleryManager využívá bilineárního vzorkování \cite{wiki:bilinear}, které dosahuje nejlepších výsledků, jsou-li rozměry výsledného obrazu maximálně dvakrát menší nebo větší. Pro srovnání se vzorkováním dle nejbližšího souseda, kde se vybírá vždy barva nejbližšího pixelu, zde barvy průměrujeme, a proto dosahujeme plynulejších přechodů.
+
+\indent
+Bilinineární vzorkování používá 4 okolní pixely, jejichž barvu zprůměruje na základě vzdálenosti od výsledného pixelu. Představíme-li si obraz jako mřížku, výsledný pixel bude v poli této mřížky. Nejprve vypočteme na základě velikosti zvětšení vážený průměr barvy ve směru osy x u horního a dolního páru pixelů. Následně vypočteme vážený průměr těchto dvou hodnot na základě zvětšení ve směru osy y.
+
+
+
 
 
 %*****************************************************************************
@@ -452,51 +642,6 @@ IFD1 & Compression \\
 %*****************************************************************************
 %*****************************************************************************
 \appendix
-
-\chapter{Testování zaplnění stránky a odsazení odstavců}
-\textbf{\large Tato příloha nebude součástí vaší práce. 
-Slouží pouze jako příklad formátování textu.}
-
-\section*{}
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
-
-Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili? Určitě existuje nějaká pěkná latinská věta, která se k tomuhle testování používá, ale co mají dělat ti, kteří se nikdy latinsky neučili?
 
 %*****************************************************************************
 \chapter{Pokyny a návody k formátování textu práce}
