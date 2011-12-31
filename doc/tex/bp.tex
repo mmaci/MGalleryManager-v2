@@ -281,19 +281,19 @@ Program by měl být navržen tak, aby do něj šlo přidávat i další funkce 
 \chapter{Úvod}
 
 \noindent
-V současné době je na trhu velké množství grafických editorů, programů ke správě fotografií a těch, které kombinují obojí. Z komerčních produktů je zastupují Adobe Photoshop a Adobe Lightroom od Adobe Systems Inc. či Zoner Photo Studio. Z těch nekomerčních je to především Google Picassa nebo IrfanView. Některé z nich za sebou mají již desítky let vývoje, teamy vývojářů, a tak jim nelze příliš konkurovat.
+V současné době je na trhu velké množství grafických editorů, programů pro správu fotografií a těch, které kombinují obojí. Z komerčních produktů jsou nejznámější rozsáhlé programové balíky Photoshop a Lightroom od Adobe Systems Inc. V České Republice se velmi dobře prosadil i mnohem levnější Zoner Photo Studio. Bezplatně je možné využívat služeb Google Picassa nebo IrfanView. Některé z nich za sebou mají již desítky let vývoje, teamy vývojářů, a tak jim nelze příliš konkurovat.
 
 \indent
-GalleryManager je jednoduchým grafickým editorem zaměřeným na správu fotografií, jejich organizaci a především dokumentaci. Není tak cílem implementovat pokročilé algoritmy pro úpravu fotografií, kterých by bylo potřeba při úpravě pro média, kde je hlavním požadavkem vysoká kvalita. Naopak je kladen důraz na rychlost a efektivitu pro potřeby webové prezentace.
+GalleryManager je jednoduchým grafickým editorem a správcem fotografií včetně veškerých popisů. Tuto aplikaci do budoucna plánují integrovat do správy vlastních webových stránek, zaměřených na cestovatelskou fotografii PhotographicAtlas.com a FotoAtlas.cz. Není tak cílem implementovat pokročilé algoritmy pro úpravu fotografií, které již nabízejí existující softwary, zameřené na práci s velkými soubory a tisk. Naopak je kladen důraz na rychlost a efektivitu pro potřeby webové prezentace.
 
 \indent
-Dokumentární nebo reportážní fotografové, pro které je GalleryManager zaměřen, nespravují své fotografie jednotlivě, ale jako celé série. Fotografie dnes již kromě obrazových dat obsahují i velké množství dodatečných informací. Nejedná se už pouze o nastavení, se kterým byla pořízena, ale i o geografické údaje, pomocí kterých lze lokalizovat místa na mapách.
+Dokumentární nebo reportážní fotografové, pro které je GalleryManager určen, nespravují své fotografie jednotlivě, ale jako celé série. Cílem je zpřístupnit i neobrazové informace vkladáné fotoaparáty do fotografie (na příklad údaje o nastavení fotoaparátu, místě a času pořízení snímku a další).
 
 \indent
-Aktuálně je aplikace navržena tak, aby výstupem byla nezávislá webová stránka, kterou lze rovnou použít pro prezentaci na internetu. Do budoucna by měla být rozšiřitelná natolik, že se stane součástí redakčního systému serveru PhotographicAtlas.com, což nám žádná z již existujících aplikací neumožní.
+Aktuálně je aplikace navržena tak, aby výstupem byla nezávislá webová stránka, kterou lze použít pro vlastní prezentaci na internetu.
 
 \indent
-Tato práce je implementační, nikoliv rešeršní, proto dokumentace bude popsána především z programátorského hlediska, popisující postup při tvorbě aplikace a možnosti použitých knihoven. Vzhledem k tomu, že bych se i do budoucna chtěl věnovat úpravám obrazu a nadále rozšířit aplikaci do podoby plnohodnotného grafického studia, budou popsány jednotlivé algoritmy pro úpravu fotografií, jejich výhody, nevýhody a srovnání s jinými obecně známými.
+Tato práce je implementační, nikoliv rešeršní, proto dokumentace bude popsána především z programátorského hlediska, popisující postup při tvorbě aplikace a možnosti použitých knihoven. Vzhledem k tomu, že bych se i do budoucna chtěl věnovat úpravám obrazu a nadále rozšířovat aplikaci o další možnosti, budou popsány jednotlivé algoritmy pro úpravu fotografií, jejich výhody, nevýhody a srovnání s jinými obecně známými.
 
 %*****************************************************************************
 
@@ -301,33 +301,36 @@ Tato práce je implementační, nikoliv rešeršní, proto dokumentace bude pops
 \section{Cíle práce}
 
 \noindent
-Hlavním cílem této práce je vytvořit grafický editor, který bude umožňovat organizovat, popisovat a nakonec exportovat fotografie do podoby webové prezentace. Nejedná se o práci, která bude prezentována jako hotový program, ale spíše jako framework, na základě kterého půjde vybudovat plnohodnotnou grafickou aplikaci pro správu a dokumentaci fotografií.
+Hlavním cílem této práce je vytvořit grafický editor, který umožní organizovat, popisovat a nakonec exportovat fotografie do podoby webové prezentace. Nejedná se o práci, která bude prezentována jako hotový program, ale spíše jako framework pro správu a úpravy fotografií, který půjde dále rozšiřovat.
 
 \indent
-Zpracování obrazu a informací spojených s fotografií je natolik rozsáhlé téma, že přesahuje rozsah bakalářské práce, časové možnosti a i znalosti jediného člověka. Vytyčené cíle, které by měla aplikace obsahovat jsou tedy následující:
+Zpracování obrazu a informací spojených s fotografií je natolik rozsáhlé téma, že přesahuje rozsah bakalářské práce, časové možnosti a i znalosti jediného člověka. Cílem aplikace GalleryManager je vytvořit:
 
 \begin{itemize}
 \item grafické uživatelské rozhraní
-\item víceúrovňová struktura galerií a fotografií
+\item stromovou strukturu podsložek (galerií) a jednotlivých fotografií
 \item možnost každou galerii a fotografii popisovat, do budoucna by měla být struktura přizpůsobena, aby šla rozšiřovat
 \item automatické vkládání informací z EXIF údajů fotografie
 \item základní grafické úpravy - jas, kontrast, transformace obrazu, ...
-\item export projektu do standartních formátů - XML, HTML+CSS a možnost ho ukládat a opět načítat
-\item multiplatformní podpora
+\item export projektu do standardních formátů - XML, HTML+CSS a možnost ho ukládat a opět načítat
+\item multiplatformní podporu aplikace
 \end{itemize}
 
 \section{Podoba práce vzhledem k vytyčeným cílům}
 \noindent
-Jedná se o standartní grafickou aplikaci psanou v jazyce C++. Průběh práce s programem, při zpracování fotografií, vzhledem k vytyčeným cílům vypadá takto:
+Jedná se o standartní grafickou aplikaci psanou v jazyce C++. Průběh práce s programem, při zpracování a organizaci vlastních fotografií fotografií vypadá takto:
 \begin{itemize}
-\item vytvoří se prázdný projekt
-\item v projektu půjde vytvářet galerie, které se pojmenují a bude možnost připsat popisek
-\item do galerií se nahrají fotografie nebo vytvoří další podgalerie
-\item během importu fotografií se načtou a zobrazí EXIF informace, budou-li je obsahovat
-\item informace každé fotografie nebo galerie půjde měnit
-\item při zobrazení fotografie se zobrazí v plném rozlišení a bude možno ji upravovat
+% % 1., 2., ...
+\item spustí se program GalleryManager obsahující prázdný projekt bez jakýchkoliv podsložek
+\item uživatel má možnost nahrát projekt, se kterým pracoval již v minulosti, obsahující podsložky a fotografie
+\item v rámci projektu lze vytvářet nové podsložky (galerie) nebo upravovat již existující
+\item poté do existujících nebo nově vytvořených podsložek naimportuje uživatel nové fotografie
+	\subitem během importu fotografií se načtou a zobrazí EXIF informace
+	\subitem bude možné přidávat další popisky
+	\subitem při rozkliknutí složky se zobrazí její obsah - podložky jako obálky a fotografie jako malé náhledy
+	\subitem při rozkliknutí fotografie se zobrazí fotografie v plném rozlišení v prostředí pro úpravu
 \item projekt lze ukládat ve formátu XML
-\item projekt lze exportovat ve formátu HTML, při čemž vzhled se určí pomocí vložené CSS šablony
+\item projekt lze exportovat ve formátu HTML do podoby webové prezentace, při čemž vzhled se určí pomocí vložené CSS šablony
 \item CSS lze libovolně vytvářet na základě popsané HTML struktury a tak vkládat vlastní design
 \end{itemize}
 
