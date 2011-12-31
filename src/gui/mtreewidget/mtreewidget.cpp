@@ -18,8 +18,7 @@ void MTreeWidget::loadGallery(core::MGallery* gallery, MTreeWidgetItem* parent, 
     std::set<core::MObject*> content = gallery->content();
 
     MTreeWidgetItem* item;
-    core::MGallery* tmpGal;
-    std::cout << "name: " << gallery->name() << " size: " << content.size() << std::endl;
+    core::MGallery* tmpGal;   
     for (it = content.begin(); it != content.end(); ++it)
     {
 	switch ((*it)->typeId())

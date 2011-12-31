@@ -38,16 +38,13 @@ MainWindow::~MainWindow()
     delete _tabWidget;
     // delete menu
     delete _menuProject;
-    delete menuExport;
-    delete menuView;
-    delete menuHelp;
-    delete menuImage;
+    delete _menuExport;
+    delete _menuHelp;
     delete _menuBar;
 
     delete _objectGridWidget;
 
-    delete _removeButton;
-    delete statusBar;
+    delete _removeButton;    
 
     // delete central, layout widgets
     delete _baseGrid;
@@ -83,10 +80,6 @@ void MainWindow::setupGui(QMainWindow* mainWindow)
 
     mainWindow->setCentralWidget(_centralWidget);
 
-    statusBar = new QStatusBar(mainWindow);
-	statusBar->setObjectName(QString::fromUtf8("statusBar"));
-	mainWindow->setStatusBar(statusBar);
-
     mainWindow->setWindowTitle(QApplication::translate("MGallery", "MGallery", 0, QApplication::UnicodeUTF8));
 
     // at the beginning we disable all kinds of buttons, menus, ...
@@ -110,19 +103,18 @@ void MainWindow::setupObjectGrid(QWidget* parent)
 // SETUP: sets menus
 void MainWindow::setupMenu(QMainWindow* mainWindow)
 {
-    _menuBar = new QMenuBar(mainWindow);
-    _menuBar->setObjectName(QString::fromUtf8("_menuBar"));
+    _menuBar = new QMenuBar(mainWindow);    
     _menuBar->setGeometry(QRect(0, 0, 1024, 20));
 
-    _menuProject = new QMenu(_menuBar);
-	_menuProject->setObjectName(QString::fromUtf8("_menuProject"));
-	_menuProject->setTitle(QApplication::translate("MainWindow", "Project", 0, QApplication::UnicodeUTF8));	
+    // Project
+    _menuProject = new QMenu(_menuBar);	
+	_menuProject->setTitle(QString("Project"));
+	_menuBar->addAction(_menuProject->menuAction());
 
 	// Actions
 	// Save Project
-	_menuBar->addAction(_menuProject->menuAction());
 	_actionSave = new QAction(mainWindow);
-	_actionSave->setText(QString("Save Project"));	
+	_actionSave->setText(QString("Save Project"));
 	_menuProject->addAction(_actionSave);
 
 	// Save Project As ..
@@ -134,41 +126,30 @@ void MainWindow::setupMenu(QMainWindow* mainWindow)
 	// Load Project
 	_actionLoad = new QAction(mainWindow);
 	_actionLoad->setText(QString("Load Project"));
-	_menuProject->addAction(_actionLoad);
+	_menuProject->addAction(_actionLoad);	
 
-    menuExport = new QMenu(_menuBar);
-    menuExport->setObjectName(QString::fromUtf8("menuExport"));
-    menuView = new QMenu(_menuBar);
-    menuView->setObjectName(QString::fromUtf8("menuView"));
-    menuHelp = new QMenu(_menuBar);
-    menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
-    menuImage = new QMenu(_menuBar);
-    menuImage->setObjectName(QString::fromUtf8("menuImage"));
+    // Export
+    _menuExport = new QMenu(_menuBar);
+	_menuExport->setTitle(QString("Export"));
+	_menuBar->addAction(_menuExport->menuAction());
+
+	// Actions
+	// As HTML ...
+	_actionAsHTML = new QAction(mainWindow);
+	_actionAsHTML->setText(QString("As HTML ..."));
+	_menuExport->addAction(_actionAsHTML);
+
+    // Help
+    _menuHelp = new QMenu(_menuBar);
+	_menuHelp->setTitle(QString("Help"));
+	_menuBar->addAction(_menuHelp->menuAction());
 
     mainWindow->setMenuBar(_menuBar);
-
-    _menuBar->addAction(_menuProject->menuAction());
-    _menuBar->addAction(menuExport->menuAction());
-    _menuBar->addAction(menuView->menuAction());
-    _menuBar->addAction(menuImage->menuAction());
-    _menuBar->addAction(menuHelp->menuAction());
-
-    menuExport->setTitle(QApplication::translate("MainWindow", "Export", 0, QApplication::UnicodeUTF8));
-    menuView->setTitle(QApplication::translate("MainWindow", "View", 0, QApplication::UnicodeUTF8));
-    menuHelp->setTitle(QApplication::translate("MainWindow", "Help", 0, QApplication::UnicodeUTF8));
-    menuImage->setTitle(QApplication::translate("MainWindow", "Image", 0, QApplication::UnicodeUTF8));
-
-	/// Submenus
-	_menuProject = new QMenu(_menuBar);
-	_menuProject->setTitle(QString("Project")); ///< Title
 
     connect(_actionSaveAs, SIGNAL(triggered()), this, SLOT(handleSaveAs()));
     connect(_actionSave, SIGNAL(triggered()), this, SLOT(handleSave()));
     connect(_actionLoad, SIGNAL(triggered()), this, SLOT(handleLoad()));
-
-    #ifdef DEBUG
-    std::cout << "Menu created." << endl;
-    #endif
+    connect(_actionAsHTML, SIGNAL(triggered()), this, SLOT(handleAsHTML()));
 
 } // ENDOF MainWindow::setupMenu
 
@@ -212,9 +193,17 @@ void MainWindow::handleLoad()
 	    _project->setPath(fileName.toStdString());
 
 	    _projectWidget->loadGallery(gallery);
+
+	    core::MHTMLExport* ex = new core::MHTMLExport();
+		ex->exportHTML(gallery->toObject(), "c:/MGalleryManager/test/", true);
 	}
 	delete xml;
     }
+}
+
+void MainWindow::handleAsHTML()
+{
+
 }
 
 // SETUP: sets file system view tree

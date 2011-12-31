@@ -13,8 +13,6 @@
 #include <QIODevice>
 #include <QFile>
 
-
-
 const QString ELEM_PATH = "path";
 const QString ELEM_GALLERY = "mgallery";
 const QString ELEM_PHOTO = "mphoto";

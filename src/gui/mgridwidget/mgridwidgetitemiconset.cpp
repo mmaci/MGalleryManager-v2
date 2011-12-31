@@ -9,10 +9,6 @@ namespace gui
 MGridWidgetItemIconSet::MGridWidgetItemIconSet(MGridWidgetThumbnail* parent) :
     QWidget(parent->toItem())
 {
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MGridWidgetItemIconSet" << std::endl;
-    #endif
-
     _thumbnail = parent;
     _layout = new QGridLayout(this);
 
@@ -42,11 +38,7 @@ MGridWidgetItemIconSet::MGridWidgetItemIconSet(MGridWidgetThumbnail* parent) :
 }
 
 MGridWidgetItemIconSet::~MGridWidgetItemIconSet()
-{
-    #ifdef _DEBUG
-    std::cout << "Deleting an instance of MGridWidgetItemIconSet" << std::endl;
-    #endif
-
+{  
     for (int i = 0; i < MAX_BUTTONS; ++i)
 	delete _button[i];
     delete _layout;

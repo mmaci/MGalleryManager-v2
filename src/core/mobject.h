@@ -59,6 +59,8 @@ namespace core
 
 	    void destroy();
 
+	    virtual std::string name() const = 0;
+
 	protected:	    	    
 	    char		    _typeId;
 

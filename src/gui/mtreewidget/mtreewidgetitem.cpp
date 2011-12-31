@@ -40,9 +40,7 @@ MTreeWidgetItem::MTreeWidgetItem(MTreeWidget* widget, core::MPhoto* photo)
  */
 MTreeWidgetItem::~MTreeWidgetItem()
 {
-    #ifdef _DEBUG
-    std::cout << "Deleting an instance of MTreeWidgetItem" << std::endl;
-    #endif
+
 }
 
 /**

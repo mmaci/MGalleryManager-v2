@@ -28,6 +28,8 @@
 #include <QFileDialog>
 #include <QTableWidget>
 
+#include "core/mhtmlexport.h"
+
 namespace core
 {
     class MProject;
@@ -60,6 +62,7 @@ namespace gui
 	    void handleSave();
 	    void handleSaveAs();
 	    void handleLoad();
+	    void handleAsHTML();
 
 	private:
 	    void setupGui(QMainWindow* mainWindow);
@@ -92,24 +95,16 @@ namespace gui
 	    MTreeWidget*	_projectWidget;
 	    QTableWidget*	_detailsWidget;
 
-	    QPushButton* pushButton;
 	    QPushButton*	_removeButton;
-
 
 	    QMenuBar*		_menuBar;
 	    QMenu*		_menuProject;
+	    QMenu*		_menuExport;
+	    QMenu*		_menuHelp;
 	    QAction*		_actionSave;
 	    QAction*		_actionSaveAs;
 	    QAction*		_actionLoad;
-
-	    QWidget* tableWidget;
-
-	    QMenu* menuExport;
-	    QMenu* menuView;
-	    QMenu* menuHelp;
-	    QMenu* menuImage;
-
-	    QStatusBar* statusBar;
+	    QAction*		_actionAsHTML;
 
 	    core::MProject*	_project;
     };

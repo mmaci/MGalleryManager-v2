@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     gui/mgridwidget/mgridwidgetthumbnail.cpp \
     gui/mresizedialog.cpp \
     core/mxmlhander.cpp \
-    core/mphotoinfo.cpp
+    core/mphotoinfo.cpp \
+    core/mhtmlexport.cpp
 
 HEADERS  += gui/mainwindow.h \
     core/mproject.h \
@@ -45,4 +46,5 @@ HEADERS  += gui/mainwindow.h \
     shareddefines.h \
     gui/mresizedialog.h \
     core/mxmlhandler.h \
-    core/mphotoinfo.h
+    core/mphotoinfo.h \
+    core/mhtmlexport.h

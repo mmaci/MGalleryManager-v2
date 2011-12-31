@@ -7,10 +7,6 @@ namespace gui
 MGridWidgetItemButton::MGridWidgetItemButton(int type, MGridWidgetItemIconSet* iconSet) :
     QToolButton(iconSet)
 {
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MGridWidgetItemButton" << std::endl;
-    #endif
-
     _type = type;
     _iconSet = iconSet;
     _item = NULL;
@@ -21,10 +17,6 @@ MGridWidgetItemButton::MGridWidgetItemButton(int type, MGridWidgetItemIconSet* i
 MGridWidgetItemButton::MGridWidgetItemButton(int width, int height, MGridWidgetItem* item) :
     QToolButton(item)
 {
-    #ifdef _DEBUG
-    std::cout << "Creating new instance of MGridWidgetItemButton" << std::endl;
-    #endif
-
     _type = NULL;
     _iconSet = NULL;
     _item = item;
@@ -34,9 +26,7 @@ MGridWidgetItemButton::MGridWidgetItemButton(int width, int height, MGridWidgetI
 
 MGridWidgetItemButton::~MGridWidgetItemButton()
 {
-    #ifdef _DEBUG
-    std::cout << "Deleting an instance of MGridWidgetItemButton" << std::endl;
-    #endif
+
 }
 
 }
