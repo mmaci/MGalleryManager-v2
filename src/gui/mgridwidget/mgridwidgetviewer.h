@@ -9,6 +9,7 @@
 #include <QAction>
 
 #include "gui/mgridwidget/mgridwidgetitem.h"
+#include "gui/mresizedialog.h"
 #include "core/mobject.h"
 #include "core/mphoto.h"
 
@@ -23,9 +24,9 @@ enum MainViewerButtons
     BUTTON_VIEWER_SATURATE,
     BUTTON_VIEWER_BNW,
 
-    BUTTON_VIEWER_DELETE,
-    BUTTON_VIEWER_EDIT,
-    BUTTON_VIEWER_FAV,
+    // BUTTON_VIEWER_DELETE,
+    // BUTTON_VIEWER_EDIT,
+    // BUTTON_VIEWER_FAV,
 
     MAX_VIEWER_BUTTONS,
 };
@@ -45,9 +46,9 @@ const QString CONTRAST_ICON_PATH = VIEWER_ICONS_PATH	+ "/contrast.png";
 const QString BRIGHTNESS_ICON_PATH = VIEWER_ICONS_PATH	+ "/brightness.png";
 const QString SATURATE_ICON_PATH = VIEWER_ICONS_PATH	+ "/saturate.png";
 const QString BNW_ICON_PATH = VIEWER_ICONS_PATH		+ "/bnw.png";
-const QString DELETE_ICON_PATH = VIEWER_ICONS_PATH	+ "/delete.png";
-const QString EDIT_ICON_PATH = VIEWER_ICONS_PATH	+ "/edit.png";
-const QString FAV_ICON_PATH = VIEWER_ICONS_PATH		+ "/fav.png";
+//const QString DELETE_ICON_PATH = VIEWER_ICONS_PATH	+ "/delete.png";
+//const QString EDIT_ICON_PATH = VIEWER_ICONS_PATH	+ "/edit.png";
+//const QString FAV_ICON_PATH = VIEWER_ICONS_PATH		+ "/fav.png";
 
 const QString FORW_ICON_PATH = VIEWER_ICONS_PATH	+ "/forward.png";
 const QString BACK_ICON_PATH = VIEWER_ICONS_PATH	+ "/backward.png";
@@ -55,20 +56,23 @@ const QString BACK_ICON_PATH = VIEWER_ICONS_PATH	+ "/backward.png";
 const int VIEWER_BUTTON_SIZE	= 30;
 const int VIEWER_MARGIN		= 5;
 
-namespace core
+namespace mcore
 {
     class MPhoto;
 }
 
-namespace gui
+namespace mgui
 {
     class MGridWidgetItemButton;
 
     class MGridWidgetViewer : public MGridWidgetItem
     {
+	Q_OBJECT
+
 	public:
 	    MGridWidgetViewer(QWidget* parent = NULL);
-	    MGridWidgetViewer(QPixmap pixmap, MGridWidget* widget, core::MPhoto* photo);
+	    MGridWidgetViewer(QPixmap pixmap, mcore::MPhoto* photo, QWidget* parent = NULL);
+	    ~MGridWidgetViewer();
 
 	    void reload();
 	    void enableHistoryButtons(bool enable);
@@ -77,11 +81,27 @@ namespace gui
 
 	    // UNUSED: helper function to move buttons when loading reloading an image
 	    void moveButton(int id, int x, int y);
+
+	public slots:
+	    void rotatePhoto();
+	    void resizePhoto();
+	    void contrastPhoto();
+	    void brightnessPhoto();
+	    void saturatePhoto();
+	    void bnwPhoto();
+	    void deletePhoto();
+	    void editPhoto();
+	    void favPhoto();
+	    void forwPhoto();
+	    void backPhoto();
+
 	private:
+	    void reload(QPixmap pixmap);
+
 	    MGridWidgetItemButton* _buttons[MAX_VIEWER_BUTTONS];
 	    MGridWidgetItemButton* _historyButtons[MAX_HISTORY_BUTTONS];
-
 	    QScrollArea* _imageArea;
+	    QLabel* _imageLabel;
 
 	    // TODO: zooming in/zooming out
 	    QAction* _zoomIn;

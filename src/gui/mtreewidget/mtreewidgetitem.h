@@ -3,33 +3,35 @@
 
 #include <QTreeWidgetItem>
 
-namespace core
+namespace mcore
 {
     class MObject;
     class MPhoto;
     class MGallery;
 }
 
-namespace gui
+namespace mgui
 {
     class MTreeWidget;
     class MTreeWidgetItem : public QTreeWidgetItem
     {
 	public:
-	    MTreeWidgetItem(MTreeWidget* widget, core::MGallery* gallery);
-	    MTreeWidgetItem(MTreeWidget* widget, core::MPhoto* photo);
+	    MTreeWidgetItem(MTreeWidget* widget, mcore::MGallery* gallery);
+	    MTreeWidgetItem(MTreeWidget* widget, mcore::MPhoto* photo);
 	    ~MTreeWidgetItem();
 
 	    QTreeWidgetItem* toQWidgetItem(){ return dynamic_cast<QTreeWidgetItem*>(this); }
 
-	    core::MObject* object(){ return _obj; }
+	    mcore::MObject* object(){ return _obj; }
 
 	    MTreeWidget* widget(){ return _widget; }
+
+	    void destroy();
 
 	    void highlight(bool apply);
 
 	private:
-	    core::MObject* _obj;
+	    mcore::MObject* _obj;
 	    MTreeWidget* _widget;
     };
 }

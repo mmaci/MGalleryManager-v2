@@ -1,4 +1,4 @@
-#define _DEBUG
+
 
 #include "gui/mtreewidget/mtreewidget.h"
 #include "gui/mtreewidget/mtreewidgetitem.h"
@@ -9,7 +9,7 @@
 #include "core/mgallery.h"
 #include "core/mphoto.h"
 
-namespace core
+namespace mcore
 {
 
 MObject::MObject(MGallery* gallery)
@@ -69,17 +69,11 @@ void MObject::destroy()
 {
     // MTreeItemWidget
     if (_treeItem)
-    {
-	if (gui::MTreeWidget* widget = _treeItem->widget())
-	    widget->remove(_treeItem);
-    }
+	_treeItem->destroy();
 
     // MGridWidgetItem
     if (_gridThumbnail)
-    {
-	if (gui::MGridWidget* widget = _gridThumbnail->widget())
-	    widget->remove(_gridThumbnail);
-    }
+	_gridThumbnail->destroy();
 
     if (_parent)
     {

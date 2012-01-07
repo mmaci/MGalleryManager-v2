@@ -1,0 +1,79 @@
+\begin{thebibliography}{13}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[{C. GALLOWAY, L. MUELLER}()]{libexif}
+{C. GALLOWAY, L. MUELLER}.
+\newblock The libexif C EXIF library.
+\newblock \\ \verb|http://libexif.sourceforge.net/api/|, stav z 12.\,12.\,2011.
+
+\bibitem[{CIPA DC-008-Translation 2010}(2010)]{exif}
+{CIPA DC-008-Translation 2010}.
+\newblock {Exchangable image file format for digital still cameras: Exif
+  version 2.3}, 2010.
+\newblock \\
+  \verb|http://www.cipa.jp/english/hyoujunka/kikaku/pdf/DC-008-2010_E.pdf|.
+
+\bibitem[{cplusplus.com}()]{stl}
+{cplusplus.com}.
+\newblock C++ STL Containers.
+\newblock \\ \verb|http://www.cplusplus.com/reference/stl/|, stav z
+  29.\,11.\,2011.
+
+\bibitem[{D. VAN HEESCH}()]{doxygen}
+{D. VAN HEESCH}.
+\newblock Doxygen Manual.
+\newblock \\ \verb|http://www.stack.nl/~dimitri/doxygen/index.html|, stav z
+  20.\,12.\,2011.
+
+\bibitem[{E. HAMILTON}()]{jpeg}
+{E. HAMILTON}.
+\newblock JPEG File Interchange Format.
+\newblock \\ \verb|http://www.jpeg.org/public/jfif.pdf|.
+
+\bibitem[{K. SUGIYAMA}(2009)]{colorhandbook}
+{K. SUGIYAMA}.
+\newblock Desktop Color Handbook 09/10, 2009.
+
+\bibitem[{L. BOURDEV, H. JIN, C. HENNING}()]{boostgil}
+{L. BOURDEV, H. JIN, C. HENNING}.
+\newblock Generic Image Library Documentation.
+\newblock \\
+  \verb|http://www.boost.org/doc/libs/1_47_0/libs/gil/doc/index.html|, stav z
+  28.\,11.\,2011.
+
+\bibitem[{Nokia Corporation}()]{qt}
+{Nokia Corporation}.
+\newblock Qt Reference Documentation.
+\newblock \\ \verb|http://doc.qt.nokia.com/4.7/index.html|, stav z
+  29.\,11.\,2011.
+
+\bibitem[{Přispěvatelé \LaTeX Wikibook}()]{wiki:latex}
+{Přispěvatelé \LaTeX Wikibook}.
+\newblock {\LaTeX} Wikibook.
+\newblock \\ \verb|http://en.wikibooks.org/wiki/LaTeX/|, stav z 2.\,1.\,2012.
+
+\bibitem[{Přispěvatelé Wikipedie}(2011{\natexlab{a}})]{wiki:affine}
+{Přispěvatelé Wikipedie}.
+\newblock Transformation matrix, 2011{\natexlab{a}}.
+\newblock \\ \verb|http://en.wikipedia.org/wiki/Transformation_matrix|.
+
+\bibitem[{Přispěvatelé Wikipedie}(2011{\natexlab{b}})]{wiki:bilinear}
+{Přispěvatelé Wikipedie}.
+\newblock Bilinear filtering, 2011{\natexlab{b}}.
+\newblock \\ \verb|http://en.wikipedia.org/wiki/Bilinear_filtering|.
+
+\bibitem[{Přispěvatelé Wikipedie}(2011{\natexlab{c}})]{wiki:rotation}
+{Přispěvatelé Wikipedie}.
+\newblock Rotation matrix, 2011{\natexlab{c}}.
+\newblock \\ \verb|http://en.wikipedia.org/wiki/Rotation_matrix|.
+
+\bibitem[{S. CHACON}()]{git}
+{S. CHACON}.
+\newblock Git community book.
+\newblock \\ \verb|http://book.git-scm.com/|, stav z 29.\,11.\,2011.
+
+\end{thebibliography}

@@ -18,13 +18,13 @@ SOURCES += main.cpp\
     gui/mgridwidget/mgridwidgetitemiconset.cpp \
     gui/mgridwidget/mgridwidgetitembutton.cpp \
     gui/mtreewidget/mtreewidgetitem.cpp \
-    gui/mnewgallerydialog.cpp \
     gui/mgridwidget/mgridwidgetviewer.cpp \
     gui/mgridwidget/mgridwidgetthumbnail.cpp \
     gui/mresizedialog.cpp \
     core/mxmlhander.cpp \
     core/mphotoinfo.cpp \
-    core/mhtmlexport.cpp
+    core/mhtmlexport.cpp \
+    gui/mnewobjectdialog.cpp
 
 HEADERS  += gui/mainwindow.h \
     core/mproject.h \
@@ -38,7 +38,6 @@ HEADERS  += gui/mainwindow.h \
     gui/mgridwidget/mgridwidgetitembutton.h \
     gui/mgridwidget/mgridwidgetdefines.h \
     gui/mtreewidget/mtreewidgetitem.h \
-    gui/mnewgallerydialog.h \
     gui/mgridwidget/mgridwidgetviewer.h \
     gui/mgridwidget/mgridwidgetthumbnail.h \
     core/mnumeric.h \
@@ -47,4 +46,5 @@ HEADERS  += gui/mainwindow.h \
     gui/mresizedialog.h \
     core/mxmlhandler.h \
     core/mphotoinfo.h \
-    core/mhtmlexport.h
+    core/mhtmlexport.h \
+    gui/mnewobjectdialog.h

@@ -6,12 +6,12 @@
 
 #include "gui/mgridwidget/mgridwidgetdefines.h"
 
-namespace core
+namespace mcore
 {
     class MObject;
 }
 
-namespace gui
+namespace mgui
 {
     class MGridWidgetThumbnail;
     class MGridWidgetItemButton;

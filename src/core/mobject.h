@@ -14,7 +14,7 @@ enum TypeIds
 };
 
 // forward declarations
-namespace gui
+namespace mgui
 {
     class MGridWidgetItem;
     class MGridWidgetThumbnail;
@@ -22,7 +22,7 @@ namespace gui
     class MTreeWidgetItem;
 }
 
-namespace core
+namespace mcore
 {
     struct MGPSInfo
     {
@@ -47,15 +47,16 @@ namespace core
 	    // get
 	    char typeId() const { return _typeId; }
 	    MGallery* parent() { return _parent; }
-	    gui::MGridWidgetViewer* gridViewer(){ return _gridViewer; }
-	    gui::MGridWidgetThumbnail* gridThumbnail(){ return _gridThumbnail; }
-	    gui::MTreeWidgetItem* treeWidgetItem(){ return _treeItem; }
+	    mgui::MGridWidgetViewer* gridViewer(){ return _gridViewer; }
+	    mgui::MGridWidgetThumbnail* gridThumbnail(){ return _gridThumbnail; }
+	    mgui::MTreeWidgetItem* treeWidgetItem(){ return _treeItem; }
 
 	    // set
-	    void setGridThumbnail(gui::MGridWidgetThumbnail* thumbnail){ _gridThumbnail = thumbnail; }
-	    void setGridViewer(gui::MGridWidgetViewer* viewer){ _gridViewer = viewer; }
-	    void setTreeWidgetItem(gui::MTreeWidgetItem* item){ _treeItem = item; }
+	    void setThumbnail(mgui::MGridWidgetThumbnail* thumbnail){ _gridThumbnail = thumbnail; }
+	    void setGridViewer(mgui::MGridWidgetViewer* viewer){ _gridViewer = viewer; }
+	    void setTreeWidgetItem(mgui::MTreeWidgetItem* item){ _treeItem = item; }
 	    void setFavourite();
+	    void setParent(MGallery* parent){ _parent = parent; }
 
 	    void destroy();
 
@@ -66,9 +67,9 @@ namespace core
 
 	private:
 	    MGallery*		    _parent;
-	    gui::MGridWidgetThumbnail* _gridThumbnail;
-	    gui::MGridWidgetViewer* _gridViewer;
-	    gui::MTreeWidgetItem*   _treeItem;
+	    mgui::MGridWidgetThumbnail* _gridThumbnail;
+	    mgui::MGridWidgetViewer* _gridViewer;
+	    mgui::MTreeWidgetItem*   _treeItem;
 	    bool		    _favourite;
     };
 }

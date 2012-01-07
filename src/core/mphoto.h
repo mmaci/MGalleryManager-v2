@@ -22,12 +22,12 @@
 
 const unsigned int HISTORY_SIZE = 10;
 
-namespace gui
+namespace mgui
 {
     class MGridWidgetViewer;
 }
 
-namespace core
+namespace mcore
 {                
     class MGallery;
     class MPhoto : public MObject
@@ -42,6 +42,9 @@ namespace core
 	    std::string path() const { return _info->path(); }
 	    std::string name() const { return _info->name(); }
 	    std::string description() const { return _info->description(); }
+	    std::string filename() const { return _info->fileName(); }
+	    int width() const { return _image.width(); }
+	    int height() const { return _image.height(); }
 
 	    void setPath(std::string path){ _info->setPath(path); }
 	    void setName(std::string name){ _info->setName(name); }
@@ -52,7 +55,7 @@ namespace core
 	    QPixmap pixmapFromView(const QImage& image);
 	    QPixmap pixmapFromView(int width, int height);
 	    QPixmap pixmapFromView(int maxSize = 0); // we don't scale
-	    QPixmap pixmapFromFile(int maxSize);
+	    QPixmap pixmapFromFile(int maxSize, bool force = false);
 	    template <typename SourceView>
 	    QImage viewToQImage(const SourceView& source);
 
@@ -89,7 +92,7 @@ namespace core
 	    // loading/saving
 	    bool load(std::string path);
 	    bool save(bool force = false);
-	    bool saveAs(std::string path, bool force = false);
+	    bool saveAs(std::string path, int size = 0, bool force = false);
 
 	    // history
 	    void pushToHistory(boost::gil::rgb8_image_t image);
@@ -97,7 +100,7 @@ namespace core
 	    bool backward();
 	    bool forward();
 
-	private:
+	private:	    
 	    // fileinfo about the original file
 	    // contains all kinds of metadata, filepath, ...
 	    MPhotoInfo*	    _info;

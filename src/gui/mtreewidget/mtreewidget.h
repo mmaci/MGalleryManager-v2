@@ -6,13 +6,13 @@
 
 #include <core/mobject.h>
 
-namespace core
+namespace mcore
 {
     class MPhoto;
     class MGallery;
 }
 
-namespace gui
+namespace mgui
 {    
     class MTreeWidget : public QTreeWidget
     {
@@ -20,14 +20,13 @@ namespace gui
 
 	public:
 	    MTreeWidget(QWidget* parent = 0);
-	    MTreeWidgetItem* insert(core::MGallery* gallery, MTreeWidgetItem* parent = NULL);
-	    MTreeWidgetItem* insert(core::MPhoto* photo, MTreeWidgetItem* parent /* = NULL */); // default value isn't set, because it should never happen
+	    MTreeWidgetItem* insert(mcore::MGallery* gallery, MTreeWidgetItem* parent = NULL);
+	    MTreeWidgetItem* insert(mcore::MPhoto* photo, MTreeWidgetItem* parent /* = NULL */); // default value isn't set, because it should never happen
 												// a photo must always be inside a gallery
-
-	    void loadGallery(core::MGallery* gallery, MTreeWidgetItem* parent = NULL, int depth = 0);
+	    void loadGallery(mcore::MGallery* gallery, MTreeWidgetItem* parent = NULL, int depth = 0);
 
 	    MTreeWidgetItem* selected();
-	    core::MObject* remove(MTreeWidgetItem* item = NULL);
+	    void remove(MTreeWidgetItem* item = NULL);
     };
 }
 

@@ -320,7 +320,7 @@ class ColorHistogram
 };
 
 template <typename SourceView>
-inline ColorHistogram genHistogram(const SourceView& source)
+inline ColorHistogram getHistogram(const SourceView& source)
 {
     ColorHistogram histogram();
     for (int y = 0; y < source.height(); ++y)

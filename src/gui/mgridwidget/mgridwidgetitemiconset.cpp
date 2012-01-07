@@ -3,7 +3,7 @@
 #include "gui/mgridwidget/mgridwidgetitemiconset.h"
 #include "gui/mgridwidget/mgridwidgetitembutton.h"
 
-namespace gui
+namespace mgui
 {
 
 MGridWidgetItemIconSet::MGridWidgetItemIconSet(MGridWidgetThumbnail* parent) :
@@ -19,21 +19,15 @@ MGridWidgetItemIconSet::MGridWidgetItemIconSet(MGridWidgetThumbnail* parent) :
 	{
 	    case BUTTON_DELETE:
 		_button[i]->setIcon(QIcon(QCoreApplication::applicationDirPath() + QString("/images/but_delete.png")));
-		break;
-	    case BUTTON_FAV:
-		_button[i]->setIcon(QIcon(QCoreApplication::applicationDirPath() + QString("/images/but_fav.png")));
-		break;
-	    case BUTTON_SELECT:
-		_button[i]->setIcon(QIcon(QCoreApplication::applicationDirPath() + QString("/images/but_select.png")));
-		break;
+		break;	   
 	    case BUTTON_EDIT:
 		_button[i]->setIcon(QIcon(QCoreApplication::applicationDirPath() + QString("/images/but_edit.png")));
 		break;
 	}
 	_layout->addWidget(_button[i], 0, i);
 
-	// don't remove the gui:: namespace in signals !
-	connect(_button[i], SIGNAL(clicked(int, gui::MGridWidgetThumbnail*)), _thumbnail, SLOT(handleButtonClicked(int, gui::MGridWidgetThumbnail*)));
+	// don't remove the mgui:: namespace in signals !
+	connect(_button[i], SIGNAL(clicked(int, mgui::MGridWidgetThumbnail*)), _thumbnail, SLOT(handleButtonClicked(int, mgui::MGridWidgetThumbnail*)));
     }
 }
 

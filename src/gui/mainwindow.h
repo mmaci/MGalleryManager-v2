@@ -1,4 +1,4 @@
-#define _DEBUG
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -27,19 +27,25 @@
 #include <QErrorMessage>
 #include <QFileDialog>
 #include <QTableWidget>
+#include <QProgressBar>
 
 #include "core/mhtmlexport.h"
 
-namespace core
+namespace mcore
 {
     class MProject;
 }
 
-namespace gui
+namespace mgui
 {
+    typedef std::pair<std::string, std::string> MImportInfo;
+    typedef std::pair<QModelIndex, MImportInfo> MImportStruct;
+    #define MakeImportInfo(a,b) (std::make_pair(a,b))
+    #define MakeImportStruct(a,b) (std::make_pair(a,b))
+
     class MGridWidget;
     class MTreeWidget;
-    class MNewGalleryDialog;
+    class MNewObjectDialog;
     class MainWindow : public QMainWindow
     {
 	Q_OBJECT
@@ -49,9 +55,7 @@ namespace gui
 	    ~MainWindow();
 
 	    void createGallery(std::string name, std::string description = "");
-	    void importPhotos(std::list<QModelIndex>* list);
-
-	signals:
+	    void importPhotos(std::list<MImportStruct>* list);
 
 	public slots:
 	    void importPhotos();	    	    
@@ -81,8 +85,7 @@ namespace gui
 	    QGridLayout*	_baseGrid;
 
 	    // central window
-	    MGridWidget*	_objectGridWidget;
-	    QGridLayout*	_objectGrid;
+	    MGridWidget*	_objectGridWidget;	    
 
 	    // filesystem tree view
 	    QFileSystemModel*	_fileSystemModel;
@@ -106,7 +109,7 @@ namespace gui
 	    QAction*		_actionLoad;
 	    QAction*		_actionAsHTML;
 
-	    core::MProject*	_project;
+	    mcore::MProject*	_project;
     };
 
 } // NAMESPACE gui

@@ -3,7 +3,7 @@
 #include "core/mobject.h"
 #include "core/mphoto.h"
 
-namespace core
+namespace mcore
 {
 
 MProject::MProject()
@@ -13,7 +13,7 @@ MProject::MProject()
 
 void MProject::setBase(MGallery* base)
 {
-    delete _base;
+    delete _base;   
     _base = base;
 }
 
@@ -21,16 +21,8 @@ void MProject::setBase(MGallery* base)
  * \brief destructor deleting all database content
  */
 MProject::~MProject()
-{
-    // delete all photos
-    std::set<MObject*>::iterator it;
-    while(!_base->content().empty())
-    {
-	it = _base->content().begin();
-	delete *it;
-
-	_base->content().erase(it);
-    }
+{    
+    delete _base;    
 }
 
 /**

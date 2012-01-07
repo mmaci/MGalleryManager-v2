@@ -6,12 +6,16 @@
 #include "gui/mgridwidget/mgridwidgetdefines.h"
 #include "gui/mgridwidget/mgridwidgetitem.h"
 
-namespace core
+const int THUMBNAIL_ITEM_WIDTH	    = 170;
+const int THUMBNAIL_ITEM_HEIGHT	    = 200;
+const int THUMBNAIL_PIX_SIZE	    = 140;
+
+namespace mcore
 {
     class MPhoto;
 }
 
-namespace gui
+namespace mgui
 {
     class MGridWidget;
     class MGridWidgetItemIconSet;
@@ -19,15 +23,18 @@ namespace gui
     {
 	public:
 	    MGridWidgetThumbnail(QWidget* parent = NULL);
-	    MGridWidgetThumbnail(MGridWidget* widget, core::MPhoto* photo);
+	    MGridWidgetThumbnail(mcore::MPhoto* photo, QWidget* parent = NULL);
+	    ~MGridWidgetThumbnail();
 
 	    void showStar(bool apply);
 
 	private:
 	    void setupIcons();
 
-	    QLabel*			_starLabel;
-	    MGridWidgetItemIconSet*	_icons;
+	    QLabel*	_imageLabel;
+	    QLabel*	_starLabel;
+	    QLabel*	_nameLabel;
+	    MGridWidgetItemIconSet* _icons;
     };
 }
 

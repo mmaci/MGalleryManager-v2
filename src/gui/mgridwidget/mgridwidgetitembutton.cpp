@@ -1,7 +1,7 @@
 #include "gui/mgridwidget/mgridwidgetitembutton.h"
 #include "gui/mgridwidget/mgridwidgetitem.h"
 
-namespace gui
+namespace mgui
 {
 
 MGridWidgetItemButton::MGridWidgetItemButton(int type, MGridWidgetItemIconSet* iconSet) :

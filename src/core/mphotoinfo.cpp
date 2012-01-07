@@ -1,7 +1,7 @@
 #include "mphotoinfo.h"
 #include <iostream>
 
-namespace core
+namespace mcore
 {
 
 /**
@@ -17,9 +17,10 @@ MPhotoInfo::MPhotoInfo()
 MPhotoInfo::MPhotoInfo(QFileInfo fileInfo)
 {
     _fileInfo = fileInfo;
-    _name = fileName();
+    _name = _fileInfo.baseName().toStdString();
     _description = "not implemented";
     _path = fileInfo.absoluteFilePath().toStdString();
+    makeFilename();
 
     loadExifData();
 }
@@ -115,6 +116,18 @@ void MPhotoInfo::trimSpaces(char* buffer)
 	    s = buffer;
     }
     *++s = 0;
+}
+
+void MPhotoInfo::makeFilename()
+{
+    std::string filename = _fileInfo.baseName().toLower().simplified().toStdString();
+    std::string::iterator it;
+    _filename.clear();
+    for (it = filename.begin(); it != filename.end(); ++it)
+    {
+	if (((*it) >= 'a' && (*it) <= 'z') || ((*it) >= '0' && (*it) <= '9') || (*it) == '_' || (*it) == '.')
+	    _filename += *it;
+    }
 }
 
 }

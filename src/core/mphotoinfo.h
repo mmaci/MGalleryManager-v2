@@ -19,7 +19,7 @@ enum Exif
     MAX_EXIF_DATA
 };
 
-namespace core
+namespace mcore
 {
 
 class MPhotoInfo
@@ -30,7 +30,7 @@ class MPhotoInfo
 
 	QFileInfo fileInfo(){ return _fileInfo; }
 	std::string filePath(){ return _fileInfo.absoluteFilePath().toStdString(); }
-	std::string fileName(){ return _fileInfo.baseName().toStdString(); }
+	std::string fileName(){ return _filename; }
 
 	std::string path() const { return _path; }
 	std::string name() const { return _name; }
@@ -47,10 +47,14 @@ class MPhotoInfo
 	void loadExifData();
 	std::string loadExifDataSpecific(ExifData* data, ExifIfd ifd, ExifTag tag);
 
+	void makeFilename();
+
     private:
 	std::string _name;
 	std::string _description;
 	std::string _path;
+
+	std::string _filename;
 
 	std::string _exif[MAX_EXIF_DATA];
 

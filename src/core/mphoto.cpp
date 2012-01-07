@@ -1,4 +1,4 @@
-#define _DEBUG
+
 
 #include "core/mphoto.h"
 #include "core/mgallery.h"
@@ -6,17 +6,29 @@
 
 #include <QColor>
 
-namespace core
+namespace mcore
 {
 
+/**
+ * \brief   constructor
+ * \param   parent  pointer to a parent gallery
+ * creates an empty MPhoto structure
+ * used when importing photos, we set info later on
+ */
 MPhoto::MPhoto(MGallery* parent) :
     MObject(parent)
 {
     _typeId = TYPEID_PHOTO;
-
     _info = new MPhotoInfo();
 }
 
+/**
+ * \brief   constructor
+ * \param   info    fileinfo
+ * \param   parent  pointer to a parent gallery
+ * creates an MPhoto structure based of given fileinfo
+ * used when loading an old project, where fileinfo is given inside the project file
+ */
 MPhoto::MPhoto(MPhotoInfo info, MGallery* parent) :
     MObject(parent)
 {    
@@ -36,30 +48,39 @@ MPhoto::~MPhoto()
 ////////////////////////////////////////////////////////////////
 
 /**
- * \brief generates a pixmap straight from the file
+ * \brief   generates a pixmap straight from the file
+ * \param   maxSize larger side of the generated pixmap
+ * \param   force   scales even if the image is smaller than what we want to scale it into
  * used when creating initial thumbnail, converting a boost::gil view is much more expensive
- * also scales to proper dimensions
+ * also scales to proper dimensions 
  */
-
-QPixmap MPhoto::pixmapFromFile(int maxSize)
+QPixmap MPhoto::pixmapFromFile(int maxSize, bool force)
 {
-    QPixmap image(QString(_info->path().c_str()));
+    QPixmap pixmap(QString(_info->path().c_str()));
 
     // no need for scaling
     if (!maxSize)
-	return image;
+	return pixmap;
 
     // scaling
-    if (image.height() > image.width())
-	image = image.scaledToHeight(std::min(maxSize, image.height()));
+    // vertical
+    if (pixmap.height() > pixmap.width())
+    {
+	if (pixmap.height() > maxSize || force)
+	    return pixmap.scaledToHeight(maxSize);
+    }
+    // horizontal
     else
-	image = image.scaledToWidth(std::min(maxSize, image.width()));
-
-    return image;
+    {
+	if (pixmap.width() > maxSize || force)
+	    return pixmap.scaledToWidth(maxSize);
+    }
+    return pixmap;
 }
 
 /**
- * \brief converts a boost::gil view to a QImage
+ * \brief   converts a boost::GIL view to a QImage
+ * \param   source  source view
  * copies all the RGB values pixel by pixel
  */
 template <typename SourceView>
@@ -69,7 +90,7 @@ QImage MPhoto::viewToQImage(const SourceView& source)
     // only able to convert 3 channel rgbs
     BOOST_ASSERT_MSG(num_channels<SourceView>::value == 3, "Must have 3 channels - RGB.");
 
-    QImage tmpImage(source.width(), source.height(), QImage::Format_RGB16);
+    QImage tmpImage(source.width(), source.height(), QImage::Format_RGB888);
 
     // we iterate through all the pixels and copy the values
     for (int y = 0; y < source.height(); ++y)
@@ -82,7 +103,8 @@ QImage MPhoto::viewToQImage(const SourceView& source)
 }
 
 /**
- * \brief wrapper for creating a pixmap from a boost::gil view
+ * \brief   wrapper for creating a pixmap from a boost::gil view
+ * \param   maxSize larger side of the generated pixmap
  * calculates proper image size and passes it on
  */
 QPixmap MPhoto::pixmapFromView(int maxSize)
@@ -115,7 +137,9 @@ QPixmap MPhoto::pixmapFromView(int maxSize)
 }
 
 /**
- * \brief creates a pixmap from a view, given proper dimensions
+ * \brief   creates a pixmap from a view, given proper dimensions
+ * \param   width   width of the generated pixmap
+ * \param   height  height of the generated pixmap
  * creates an image with given dimensions, resizes the original image into it
  * and calls conversion to QImage
  */
@@ -134,7 +158,8 @@ QPixmap MPhoto::pixmapFromView(int width, int height)
 }
 
 /**
- * \brief conversion from QImage to QPixmap
+ * \brief   conversion from QImage to QPixmap
+ * \param   image	input image
  */
 QPixmap MPhoto::pixmapFromView(const QImage& image)
 {
@@ -146,7 +171,9 @@ QPixmap MPhoto::pixmapFromView(const QImage& image)
 ////////////////////////////////////////////////////////////////
 
 /**
- * \brief wrapper for image rotation
+ * \brief   wrapper for image rotation
+ * \param   background	background color after rotation
+ * \param   angle   anticlockwise angle of rotation
  * calculates and creates an image big enough for variable rotation
  * sets an appropriate background and calls rotation itself
  */
@@ -174,7 +201,10 @@ void MPhoto::rotate(mimage::RGB background, double angle)
 }
 
 /**
- * \brief rotation handler
+ * \brief   rotation handler
+ * \param   source  source view
+ * \param   dest    destination view
+ * \param   angle   angle of rotation
  * able to operate on templated color views
  * basically just applies a matrix transformation onto 2 templated views
  * template allows us to work in multiple color spaces rgb/grayscale - 8b/16b
@@ -192,6 +222,8 @@ void MPhoto::rotate(const SourceView& source, const DestView& dest, double angle
 
 /**
  * \brief returns a 3x2 translation matrix based on image rotation
+ * \param   source  source view
+ * \param   angle   an angle of rotation based on which we translate the image to fit the new image proportions
  * after an image is rotated it shifts outside of the canvas
  * we have to compute a translation matrix to move the image to fit the canvas
  */
@@ -221,8 +253,10 @@ boost::gil::matrix3x2<double> MPhoto::getTranslationMatrix(const SourceView& sou
 ////////////////////////////////////////////////////////////////
 
 /**
- * \brief image resize wrapper
- * resizes an image holding scale into maxSize x maxSize image
+ * \brief   image resize wrapper
+ * \param   maxSize   size of the larger side we want to resize to
+ * resizes an image with larger side set to a specific size and the smaller one calculated,
+ * so that the image keeps proportions
  * example: maxSize: 200, original image: 300x200, final image 200x(200*(200/300))
  */
 void MPhoto::resize(double maxSize)
@@ -254,7 +288,9 @@ void MPhoto::resize(double maxSize)
 }
 
 /**
- * \brief image resize wrapper
+ * \brief   image resize wrapper
+ * \param   width   width to which we resize
+ * \param   height  height to which we resize
  * creates a canvas for image resize and calls proper handlers
  */
 void MPhoto::resize(double width, double height)
@@ -271,7 +307,9 @@ void MPhoto::resize(double width, double height)
 }
 
 /**
- * \brief image resize handler
+ * \brief   image resize handler
+ * \param   source  source view
+ * \param   dest    destination view
  * scales the original view onto a new canvas
  */
 template <typename SourceView, typename DestView>
@@ -287,7 +325,8 @@ void MPhoto::resize(const SourceView& source, const DestView& dest)
 ////////////////////////////////////////////////////////////////
 
 /**
- * \brief
+ * \brief   brightness handler
+ * \param   value value of brightness modification being passed on
  */
 void MPhoto::brightness(double value)
 {
@@ -305,7 +344,12 @@ void MPhoto::brightness(double value)
 }
 
 /**
- * \brief
+ * \brief   modifies the brightness of the image
+ * \param   source  source view
+ * \param   dest    destination view
+ * \param   value   a constant which we add to all of the colours
+ * adds a contstant to the RGB triplette
+ * (255, 255, 255) is pure white
  */
 template <typename SourceView, typename DestView>
 void MPhoto::brightness(const SourceView& source, const DestView& dest, double value)
@@ -329,6 +373,10 @@ void MPhoto::brightness(const SourceView& source, const DestView& dest, double v
     }
 }
 
+/**
+ * \brief   contrast handler
+ * \param   value   value of contrast modification being passed on
+ */
 void MPhoto::contrast(double value)
 {
     using namespace boost::gil;
@@ -346,6 +394,15 @@ void MPhoto::contrast(double value)
     _image = resultImage;
 }
 
+/**
+ * \brief   modifies the contrast of the image
+ * \param   source  source view
+ * \param   dest    destination view
+ * \param   value   a mulatiplicative value using which we modify contrast
+ * modifies the image contrast in a multiplicative way
+ * takes into account the difference of every colour from the middle value and multiplies it by a
+ * value of <0.0, 2.0>
+ */
 template <typename SourceView, typename DestView>
 void MPhoto::contrast(const SourceView& source, const DestView& dest, double value)
 {
@@ -368,6 +425,10 @@ void MPhoto::contrast(const SourceView& source, const DestView& dest, double val
     }
 }
 
+/**
+ * \brief   saturation handler
+ * \param   value   value of saturation modification being passed on
+ */
 void MPhoto::saturation(double value)
 {
     using namespace boost::gil;
@@ -383,6 +444,14 @@ void MPhoto::saturation(double value)
     _image = resultImage;
 }
 
+/**
+ * \brief   modifies the saturation of the image
+ * \param   source  source view
+ * \param   dest    destination view
+ * \param   value   a constant which we add to all of the colours
+ * adds a contstant to the RGB triplette
+ * (255, 255, 255) is pure white
+ */
 template <typename SourceView, typename DestView>
 void MPhoto::saturation(const SourceView& source, const DestView& dest, double value)
 {
@@ -401,13 +470,14 @@ void MPhoto::saturation(const SourceView& source, const DestView& dest, double v
 	    mimage::HSV hsvColor = mimage::RGBtoHSV(rgbColor);
 
 	    if (hsvColor.hue != COLOR_UNDEFINED)
-		hsvColor.saturation += (value/20.0);
+		hsvColor.saturation *= 1.0 + (value/100.0);
 
-	    if (hsvColor.saturation < 0.0)
-		hsvColor.saturation = 0.0;
+	    hsvColor.saturation = mnumeric::setRange(hsvColor.saturation, 0.0, 1.0);
 
 	    rgbColor = mimage::HSVtoRGB(hsvColor);
 
+	    // i guess setting range for RGB can be dropped here, because we set range for saturation in
+	    // the previous step and the conversion itself shouldn't get us out of range
 	    dest_it[x][0] = mnumeric::setRange(rgbColor.red, 0, 255);
 	    dest_it[x][1] = mnumeric::setRange(rgbColor.green, 0, 255);
 	    dest_it[x][2] = mnumeric::setRange(rgbColor.blue, 0, 255);
@@ -440,11 +510,27 @@ bool MPhoto::load(std::string path)
 }
 
 
-bool MPhoto::saveAs(std::string path, bool force)
+bool MPhoto::saveAs(std::string path, int size, bool force)
 {
     using namespace boost::gil;
 
+    rgb8_image_t backup;
+    bool resized = false;
+    if (size)
+    {
+	if (force || (_image.width() > _image.height() && size < _image.width()) ||
+	    (_image.width() <= _image.height() && size < _image.height()))
+	{
+	    backup =  _image;
+	    resize(size);
+	    resized = true;
+	}
+    }
+
     jpeg_write_view(path, view(_image));
+
+    if (resized)
+	_image = backup;
 
     return true;
 }

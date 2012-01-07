@@ -4,7 +4,7 @@
 #include <QToolButton>
 #include "gui/mgridwidget/mgridwidgetitemiconset.h"
 
-namespace gui
+namespace mgui
 {    
     class MGridWidgetThumbnail;
     class MGridWidgetItem;
@@ -18,7 +18,7 @@ namespace gui
 	    ~MGridWidgetItemButton();
 
 	signals:
-	    void clicked(int type, gui::MGridWidgetThumbnail* thumbnail);
+	    void clicked(int type, mgui::MGridWidgetThumbnail* thumbnail);
 
 	private slots:
 	    void reemitClicked(){ emit clicked(_type, _iconSet->thumbnail()); }

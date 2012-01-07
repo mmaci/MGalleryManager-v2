@@ -1,11 +1,10 @@
-#define _DEBUG
+
 
 #include "core/mproject.h"
 #include "core/mphoto.h"
 #include "core/mgallery.h"
 
-
-namespace core
+namespace mcore
 {
 /**
  * constructor
@@ -34,10 +33,10 @@ MGallery::MGallery(MGalleryInfo info, MGallery* parent) :
  * destructor
  */
 MGallery::~MGallery()
-{ 
-    std::set<MObject*>::iterator it;
+{     
+    std::set<MObject*>::iterator it;    
     while(!_content.empty())
-    {
+    {	
 	it = _content.begin();
 	delete *it;
 	_content.erase(it);
@@ -50,11 +49,10 @@ MGallery::~MGallery()
  */
 MPhoto* MGallery::find(QFileInfo info)
 {
-    std::set<MObject*>::iterator it;
-    MPhoto* photo;
+    std::set<MObject*>::iterator it;    
     for (it = _content.begin(); it != _content.end(); ++it)
     {
-	if (photo = (*it)->toPhoto())
+	if (MPhoto* photo = (*it)->toPhoto())
 	{
 	    if (photo->info()->fileInfo() == info)
 		return photo;
@@ -78,19 +76,21 @@ MGallery* MGallery::insert(MGalleryInfo info)
 void MGallery::insert(MGallery* gallery)
 {
     _content.insert(gallery);
+    gallery->setParent(this);
 
 }
 
 void MGallery::insert(MPhoto* photo)
 {
     _content.insert(photo);
+    photo->setParent(this);
 
 }
-
 
 void MGallery::insert(MObject* object)
 {
     _content.insert(object);
+    object->setParent(this);
 }
 
 /**

@@ -4,39 +4,54 @@
 #include "core/mobject.h"
 #include "core/mphoto.h"
 
-namespace gui
+namespace mgui
 {
 
 MGridWidgetThumbnail::MGridWidgetThumbnail(QWidget* parent) :
     MGridWidgetItem(parent)
 {
     _type = GRIDTYPE_THUMBNAIL;
+
+    _starLabel	= NULL;
+    _imageLabel = NULL;
+    _nameLabel	= NULL;
 }
 
-MGridWidgetThumbnail::MGridWidgetThumbnail(MGridWidget* widget, core::MPhoto* photo) :
-    MGridWidgetItem(widget, photo)
+MGridWidgetThumbnail::MGridWidgetThumbnail(mcore::MPhoto* photo, QWidget* parent) :
+    MGridWidgetItem(photo, parent)
 {
     _type = GRIDTYPE_THUMBNAIL;
 
-    // set up icons
-    _icons = new MGridWidgetItemIconSet(this);
-	_icons->move(0, 10 + MAX_THUMB_SIZE);
+    _starLabel	= NULL;
 
+    // image preview
     // loading image and scaling
-    QPixmap tmp(QString(photo->path().c_str()));
-    if (tmp.width() > tmp.height())
-	tmp = tmp.scaledToWidth(MAX_THUMB_SIZE);
-    else
-	tmp = tmp.scaledToHeight(MAX_THUMB_SIZE);
-
     _imageLabel = new QLabel(this);
-	_imageLabel->setPixmap(tmp);
-	_imageLabel->resize(_imageLabel->pixmap()->size());
-	_imageLabel->move((MAX_ITEM_W -_imageLabel->width()) / 2, std::min(10, MAX_ITEM_H - _imageLabel->height() / 2));
+    _imageLabel->setPixmap(photo->pixmapFromFile(THUMBNAIL_PIX_SIZE));
+    _imageLabel->resize(_imageLabel->pixmap()->size());
+    // center the image
+    _imageLabel->move(std::max(0, (THUMBNAIL_ITEM_WIDTH - _imageLabel->width()) / 2),	// x
+		      10);								// y
 
-    setFixedSize(MAX_ITEM_W, MAX_ITEM_H);
+    // label
+    _nameLabel = new QLabel(QString(photo->name().c_str()), this);
+    _nameLabel->move(10, THUMBNAIL_PIX_SIZE + 15);
 
-    photo->setGridThumbnail(this);
+    // sets icons
+    _icons = new MGridWidgetItemIconSet(this);
+    _icons->move(0, 25 + THUMBNAIL_PIX_SIZE);
+
+    setFixedSize(THUMBNAIL_ITEM_WIDTH, THUMBNAIL_ITEM_HEIGHT);
+
+    photo->setThumbnail(this);
+}
+
+MGridWidgetThumbnail::~MGridWidgetThumbnail()
+{
+    delete _imageLabel;
+    delete _nameLabel;
+    delete _icons;
+    delete _starLabel;
 }
 
 void MGridWidgetThumbnail::showStar(bool apply)

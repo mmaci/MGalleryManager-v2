@@ -1,6 +1,6 @@
 #ifndef MXMLHANDLER_H
 #define MXMLHANDLER_H
-#define _DEBUG
+ 
 
 #include <set>
 #include <memory>
@@ -25,7 +25,7 @@ const QString NAMESPACE = "mgalmanager";
 const QString NAMESPACE_GALLERY = "mgallery";
 const QString NAMESPACE_PHOTO = "mphoto";
 
-namespace core
+namespace mcore
 {
     class MXMLHandler
     {

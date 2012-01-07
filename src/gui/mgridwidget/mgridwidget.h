@@ -12,13 +12,13 @@
 
 #include "core/mgallery.h"
 
-namespace core
+namespace mcore
 {
     class MPhoto;
     class MObject;
 }
 
-namespace gui
+namespace mgui
 {
     class MGridWidget;    
     class MGridWidgetItem;
@@ -30,20 +30,20 @@ namespace gui
 	    MGridWidget(QWidget* parent = 0);
 	    ~MGridWidget();
 
-	    MGridWidgetItem* insert(core::MGallery* gallery);
-	    MGridWidgetThumbnail* insert(core::MPhoto* photo, int x = -1, int y = -1);
+	    MGridWidgetItem* insert(mcore::MGallery* gallery);
+	    MGridWidgetThumbnail* insert(mcore::MPhoto* photo, int x = -1, int y = -1);
 
-	    void load(core::MObject* object);
+	    void load(mcore::MObject* object);
 	    void hideAllItems();
 
 	    int count() const { return _items.size(); }
 	    QGridLayout* layout() { return _layout; }
 
-	    core::MObject* remove(gui::MGridWidgetItem* item);
-	    core::MObject* remove(core::MObject* obj);
-	    MGridWidgetItem* find(core::MObject* obj);
+	    bool remove(MGridWidgetItem* item);
+	    bool remove(mcore::MObject* obj);
+	    MGridWidgetItem* find(mcore::MObject* obj);
 
-	    MGridWidgetViewer* generateGridViewer(core::MPhoto* photo, int maxSize = 0); // 0 means no scaling
+	    MGridWidgetViewer* generateGridViewer(mcore::MPhoto* photo, int maxSize = 0); // 0 means no scaling
 
 	private:
 	    QGridLayout* _layout;

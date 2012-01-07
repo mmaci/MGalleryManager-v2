@@ -5,7 +5,7 @@
 #include "gui/mgridwidget/mgridwidgetitembutton.h"
 #include "core/mphoto.h"
 
-namespace gui
+namespace mgui
 {
 
 MGridWidgetViewer::MGridWidgetViewer(QWidget* parent) :
@@ -14,8 +14,8 @@ MGridWidgetViewer::MGridWidgetViewer(QWidget* parent) :
     _type = GRIDTYPE_VIEWER;
 }
 
-MGridWidgetViewer::MGridWidgetViewer(QPixmap pixmap, MGridWidget* widget, core::MPhoto* photo) :
-    MGridWidgetItem(widget, photo)
+MGridWidgetViewer::MGridWidgetViewer(QPixmap pixmap, mcore::MPhoto* photo, QWidget* parent) :
+    MGridWidgetItem(photo, parent)
 {
     _type = GRIDTYPE_VIEWER;
     _zoom = 100.0;
@@ -94,24 +94,28 @@ MGridWidgetViewer::MGridWidgetViewer(QPixmap pixmap, MGridWidget* widget, core::
 		connect(_buttons[BUTTON_VIEWER_BNW], SIGNAL(clicked()), this, SLOT(bnwPhoto()));
 		break;
 
-	    // PHOTO MANAGEMENT
-	    case BUTTON_VIEWER_DELETE:
-		_buttons[BUTTON_VIEWER_DELETE]->setIcon(QIcon(QCoreApplication::applicationDirPath() + DELETE_ICON_PATH));
-		connect(this, SIGNAL(clicked()), this, SLOT(deletePhoto()));
-		break;
-	    case BUTTON_VIEWER_EDIT:
-		_buttons[BUTTON_VIEWER_EDIT]->setIcon(QIcon(QCoreApplication::applicationDirPath() + EDIT_ICON_PATH));
-		connect(this, SIGNAL(clicked()), this, SLOT(editPhoto()));
-		break;
-	    case BUTTON_VIEWER_FAV:
-		_buttons[BUTTON_VIEWER_FAV]->setIcon(QIcon(QCoreApplication::applicationDirPath() + FAV_ICON_PATH));
-		connect(this, SIGNAL(clicked()), this, SLOT(favPhoto()));
-		break;
-
 	    default:
 		break;
 	}
     }    
+}
+
+MGridWidgetViewer::~MGridWidgetViewer()
+{
+    for (int i = 0; i < MAX_VIEWER_BUTTONS; ++i)
+	delete _buttons[i];
+
+    for (int i = 0; i < MAX_HISTORY_BUTTONS; ++i)
+	delete _historyButtons[i];
+
+    delete _imageLabel;
+    delete _imageArea;
+}
+
+void MGridWidgetViewer::reload(QPixmap pixmap)
+{
+    _imageLabel->setPixmap(pixmap);
+    _imageLabel->resize(pixmap.size());
 }
 
 void MGridWidgetViewer::enableHistoryButtons(bool enable)
@@ -133,6 +137,137 @@ void MGridWidgetViewer::enableHistoryButtonForw(bool enable)
 void MGridWidgetViewer::moveButton(int id, int x, int y)
 {
     _buttons[id]->move(x, y);
+}
+
+////////////////////////////////////////////////////////////////
+// Public Slots handling buttons
+////////////////////////////////////////////////////////////////
+
+void MGridWidgetViewer::rotatePhoto()
+{
+    bool ok;
+    double value = QInputDialog::getDouble(this, tr("Rotation"), tr("Amount:"), 0.0, 0.0, 360.0, 2, &ok);
+
+    if (ok)
+    {
+       if (mcore::MPhoto* photo = object()->toPhoto())
+       {
+	   photo->rotate(mimage::RGB(255, 255, 255), value);
+	   reload(photo->pixmapFromView());
+	   // enable history
+	   enableHistoryButtons(true);
+       }
+    }
+}
+
+void MGridWidgetViewer::resizePhoto()
+{
+    if (mcore::MPhoto* photo = object()->toPhoto())
+    {
+
+	MResizeDialog dialog(photo->width(), photo->height(), this);
+
+	if (dialog.exec())
+	{
+	   photo->resize(static_cast<double>(dialog.getWidth()), static_cast<double>(dialog.getHeight()));
+	   reload(photo->pixmapFromView());
+	   // enable history
+	    enableHistoryButtons(true);
+	}
+    }
+
+}
+
+void MGridWidgetViewer::contrastPhoto()
+{
+    bool ok;
+    double value = QInputDialog::getDouble(this, tr("Contrast"), tr("Amount:"), 0.0, -100.0, 100.0, 2, &ok);
+
+    if (ok)
+    {
+       if (mcore::MPhoto* photo = object()->toPhoto())
+       {
+	   photo->contrast(value);
+	   reload(photo->pixmapFromView());
+	   // enable history
+	   enableHistoryButtons(true);
+       }
+    }
+}
+
+void MGridWidgetViewer::brightnessPhoto()
+{
+    bool ok;
+    double value = QInputDialog::getDouble(this, tr("Brightness"), tr("Amount:"), 0.0, -100.0, 100.0, 2, &ok);
+
+    if (ok)
+    {
+       if (mcore::MPhoto* photo = object()->toPhoto())
+       {
+	   photo->brightness(value);
+	   reload(photo->pixmapFromView());
+	   // enable history
+	   enableHistoryButtons(true);
+       }
+    }
+}
+
+void MGridWidgetViewer::saturatePhoto()
+{
+    bool ok;
+    double value = QInputDialog::getDouble(this, tr("Saturation"), tr("Amount:"), 0.0, -100.0, 100.0, 2, &ok);
+
+    if (ok)
+    {
+       if (mcore::MPhoto* photo = object()->toPhoto())
+       {
+	   photo->saturation(value);
+	   reload(photo->pixmapFromView());
+	   // enable history
+	   enableHistoryButtons(true);
+       }
+    }
+}
+
+void MGridWidgetViewer::bnwPhoto()
+{
+    if (mcore::MPhoto* photo = object()->toPhoto())
+    {
+	photo->blackandwhite();
+	reload(photo->pixmapFromView());
+	// enable history
+	enableHistoryButtons(true);
+    }
+}
+
+void MGridWidgetViewer::deletePhoto()
+{
+}
+
+void MGridWidgetViewer::editPhoto()
+{
+}
+
+void MGridWidgetViewer::favPhoto()
+{
+}
+
+void MGridWidgetViewer::forwPhoto()
+{
+    if (mcore::MPhoto* photo = object()->toPhoto())
+    {
+	if (photo->forward())
+	    reload(photo->pixmapFromView());
+    }
+}
+
+void MGridWidgetViewer::backPhoto()
+{
+    if (mcore::MPhoto* photo = object()->toPhoto())
+    {
+	if (photo->backward())
+	    reload(photo->pixmapFromView());
+    }
 }
 
 } // NAMESPACE GUI

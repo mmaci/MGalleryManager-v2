@@ -11,19 +11,24 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QGridLayout>
+#include <QCheckBox>
 
-namespace gui
+namespace mgui
 {
     class MResizeDialog : public QDialog
     {
+	Q_OBJECT
+
 	public:
-	    MResizeDialog(QWidget* parent = NULL);
+	    MResizeDialog(int width = 0, int height = 0, QWidget* parent = NULL);
 
 	    int getWidth(){ return _width; }
 	    int getHeight(){ return _height; }
 
 	public slots:
 	    void accept();
+	    void recalculateWidth(QString newText);
+	    void recalculateHeight(QString newText);
 
 	private:
 	    void setWidth();
@@ -31,13 +36,16 @@ namespace gui
 
 	    int _width;
 	    int _height;
+	    double _prop;
 
 	    QLineEdit* _widthEdit;
 	    QLineEdit* _heightEdit;
+	    QCheckBox* _propCheckbox;
 	    QPushButton* _okButton;
 	    QPushButton* _cancelButton;
 	    QLabel* _widthLabel;
 	    QLabel* _heightLabel;
+	    QLabel* _propLabel;
 	    QGridLayout* _buttonLayout;
 	    QGridLayout* _textLayout;
 	    QWidget* _buttonWidget;

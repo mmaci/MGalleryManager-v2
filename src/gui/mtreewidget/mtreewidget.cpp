@@ -1,10 +1,10 @@
-#define _DEBUG
+
 
 #include "gui/mtreewidget/mtreewidget.h"
 #include "gui/mtreewidget/mtreewidgetitem.h"
 #include "core/mgallery.h"
 
-namespace gui
+namespace mgui
 {
 
 MTreeWidget::MTreeWidget(QWidget *parent) :
@@ -12,13 +12,13 @@ MTreeWidget::MTreeWidget(QWidget *parent) :
 {
 }
 
-void MTreeWidget::loadGallery(core::MGallery* gallery, MTreeWidgetItem* parent, int depth)
+void MTreeWidget::loadGallery(mcore::MGallery* gallery, MTreeWidgetItem* parent, int depth)
 {
-    std::set<core::MObject*>::iterator it;
-    std::set<core::MObject*> content = gallery->content();
+    std::set<mcore::MObject*>::iterator it;
+    std::set<mcore::MObject*> content = gallery->content();
 
     MTreeWidgetItem* item;
-    core::MGallery* tmpGal;   
+    mcore::MGallery* tmpGal;   
     for (it = content.begin(); it != content.end(); ++it)
     {
 	switch ((*it)->typeId())
@@ -40,7 +40,7 @@ void MTreeWidget::loadGallery(core::MGallery* gallery, MTreeWidgetItem* parent, 
  * \param gallery gallery we are inserting, needed to create widget data
  * \param parent parent widget to which we are adding, default NULL
  */
-MTreeWidgetItem* MTreeWidget::insert(core::MGallery* gallery, MTreeWidgetItem* parent)
+MTreeWidgetItem* MTreeWidget::insert(mcore::MGallery* gallery, MTreeWidgetItem* parent)
 {
     // creates a new widget item based on gallery data
     MTreeWidgetItem* item = new MTreeWidgetItem(this, gallery);
@@ -57,7 +57,7 @@ MTreeWidgetItem* MTreeWidget::insert(core::MGallery* gallery, MTreeWidgetItem* p
  * \param photo photo we are inserting, needed to create widget data
  * \param parent parent widget to which we are adding, default NULL
  */
-MTreeWidgetItem* MTreeWidget::insert(core::MPhoto* photo, MTreeWidgetItem* parent)
+MTreeWidgetItem* MTreeWidget::insert(mcore::MPhoto* photo, MTreeWidgetItem* parent)
 {
     MTreeWidgetItem* item = new MTreeWidgetItem(this, photo);
 
@@ -74,7 +74,7 @@ MTreeWidgetItem* MTreeWidget::insert(core::MPhoto* photo, MTreeWidgetItem* paren
  * \param item from a list which we want to remove
  * \return object linked to an item being removed
  */
-core::MObject* MTreeWidget::remove(MTreeWidgetItem* item)
+void MTreeWidget::remove(MTreeWidgetItem* item)
 {
     // no item given to remove, we take selected
     // atm this shouldn't happen, because we always call this with a param
@@ -83,15 +83,10 @@ core::MObject* MTreeWidget::remove(MTreeWidgetItem* item)
 
     // no item selected
     if (!item)
-	return NULL;
-
-    core::MObject* obj = item->object();
+	return;
 
     // remove from widget
     takeTopLevelItem(indexOfTopLevelItem(item));
-    delete item;
-
-    return obj;
 }
 
 } // NAMESPACE GUI

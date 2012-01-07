@@ -1,9 +1,9 @@
-#define _DEBUG
+
 
 #include "mxmlhandler.h"
 #include "core/mobject.h"
 
-namespace core
+namespace mcore
 {
 
 MXMLHandler::MXMLHandler()
@@ -164,8 +164,8 @@ bool MXMLHandler::writeToFile(QIODevice* device, MGallery* baseGallery)
     _writer.writeStartElement("mproject");
     _writer.writeAttribute("version", "0.2");           
 
-    std::set<core::MObject*>::iterator it;
-    std::set<core::MObject*> base = baseGallery->content();
+    std::set<mcore::MObject*>::iterator it;
+    std::set<mcore::MObject*> base = baseGallery->content();
 
     for (it = base.begin(); it != base.end(); ++it)
 	writeItem(*it);
@@ -176,7 +176,7 @@ bool MXMLHandler::writeToFile(QIODevice* device, MGallery* baseGallery)
     return true;
 }
 
-void MXMLHandler::writeItem(core::MObject* object)
+void MXMLHandler::writeItem(mcore::MObject* object)
 {    
     // startElement
     switch (object->typeId())
@@ -184,7 +184,7 @@ void MXMLHandler::writeItem(core::MObject* object)
 	case TYPEID_GALLERY:
 	{
 	    _writer.writeStartElement(ELEM_GALLERY);
-	    core::MGallery* gallery = object->toGallery();
+	    mcore::MGallery* gallery = object->toGallery();
 		// name
 		_writer.writeStartElement(NAMESPACE_GALLERY, ELEM_NAME);
 		    _writer.writeCharacters(QString(gallery->name().c_str()));
@@ -197,8 +197,8 @@ void MXMLHandler::writeItem(core::MObject* object)
 
 		// content
 		_writer.writeStartElement(NAMESPACE_GALLERY, ELEM_CONTENT);
-		    std::set<core::MObject*>::iterator it;
-		    std::set<core::MObject*> base = gallery->content();
+		    std::set<mcore::MObject*>::iterator it;
+		    std::set<mcore::MObject*> base = gallery->content();
 		    for (it = base.begin(); it != base.end(); ++it)
 			writeItem(*it);
 		_writer.writeEndElement();
@@ -211,7 +211,7 @@ void MXMLHandler::writeItem(core::MObject* object)
 	case TYPEID_PHOTO:
 	{
 	    _writer.writeStartElement(ELEM_PHOTO);
-	    core::MPhoto* photo = object->toPhoto();
+	    mcore::MPhoto* photo = object->toPhoto();
 		// name
 		_writer.writeStartElement(NAMESPACE_PHOTO, ELEM_NAME);
 		    _writer.writeCharacters(QString(photo->name().c_str()));

@@ -6,7 +6,7 @@
 
 #include "core/mphoto.h"
 
-namespace core
+namespace mcore
 {  
     struct MGalleryInfo
     {

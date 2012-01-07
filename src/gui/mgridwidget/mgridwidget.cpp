@@ -1,11 +1,10 @@
-#define _DEBUG
 
 #include "gui/mgridwidget/mgridwidget.h"
 #include "gui/mgridwidget/mgridwidgetitem.h"
 #include "gui/mgridwidget/mgridwidgetviewer.h"
 #include "gui/mgridwidget/MGridWidgetThumbnail.h"
 
-namespace gui
+namespace mgui
 {
 
 MGridWidget::MGridWidget(QWidget* parent) :
@@ -22,20 +21,24 @@ MGridWidget::MGridWidget(QWidget* parent) :
 
 MGridWidget::~MGridWidget()
 {
-    std::set<MGridWidgetItem*>::iterator it;
-    for (it = _items.begin(); it != _items.end(); ++it)
+    std::set<MGridWidgetItem*>::iterator it;    
+    while (!_items.empty())
+    {
+	it = _items.begin();
 	delete *it;
+	_items.erase(it);
+    }
 
     delete _layout;
 }
 
-MGridWidgetThumbnail* MGridWidget::insert(core::MPhoto* photo, int x, int y)
+MGridWidgetThumbnail* MGridWidget::insert(mcore::MPhoto* photo, int x, int y)
 {
 
     // we create a grid item and add it to our layout
     MGridWidgetThumbnail* item;
     if (!photo->gridThumbnail())
-	item = new MGridWidgetThumbnail(this, photo);
+	item = new MGridWidgetThumbnail(photo, this);
     else
 	item = photo->gridThumbnail();
 
@@ -52,16 +55,16 @@ MGridWidgetThumbnail* MGridWidget::insert(core::MPhoto* photo, int x, int y)
     return item;
 }
 
-void MGridWidget::load(core::MObject* object)
+void MGridWidget::load(mcore::MObject* object)
 {
     hideAllItems();
 
     if (object->typeId() == TYPEID_GALLERY)
     {
 	// displays gallery content
-	core::MGallery* gallery = object->toGallery();
-	std::set<core::MObject*> galleryContent = gallery->content();
-	std::set<core::MObject*>::iterator it;
+	mcore::MGallery* gallery = object->toGallery();
+	std::set<mcore::MObject*> galleryContent = gallery->content();
+	std::set<mcore::MObject*>::iterator it;
 
 	int pos_x, pos_y, cnt = 0;	
 	for (it = galleryContent.begin(); it != galleryContent.end(); ++it)
@@ -77,7 +80,7 @@ void MGridWidget::load(core::MObject* object)
     else
     if (object->typeId() == TYPEID_PHOTO)
     {
-	core::MPhoto* photo = object->toPhoto();
+	mcore::MPhoto* photo = object->toPhoto();
 	// usually every viewer is deleted the moment it's not used, not to use up lots of memory
 	// so every time we want to show a new viewer, we have to generate it
 	// in the future this might change to cache some viewers so we better check if it isn't already created
@@ -90,11 +93,11 @@ void MGridWidget::load(core::MObject* object)
     }
 }
 
-MGridWidgetViewer* MGridWidget::generateGridViewer(core::MPhoto* photo, int maxSize)
+MGridWidgetViewer* MGridWidget::generateGridViewer(mcore::MPhoto* photo, int maxSize)
 {
     QPixmap pixmap = photo->pixmapFromFile(maxSize);
 
-    MGridWidgetViewer* viewer = new MGridWidgetViewer(pixmap, this, photo);
+    MGridWidgetViewer* viewer = new MGridWidgetViewer(pixmap, photo, this);
 
     return viewer;
 }
@@ -116,7 +119,7 @@ void MGridWidget::hideAllItems()
     }
 }
 
-MGridWidgetItem* MGridWidget::find(core::MObject* obj)
+MGridWidgetItem* MGridWidget::find(mcore::MObject* obj)
 {
     std::set<MGridWidgetItem*>::iterator it;
     for (it = _items.begin(); it != _items.end(); ++it)
@@ -127,20 +130,21 @@ MGridWidgetItem* MGridWidget::find(core::MObject* obj)
     return NULL;
 }
 
-core::MObject* MGridWidget::remove(MGridWidgetItem* item)
+bool MGridWidget::remove(MGridWidgetItem* item)
 {
     item->hide();
     _items.erase(item);
-    delete item;
-    return item->object();
+    _layout->removeWidget(item);
+
+    return true;
 }
 
-core::MObject* MGridWidget::remove(core::MObject* obj)
+bool MGridWidget::remove(mcore::MObject* obj)
 {
-    if (MGridWidgetItem* item = find(obj))
+    if (MGridWidgetItem* item = find(obj))    
 	return remove(item);
 
-    return NULL;
+    return false;
 }
 
 } // NAMESPACE GUI

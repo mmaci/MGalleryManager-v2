@@ -8,13 +8,9 @@
 #include "gui/mgridwidget/mgridwidgetdefines.h"
 #include "core/mobject.h"
 #include "core/mphoto.h"
+#include "core/mgallery.h"
 
-namespace core
-{    
-    class MGallery;    
-}
-
-namespace gui
+namespace mgui
 {
     class MGridWidget;
     class MGridWidgetThumbnail;
@@ -25,48 +21,26 @@ namespace gui
 
 	public:
 	    MGridWidgetItem(QWidget* parent = NULL);
-	    MGridWidgetItem(MGridWidget* widget, core::MGallery* gallery);
-	    MGridWidgetItem(MGridWidget* widget, core::MPhoto* photo);
-	    virtual ~MGridWidgetItem(){ }
+	    MGridWidgetItem(mcore::MGallery* gallery, QWidget* parent = NULL);
+	    MGridWidgetItem(mcore::MPhoto* photo, QWidget* parent = NULL);
+	    virtual ~MGridWidgetItem();
 
 	    MGridWidgetViewer* toViewer();
 	    MGridWidgetThumbnail* toThumbnail();
 	    MGridWidgetItem* toItem();
 
-	    core::MObject* object(){ return _object; }
-	    MGridWidget* widget(){ return _widget; }
-
-	    void reload(QPixmap pixmap);
+	    mcore::MObject* object(){ return _object; }
+	    void destroy();
 
 	public slots:    
-	    void rotatePhoto();
-	    void resizePhoto();
-	    void contrastPhoto();
-	    void brightnessPhoto();
-	    void saturatePhoto();
-	    void bnwPhoto();
-	    void deletePhoto();
-	    void editPhoto();
-	    void favPhoto();	    
-	    void forwPhoto();
-	    void backPhoto();
-
-	    void handleButtonClicked(int type, gui::MGridWidgetThumbnail* thumbnail);
-	    void rotateRight()
-	    {
-
-	    }
+	    void handleButtonClicked(int type, mgui::MGridWidgetThumbnail* thumbnail);
 
 	protected:
-	    int _type;
-	    QLabel*			_imageLabel;
+	    int _type;	    
 
-	private:	    
-	    // gui
-	    MGridWidget*		_widget;	    
-
+	private:	       
 	    // core links
-	    core::MObject*		_object;	    
+	    mcore::MObject*		_object;	    
     };
 }
 

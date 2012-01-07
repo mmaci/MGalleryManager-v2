@@ -3,17 +3,17 @@
 #include "core/mgallery.h"
 #include "core/mphoto.h"
 
-namespace gui
+namespace mgui
 {
 
 /**
  * constructor
  * casts to an MObject and creates proper widget details
  */
-MTreeWidgetItem::MTreeWidgetItem(MTreeWidget* widget, core::MGallery* gallery)
+MTreeWidgetItem::MTreeWidgetItem(MTreeWidget* widget, mcore::MGallery* gallery)
 {
     _widget = widget;
-    _obj = gallery->toObject();
+    _obj = gallery;
 
     // widget details
     setText(0, QString(gallery->name().c_str()));
@@ -25,10 +25,10 @@ MTreeWidgetItem::MTreeWidgetItem(MTreeWidget* widget, core::MGallery* gallery)
  * casts to an MObject and creates proper widget details
  * Photos have different detail structure than Galleries, therefore we can't template these
  */
-MTreeWidgetItem::MTreeWidgetItem(MTreeWidget* widget, core::MPhoto* photo)
+MTreeWidgetItem::MTreeWidgetItem(MTreeWidget* widget, mcore::MPhoto* photo)
 {
     _widget = widget;
-    _obj = photo->toObject();
+    _obj = photo;
 
     // widget details
     setText(0, QString(photo->name().c_str()));
@@ -62,6 +62,13 @@ void MTreeWidgetItem::highlight(bool apply)
 MTreeWidgetItem* MTreeWidget::selected()
 {
     return static_cast<MTreeWidgetItem*>(currentItem());
+}
+
+void MTreeWidgetItem::destroy()
+{
+    _widget->remove(this);
+
+    delete this;
 }
 
 } // NAMESPACE GUI

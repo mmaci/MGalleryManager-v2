@@ -8,7 +8,7 @@
 
 #include "core/mgallery.h"
 
-namespace core
+namespace mcore
 {    
     class MPhoto;
     class MObject;
