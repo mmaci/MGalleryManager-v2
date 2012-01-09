@@ -449,7 +449,7 @@ void MainWindow::removeItemFromProject()
 	// we don't want to delete gallery in case it contains photos
 	// TODO: invoke a dialog allowing to drop everything
 	if (mcore::MGallery* gallery = object->toGallery())	
-	    if (!gallery->empty())
+	    if (!gallery->isEmpty())
 		return;
 
 	object->destroy();
@@ -520,18 +520,17 @@ void MainWindow::importPhotos(std::list<MImportStruct>* list)
 
 	// only add files
 	if (fileInfo.isDir())
-	    continue;
-	// check to find duplicates
-	if (parent->find(fileInfo))
-	    continue;
+	    continue;	
 
 	mcore::MPhotoInfo info(fileInfo);
 	    info.setName(it->second.first);
 	    info.setDescription(it->second.second);
 
+	mcore::MPhoto* photo = new mcore::MPhoto(info, parent);
+
 	// if insert into core structures succeeds we may also create an entry in list
 	// constructor called in insert(MPhotoInfo)
-	if (mcore::MPhoto* photo = parent->insert(info))
+	if (parent->insert(photo))
 	{
 	    _projectWidget->insert(photo, parentItem);
 	    _objectGridWidget->insert(photo);
@@ -573,8 +572,9 @@ void MainWindow::createGallery(std::string name, std::string description)
 	// selected object can be a photo or a gallery, we must ensure it's a gallery
 	if (mcore::MGallery* parent = parentItem->object()->toGallery())
 	{
+	    mcore::MGallery* gallery = new mcore::MGallery(info, parent);
 	    // calls a constructor of a new gallery based on its info
-	    if (mcore::MGallery* gallery = parent->insert(info))
+	    if (parent->insert(gallery))
 	    {
 		if (MTreeWidgetItem* item = _projectWidget->insert(gallery, parentItem))
 		    gallery->setTreeWidgetItem(item);
@@ -584,12 +584,13 @@ void MainWindow::createGallery(std::string name, std::string description)
     // no gallery selected, create gallery on the base level
     else
     {
-	mcore::MGallery* gallery = new mcore::MGallery(info);
-
-	if (MTreeWidgetItem* item = _projectWidget->insert(gallery))
-	    gallery->setTreeWidgetItem(item);
-
-	_project->insert(gallery);
+	mcore::MGallery* parent = _project->base();
+	mcore::MGallery* gallery = new mcore::MGallery(info, parent);
+	if (parent->insert(gallery))
+	{
+	    if (MTreeWidgetItem* item = _projectWidget->insert(gallery))
+		gallery->setTreeWidgetItem(item);
+	}
     }
 }
 

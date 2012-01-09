@@ -28,7 +28,7 @@ namespace mgui
 
 	    void destroy();
 
-	    void highlight(bool apply);
+	    void setFavourite(bool apply);
 
 	private:
 	    mcore::MObject* _obj;

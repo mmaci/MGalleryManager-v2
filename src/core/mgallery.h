@@ -1,7 +1,7 @@
 #ifndef MGALLERY_H
 #define MGALLERY_H
 
-#include <set>
+#include <vector>
 #include <string>
 
 #include "core/mphoto.h"
@@ -14,11 +14,11 @@ namespace mcore
 	    MGalleryInfo(){ };
 	    MGalleryInfo(std::string name, std::string description = ""){ _name = name; _description = description;}
 
-	    // set
+	    // setters
 	    void setName(std::string name){ _name = name; }
 	    void setDescription(std::string description){ _description = description; }
 
-	    // get
+	    // getters
 	    std::string name() const { return _name; }
 	    std::string description() const { return _description; }
 
@@ -33,33 +33,29 @@ namespace mcore
 	    // constructors/destructors
 	    MGallery(MGallery* parent = NULL);
 	    MGallery(MGalleryInfo info, MGallery* parent = NULL);
+	    MGallery(std::string name, std::string description = std::string(), MGallery* parent = NULL);
 	    ~MGallery();
 
 	    // modify data
-	    MGallery* insert(MGalleryInfo info);
-	    void insert(MGallery* gallery);
-	    MPhoto* insert(MPhotoInfo info);
-	    void insert(MPhoto* gallery);
-	    void insert(MObject* object);
+	    bool insert(MObject* object);
+	    bool remove(MObject *object);
+	    bool removeGallery(std::string name);
 
-	    MPhoto* find(QFileInfo info);
-	    void remove(MObject* object){ _content.erase(object); }
+	    // find	    
+	    MPhoto* searchPhoto(QFileInfo info);
+	    MGallery* searchGallery(std::string name);
 
-	    // GET
-	    // information about gallery
-	    /**
-	     * Inherited info from MObject:
-	     * - favourite
-	     * - GPS info
-	     */
-	    int		count() const { return _content.size(); }
+	    // getters
+	    // also inherits gps info from MObject
 	    std::string name() const { return _info.name(); }
 	    std::string description() const { return _info.description(); }
-	    bool	empty() const { return _content.empty(); }
-	    // content
-	    std::set<MObject*> content() { return _content; }
 
-	    // SET
+	    int	size() const { return _content.size(); }
+	    bool isEmpty() const { return _content.empty(); }
+
+	    std::vector<MObject*> content() { return _content; }
+
+	    // setters
 	    // methods used to set information
 	    void setName(std::string name){ _info.setName(name); }
 	    void setDescription(std::string description){ _info.setDescription(description); }
@@ -67,7 +63,10 @@ namespace mcore
 	    MGalleryInfo info() { return _info; }
 
 	private:
-	    std::set<MObject*> _content;
+	    std::vector<MObject*>::iterator _searchGallery(std::string name);
+	    MObject* _search(MObject* object);
+
+	    std::vector<MObject*> _content;
 	    MGalleryInfo _info;
     };
 }

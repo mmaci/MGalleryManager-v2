@@ -59,8 +59,8 @@ void MHTMLExport::exportHTML(MObject* object, std::string path, bool initial, in
 	    ++level;
 	}		    
 
-	std::set<MObject*>::iterator ik;
-	std::set<MObject*> content = gallery->content();
+	std::vector<MObject*>::iterator ik;
+	std::vector<MObject*> content = gallery->content();
 	for (ik = content.begin(); ik != content.end(); ++ik)
 	{
 	    std::string newPath = path+normalizeName(gallery->name());
@@ -144,8 +144,8 @@ void MHTMLExport::writeGalleryPage(MGallery* gallery, int level)
     writePairTag(TAG_DIV);
 	writeAttribute(ATTR_ID, "gallery-content");
 
-    std::set<MObject*> content = gallery->content();
-    std::set<MObject*>::iterator it;
+    std::vector<MObject*> content = gallery->content();
+    std::vector<MObject*>::iterator it;
     for (it = content.begin(); it != content.end(); ++it)
     {
 	writePairTag(TAG_DIV);

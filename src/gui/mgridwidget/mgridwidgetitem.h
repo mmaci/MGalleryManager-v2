@@ -32,6 +32,8 @@ namespace mgui
 	    mcore::MObject* object(){ return _object; }
 	    void destroy();
 
+	    void setFavourite(bool apply){ }
+
 	public slots:    
 	    void handleButtonClicked(int type, mgui::MGridWidgetThumbnail* thumbnail);
 

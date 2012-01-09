@@ -47,7 +47,7 @@ MTreeWidgetItem::~MTreeWidgetItem()
  * highlights a line in the tree
  * \param apply used to display or hide the background color
  */
-void MTreeWidgetItem::highlight(bool apply)
+void MTreeWidgetItem::setFavourite(bool apply)
 {
     if (apply)
 	setBackground(0, QBrush(QColor(Qt::yellow)));

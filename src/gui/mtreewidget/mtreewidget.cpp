@@ -14,8 +14,8 @@ MTreeWidget::MTreeWidget(QWidget *parent) :
 
 void MTreeWidget::loadGallery(mcore::MGallery* gallery, MTreeWidgetItem* parent, int depth)
 {
-    std::set<mcore::MObject*>::iterator it;
-    std::set<mcore::MObject*> content = gallery->content();
+    std::vector<mcore::MObject*>::iterator it;
+    std::vector<mcore::MObject*> content = gallery->content();
 
     MTreeWidgetItem* item;
     mcore::MGallery* tmpGal;   

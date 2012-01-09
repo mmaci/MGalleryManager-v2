@@ -164,8 +164,8 @@ bool MXMLHandler::writeToFile(QIODevice* device, MGallery* baseGallery)
     _writer.writeStartElement("mproject");
     _writer.writeAttribute("version", "0.2");           
 
-    std::set<mcore::MObject*>::iterator it;
-    std::set<mcore::MObject*> base = baseGallery->content();
+    std::vector<mcore::MObject*>::iterator it;
+    std::vector<mcore::MObject*> base = baseGallery->content();
 
     for (it = base.begin(); it != base.end(); ++it)
 	writeItem(*it);
@@ -197,8 +197,8 @@ void MXMLHandler::writeItem(mcore::MObject* object)
 
 		// content
 		_writer.writeStartElement(NAMESPACE_GALLERY, ELEM_CONTENT);
-		    std::set<mcore::MObject*>::iterator it;
-		    std::set<mcore::MObject*> base = gallery->content();
+		    std::vector<mcore::MObject*>::iterator it;
+		    std::vector<mcore::MObject*> base = gallery->content();
 		    for (it = base.begin(); it != base.end(); ++it)
 			writeItem(*it);
 		_writer.writeEndElement();

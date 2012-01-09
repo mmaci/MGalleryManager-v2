@@ -44,7 +44,7 @@ void MProject::insert(MObject* obj)
 
 MPhoto* MProject::find(QFileInfo fileInfo)
 {
-    std::set<MObject*>::iterator it;
+    std::vector<MObject*>::iterator it;
     for (it = _base->content().begin(); it != _base->content().end(); ++it)
     {
 	if (MPhoto* photo = (*it)->toPhoto())

@@ -63,8 +63,8 @@ void MGridWidget::load(mcore::MObject* object)
     {
 	// displays gallery content
 	mcore::MGallery* gallery = object->toGallery();
-	std::set<mcore::MObject*> galleryContent = gallery->content();
-	std::set<mcore::MObject*>::iterator it;
+	std::vector<mcore::MObject*> galleryContent = gallery->content();
+	std::vector<mcore::MObject*>::iterator it;
 
 	int pos_x, pos_y, cnt = 0;	
 	for (it = galleryContent.begin(); it != galleryContent.end(); ++it)
